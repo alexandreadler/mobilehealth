@@ -1,0 +1,79 @@
+@extends("layout.main")
+
+
+@section("content")
+
+    <div class="row panel-body">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-lock"></span> Login
+				</div>
+                <div>
+
+                    <form method="POST" action="{{URL::to('/users/forgotpassword') }}" accept-charset="UTF-8">
+						<input type="hidden" name="_token" value="{{{ Session::getToken() }}}">
+						<div class="form-group">
+							<label for="email">{{{ Lang::get('confide::confide.e_mail') }}}</label>
+							<div class="input-append input-group">
+								<input class="form-control" placeholder="{{{ Lang::get('confide::confide.e_mail') }}}" type="text" name="email" id="email" value="{{{ Input::old('email') }}}">
+								<span class="input-group-btn">
+									<input class="btn btn-default" type="submit" value="{{{ Lang::get('confide::confide.forgot.submit') }}}">
+								</span>
+							</div>
+						</div>
+
+						@if (Session::get('error'))
+							<div class="alert alert-error alert-danger">{{{ Session::get('error') }}}</div>
+						@endif
+
+						@if (Session::get('notice'))
+							<div class="alert">{{{ Session::get('notice') }}}</div>
+						@endif
+					</form>
+                </div>
+                <div class="panel-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+@stop
+
+@section("style")
+
+
+.panel-default {
+    opacity: 0.9;
+    margin-top:30px;
+}
+.form-group.last { margin-bottom:0px; }
+
+
+@stop
+
+@section("script")
+
+    $(function(){
+
+        $("#submit").click(function(){
+            $("#form").submit();
+        });
+
+        $("#username").focus();
+
+    });
+
+@stop
+
+
+
+
+
+
+
+
+
+
+
+
