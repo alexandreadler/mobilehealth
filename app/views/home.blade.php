@@ -3,11 +3,6 @@
 
 @section("content")
 
-
-
-
-
-
 @stop
 
 
