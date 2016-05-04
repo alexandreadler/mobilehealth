@@ -17,6 +17,11 @@ class AppController extends Controller
 	public function getHome() {
 
 		$message = DB::connection("app")->select(DB::raw("select distinct p.name_first, p.name_last, p.id, m.id_person_from from public.person p, app.message m where m.viewed = false and (m.id_person_to =".Confide::user()->person->id.") and ((m.id_person_from = p.id))"));
+		$name = DB::connection("app")->select(DB::raw("select p.name_first, p.name_last from public.person p where (p.id =".Confide::user()->person->id.")"));
+		
+		$name = $name[0]->name_first . " " . $name[0]->name_last;
+		
+		Session::put('fullName', $name);
 		
 		if(Confide::user()->type){
 			$sid = Confide::user()->person->id;
@@ -27,6 +32,7 @@ class AppController extends Controller
 			return View::make('/supervisor/home', compact('relates', 'message'));
 			
 		} else {
+			
 			$pid = Confide::user()->person->id;
 			//$u = Recommendation::where('id_person', '=', $pid)->take(1)->get();
 			//dd($u);
@@ -38,8 +44,9 @@ class AppController extends Controller
 				$c = Content::whereIn('id',$rcs)->where('subtype','=','2')->take(3)->get();
 				$c2 = Content::whereIn('id',$rcs)->where('subtype','=','3')->take(3)->get();
 			}
-				
-			return View::make('home',compact('c', 'c2', 'message'));
+			
+			$title = "Feed";			
+			return View::make('home',compact('c', 'c2', 'message', 'title'));
 		}
 	}
 
@@ -48,7 +55,7 @@ class AppController extends Controller
 
 	    $show_search = true;
 	    $title = "Youtube Search";
-
+		
 	    return View::make('search-video', compact('show_search','title') );
     }
 
@@ -268,7 +275,7 @@ class AppController extends Controller
 	}
 
 	public function getFriendship() {
-
+	
 		$title      = "Friendship";
 		$f_ids    = Follow::where('id_follower','=',Confide::user()->person_id)->lists('id_following');
 

@@ -106,10 +106,7 @@ class UserRepository
         $result = false;
         $user   = Confide::userByResetPasswordToken($input['token']);
 		
-        if ($user) {
-			
-			echo "AAA";
-			
+        if ($user) {			
             $user->password              = $input['password'];
             $user->password_confirmation = $input['password_confirmation'];
             $result = $this->save($user);

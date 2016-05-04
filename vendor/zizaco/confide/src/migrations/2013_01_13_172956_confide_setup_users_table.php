@@ -23,6 +23,7 @@ class ConfideSetupUsersTable extends Migration
             $table->timestamps();
 			$table->boolean('confirmed');
 			$table->boolean('type');
+			
         });
 
         // Creates password reminders table

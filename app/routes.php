@@ -18,7 +18,8 @@ Route::get("grafico",
 		require("grafico.php");
 		return ob_get_clean(); 
 
-	});
+	}
+);
 
 
 Route::group(array('before' => 'auth'), function()
