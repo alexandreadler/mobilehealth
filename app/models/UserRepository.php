@@ -24,7 +24,6 @@ class UserRepository
         $user->username = array_get($input, 'username');
         $user->email    = array_get($input, 'email');
         $user->password = array_get($input, 'password');
-
         // The password confirmation will be removed from model
         // before saving. This field will be used in Ardent's
         // auto validation.
@@ -35,10 +34,9 @@ class UserRepository
         $user->ultimo_acesso         = \Carbon\Carbon::now();
 		$user->gender = array_get($input, 'gender');
 		$user->type = array_get($input, 'supervisor');
-		
         // Save if valid. Password field will be hashed before save
-		$this->save($user);			
-        return $user;
+		$this->save($user);
+		return $user;
     }
 
 	

@@ -199,8 +199,45 @@ class UsersController extends Controller
      */
     public function postForgot()
     {
+
+		$us = new User();
+        $username = $_POST['username'];
+        $email    = $_POST['email'];
+		$token    = $_POST['token'];
+		$password = $_POST['password'];
+		$password_confirmation = $_POST['password_confirmation'];
 		
-		$this->testemail(Input::get('email'), Input::get('_token'));
+		$u = DB::table('app.users')->where('username', $username)->where('email', $email)->get();
+		
+		if(count($u) == 0){
+			
+			$megERRO = "Por favor verifique todas as informações.";
+			
+		} else {
+			
+			if(!strcmp($password , $password_confirmation)){
+				
+				 $hash = App::make('hash');
+				 $password = $hash->make($password);
+				// Hashes password and unset password_confirmation field
+				$update = DB::connection("app")->select(DB::raw("update users set password='". $password ."' where id=".$u[0]->id));
+				$megERRO = "Nova senha definida";
+				
+			} else {
+				
+				$megERRO = "Senhas diferentes.";
+				
+			}
+			
+		}
+		
+		return View::make(Config::get('confide::forgot_password_form'), compact('megERRO'));
+		
+		//dd($user);
+		
+		
+		
+		//$this->testemail(Input::get('email'), Input::get('_token'));
 		
 		/*
         if (Confide::forgotPassword(Input::get('email'))) {

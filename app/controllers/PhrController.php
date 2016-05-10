@@ -94,7 +94,7 @@ class PhrController extends \BaseController {
 		//$d = date('d', strtotime($records[0]['datetime']));
 		//echo ($d);
 		
-		$records = Weight::select(DB::raw('id, weight as data, datetime'))->where("id_person",'=',27)->orderBy('datetime', 'desc')->take(15)->get();
+		$records = Weight::select(DB::raw('id, weight, datetime'))->where("id_person",'=',27)->orderBy('datetime', 'desc')->take(15)->get();
 		
 		
 		return View::make('phr.weight',compact('title','records','pid'));

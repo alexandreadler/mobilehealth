@@ -4,20 +4,23 @@
 require_once 'phplot/phplot.php';
 
 $plot = new PHPlot();
+$m = 0;
+
 
 
 // Aqui nos definimos o título do gráfico
 if($_GET['t'] == 0){
 	
 	$plot->SetTitle("Glicose");
-	$records = Bloodglucose::select(DB::raw('measure as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$records = Bloodglucose::select(DB::raw('measure as data, datetime, min(measure) as minimo'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$m = 10;
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(10);
 	
 } else if($_GET['t'] == 1){
 	
 	$plot->SetTitle("Pressão Sanguínia");
-	$records = Bloodpressure::select(DB::raw('pulse as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$records = Bloodpressure::select(DB::raw('pulse as data, datetime, min(pulse) as minimo'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(2);
 	
@@ -25,13 +28,14 @@ if($_GET['t'] == 0){
 	
 	$plot->SetTitle("Peso");
 	$records = Weight::select(DB::raw('weight as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$m = 40;
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(10);
 	
 } else if($_GET['t'] == 3){
 	
 	$plot->SetTitle("Altura");
-	$records = Height::select(DB::raw('height as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$records = Height::select(DB::raw('height as data, datetime, min(height) as minimo'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(1);
 	
@@ -43,9 +47,6 @@ for($i = count($records)-1; $i >=0; $i--){
 	$data[] = array($d, $records[$i]['data']);
 			
 }
-
-
-
 
 
 //$data = $_GET['data']; //recebo
@@ -89,7 +90,9 @@ $plot->SetDataValues($data);
 $plot->SetXTickPos('none');
 
 # Make sure Y=0 is displayed:
-$plot->SetPlotAreaWorld(NULL, 0);
+
+
+$plot->SetPlotAreaWorld(NULL, $m);
 
 
 # Turn on Y data labels:
@@ -100,4 +103,6 @@ $plot->SetYDataLabelPos('plotin');
 #$plot->SetYTickPos('none');
 //Gerando o gráfico
 $plot->DrawGraph();
+
+
 ?>

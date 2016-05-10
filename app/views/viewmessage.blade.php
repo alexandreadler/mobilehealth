@@ -9,7 +9,7 @@
 
             <div class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a">
-                     <h3>Menssagens</h3>
+                     <h3>Mensagens</h3>
 					 
                 </div>
                 <div class="ui-body ui-body-a">
