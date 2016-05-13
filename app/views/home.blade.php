@@ -136,7 +136,7 @@
 								<div class="textPost" >
 									<div class="video">
 										<span class="thumbnail" >
-											<a href="{{url("/app/video/" . $v['id'])}}" target="new">
+											<a href="{{url("/app/video/" . $v['vid'])}}" target="new">
 											<img src="{{$v['thumburl']}}" align="left" />
 											<p class="title">{{Str::limit($v['title'],40)}}</p>
 											<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
@@ -148,8 +148,8 @@
 								<div class="divBottom">
 									<ul class="bottom">
 										<a  onclick="like{{$v['id']}}()" href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a  onclick="unlike{{$v['id']}}()" href="#"><li id="unlike{{$v['id']}}"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a href="#"><li><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+										<a  onclick="unlike{{$v['id']}}()" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a  onclick="comp{{$v['id']}}()" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 							</div>
@@ -184,8 +184,8 @@
 							<div class="divBottom">
 								<ul class="bottom">
 									<a  onclick="like{{$con->id}}()" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-									<a  onclick="unlike{{$con->id}}()" href="#"><li id="unlike{{$con->id}}"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-									<a href="#"><li><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+									<a  onclick="unlike{{$con->id}}()" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+									<a onclick="comp{{$con->id}}()" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 								</ul>
 							</div>
 						</div>
@@ -223,6 +223,16 @@
 		$("#like{{$con->id}}").css('border', 'solid 1px gray');
 		
 	}
+	
+	function comp{{$con->id}}(){
+		
+		$.get("app/comp", { id: {{$con->id}} } )
+		.done(function() {
+			alert( "Você compartilho isso.");
+		});
+		$("#comp{{$con->id}}").css('border', 'solid 3px rgb(149,148,255)');
+		
+	}
 @endforeach
 
 
@@ -232,6 +242,7 @@
 	function like{{$v['id']}}(){
 		
 		$.get("app/likec", { id: "{{$v['id']}}" } );
+		
 		$("#like{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
 		$("#unlike{{$v['id']}}").css('border', 'solid 1px gray');
 		
@@ -240,8 +251,19 @@
 	function unlike{{$v['id']}}(){
 		
 		$.get("app/unlikec", { id: "{{$v['id']}}" } );
+		
 		$("#unlike{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
 		$("#like{{$v['id']}}").css('border', 'solid 1px gray');
+		
+	}
+	
+	function comp{{$v['id']}}(){
+		
+		$.get("app/comp", { id: {{$con->id}} } )
+		.done(function() {
+			alert( "Você compartilho isso.");
+		});
+		$("#comp{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
 		
 	}
 	
@@ -408,7 +430,6 @@
 		display:block;
 		color: black;
 		clear:both;
-		overflow: auto;
 
 	}
 	
@@ -442,7 +463,8 @@
 		margin: 15px;
 		float:left;
 		display:block;
-		width: 70%;
+		width: 100%;
+		height: auto;
 		
 		
 	}
@@ -450,6 +472,7 @@
 	.textPost{
 		margin: 5px;
 		clear: both;
+		
 	}
 	
 	.divBottom{
