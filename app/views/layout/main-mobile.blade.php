@@ -76,7 +76,7 @@
 			height: auto;
 			border: solid 1px white;
 			position: absolute;
-			z-index: 6;
+			z-index: 5;
 			border-radius: 0px 5px 5px 0px;
 			-webkit-box-shadow: -1px -1px 40px 10px rgba(0,0,0,0.75);
 			-moz-box-shadow: -1px -1px 40px 10px rgba(0,0,0,0.75);
@@ -121,7 +121,6 @@
 			padding-top: 10%;
 			text-aling: left;
 		}
-		
 		
 		
     	.left {
@@ -213,17 +212,18 @@
         <a href="{{url("/users/logout")}}" data-rel="logout" class="btn btn-default btn-lg ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-icon-home" style="margin: 0;"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
 		
 	</div>
+	
 		<div id="profile">
 			<ul id="menu">
 				<li>
 					<a href="{{url("/")}}">
 						<div class="divisions_profile"> 
-							<a href="{{url("/profile")}}">
+							<a href="{{url('/profile')}}">
 								<div id="profile_picture">			
-									<img id="picture" src="{{url("/imgs/27_1.jpg")}}" />
+									<img id="picture" src="{{Session::get('profilePicture')}}" />
 								</div>
 								
-								<div id="name" >
+								<div id="name">
 									
 									{{Session::get('fullName');}}
 									
@@ -238,7 +238,7 @@
 				</li> 
 				
 				<li>
-					<a href="{{url("/")}}">Perfil</a>
+					<a href="{{url("/profile")}}">Perfil</a>
 				</li> 
 				
 				<li>

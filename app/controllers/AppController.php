@@ -16,12 +16,15 @@ class AppController extends Controller
 
 	public function getHome() {
 
+		//************************************ Recupera os contéudos recomendados ******************************************
+		//******************************************************************************************************************
 		$message = DB::connection("app")->select(DB::raw("select distinct p.name_first, p.name_last, p.id, m.id_person_from from public.person p, app.message m where m.viewed = false and (m.id_person_to =".Confide::user()->person->id.") and ((m.id_person_from = p.id))"));
 		$name = DB::connection("app")->select(DB::raw("select p.name_first, p.name_last from public.person p where (p.id =".Confide::user()->person->id.")"));
 		
 		$name = $name[0]->name_first . " " . $name[0]->name_last;
 		
 		Session::put('fullName', $name);
+		Session::put('profilePicture', 'imgs/27_1.jpg');
 		
 		if(Confide::user()->type){
 			$sid = Confide::user()->person->id;
@@ -45,8 +48,21 @@ class AppController extends Controller
 				$c2 = Content::whereIn('id',$rcs)->where('subtype','=','3')->take(3)->get();
 			}
 			
+		//************************************ [FIM] Recupera os contéudos recomendados ******************************************
+		//******************************************************************************************************************
+		
+		
+		
+		//************************************ Recupera os post do FEED **********************************************************
+		//******************************************************************************************************************
+		
+			$contents = DB::connection("public")->select(DB::raw("select c.id, c.description, c.title, c.url_online, rpc.id_person, p.name_first from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person"));	
+		
+		//************************************ [FIM] Recupera os post do FEED **********************************************************
+		//******************************************************************************************************************
+
 			$title = "Feed";			
-			return View::make('home',compact('c', 'c2', 'message', 'title'));
+			return View::make('home',compact('c', 'c2', 'message', 'title', 'contents'));
 		}
 	}
 
@@ -233,7 +249,6 @@ class AppController extends Controller
 	public function getLike() {
 
 		$vid = Input::segment(3);
-
 		$v = Relatepersoncontent::find($vid);
 
 		if ($v->liked <= 0) {
@@ -465,8 +480,6 @@ class AppController extends Controller
 		$pid = Confide::user()->person->id;
 		$id_content = $_GET['id'];
 		
-		
-		
 		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content));
 
 		
@@ -484,6 +497,7 @@ class AppController extends Controller
 			
 			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content));
 			$v = $v[0]->liked;
+			
 		} else {
 			
 			$v = $v[0]->liked;

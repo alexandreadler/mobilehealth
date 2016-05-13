@@ -6,8 +6,8 @@
 
 
 <div class="TabControl">
-	<div id="header">
-		<ul class="abas">
+	<div id="header" style="overflow: auto;">
+		<ul class="abas" style="clear: both;">
 			<li onclick="aba(0)"> 
 				<div class="aba" id="recommandation">
 					<span ><b >Recomenda&ccedil&otilde;es</b></span>
@@ -23,12 +23,8 @@
 	</div>
 	
 	
-	<div id="content">
-	
-		
-	
-		<div class="conteudo"  id="Rec" >
-		
+	<div id="content">	
+		<div class="conteudo"  id="Rec">
 			<div class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a" style="border-radius:5px 5px 0px 0px;">
                     <h3>Videos recomendados</h3>
@@ -119,9 +115,85 @@
 		</div>
 		
 		
-		<div class="conteudo" id="Fed">
-			
-		</div> 
+		<div class="conteudo" id="Feed">
+		
+		
+			@if(isset($c))
+				@if(!empty($c))
+					@foreach( $c as $v )
+						<div class="post" >
+							<div class="headPost">
+								<div class="imgPost" >
+									<img id="picture" src="{{Session::get('profilePicture')}}" />
+								</div>
+							</div>
+							
+							<div class="contentPost" style="background: rgb(220, 255, 200)"> 
+								<div class="namePost" >
+									Recomendação para você
+								</div>
+								
+								<div class="textPost" >
+									<div class="video">
+										<span class="thumbnail" >
+											<a href="{{url("/app/video/" . $v['id'])}}" target="new">
+											<img src="{{$v['thumburl']}}" align="left" />
+											<p class="title">{{Str::limit($v['title'],40)}}</p>
+											<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
+											</a>
+										</span>
+									</div>
+								</div>
+								
+								<div class="divBottom">
+									<ul class="bottom">
+										<a  onclick="like{{$v['id']}}()" href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a  onclick="unlike{{$v['id']}}()" href="#"><li id="unlike{{$v['id']}}"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a href="#"><li><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+									</ul>
+								</div>
+							</div>
+						</div>
+					@endforeach
+				@endif
+			@endif	
+		
+		
+			@foreach($contents as $con)
+					<div class="post" >
+						<div class="headPost">
+							<div class="imgPost" >
+								<img id="picture" src="{{Session::get('profilePicture')}}" />
+							</div>
+						</div>
+						
+						<div class="contentPost"> 
+							<div class="namePost">
+							{{$con->name_first}}
+							</div>
+							
+							<div class="textPost">
+								<p>{{$con->title}}</p>
+
+								<p>
+									<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
+										
+								</p>
+							</div>
+							
+							<div class="divBottom">
+								<ul class="bottom">
+									<a  onclick="like{{$con->id}}()" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+									<a  onclick="unlike{{$con->id}}()" href="#"><li id="unlike{{$con->id}}"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+									<a href="#"><li><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+								</ul>
+							</div>
+						</div>
+					</div>
+			@endforeach
+		</div>
+		
+		
 
 	</div>
 
@@ -133,6 +205,52 @@
 
 @section("script")
 
+	
+@foreach($contents as $con)
+
+	function like{{$con->id}}(){
+		
+		$.get("app/likec", { id: {{$con->id}}} );
+		$("#like{{$con->id}}").css('border', 'solid 3px rgb(149,148,255)');
+		$("#unlike{{$con->id}}").css('border', 'solid 1px gray');
+		
+	}
+	
+	function unlike{{$con->id}}(){
+		
+		$.get("app/unlikec", { id: {{$con->id}} } );
+		$("#unlike{{$con->id}}").css('border', 'solid 3px rgb(149,148,255)');
+		$("#like{{$con->id}}").css('border', 'solid 1px gray');
+		
+	}
+@endforeach
+
+
+
+@foreach( $c as $v )
+
+	function like{{$v['id']}}(){
+		
+		$.get("app/likec", { id: "{{$v['id']}}" } );
+		$("#like{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
+		$("#unlike{{$v['id']}}").css('border', 'solid 1px gray');
+		
+	}
+	
+	function unlike{{$v['id']}}(){
+		
+		$.get("app/unlikec", { id: "{{$v['id']}}" } );
+		$("#unlike{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
+		$("#like{{$v['id']}}").css('border', 'solid 1px gray');
+		
+	}
+	
+@endforeach
+
+
+
+
+
 	function aba(a) 
 	{ 
 		if(a == 0){
@@ -142,12 +260,12 @@
 			$("#recommandation").css('border-bottom', 'solid 1px green');
 			$("#feed").css('border-bottom', 'solid 1px white');
 			$("#feed").css('color', 'gray'); 
-			$("#Fed").hide(); 
+			$("#Feed").hide(); 
 			 
 			
 			
 		} else {
-			$("#Fed").show(); 
+			$("#Feed").show(); 
 			$("#feed").css('color', 'green');
 			$("#feed").css('border-bottom', 'solid 1px green');
 			$("#recommandation").css('color', 'gray');
@@ -160,8 +278,7 @@
 	}
 	
 	
-	
-	
+
 	
 	
 	
@@ -215,26 +332,26 @@
         color: #000 !important;
         font-weight: normal;
     }
-	
+
 	
 	.TabControl{
 		width:100%; 
-		overflow:hidden; 
+		overflow-y:scroll; 
 		height:400px;
 		
 	} 
 	
 	.TabControl #header{ 
 		width:100%; 
-		overflow:hidden; 
 		cursor:hand;
 		
 	} 
 	
 	.TabControl #content{
 		width:100%; 
-		overflow:hidden; 
-		height:100%;	
+		height: 500px;
+		margin-botton: 50%;
+		
 	}
 
 	
@@ -270,11 +387,106 @@
 	
 	.TabControl .conteudo{
 		width:100%; 
-		display:block; 
-		height:100%;
+		display:block;
 		color:#fff;
 		border-radius: 5px 5px 0px 0px;
-	}	
+		
+	}
 
+	#Rec{
+		display:block;
+	}	
+	
+	#Feed{
+		display:none;
+	}	
+	
+	
+	.post{
+		
+		
+		display:block;
+		color: black;
+		clear:both;
+		overflow: auto;
+
+	}
+	
+	.imgPost {
+		float: left;
+		display:block;
+		height: 80px;
+		width: 80px;
+		
+	}
+		
+	#picture {
+		margin: 10px;
+		height: 80px;
+		width: 80px;
+	}
+	
+	.namePost {
+		
+		font-weight:bold;
+		float:left;
+		margin: 15px;
+		
+	}
+	
+	.contentPost{
+		
+		border-left: solid 2px gray;
+		border-top: solid 2px gray;
+		border-radius:5px 0 0 0;
+		margin: 15px;
+		float:left;
+		display:block;
+		width: 70%;
+		
+		
+	}
+	
+	.textPost{
+		margin: 5px;
+		clear: both;
+	}
+	
+	.divBottom{
+		
+		padding: 0;
+		margin: 0;
+		
+	}
+	
+	.bottom {
+		margin:0;
+		padding:0;
+		display:block;
+		overflow: auto;
+	}
+	
+	.bottom li{
+		margin:0;
+		padding:0;
+		display:block;
+		list-style-type: none;
+		border: solid 1px gray;
+		float: left;
+		width: 25%;
+		text-align: center;
+		border-radius:5px 5px 0 0;
+		
+	}
+	
+	.bottom li img{
+		
+		width: 15px;
+		
+	}
+	
+	
+	
+	
 @stop
 
