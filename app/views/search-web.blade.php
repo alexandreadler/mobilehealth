@@ -2,6 +2,9 @@
 
 @section("content")
 
+<br>
+<br>
+<br>
     <script src="https://www.google.com/jsapi" type="text/javascript"></script>
 
 	<div data-role="page" data-title="Search">

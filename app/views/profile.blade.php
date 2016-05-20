@@ -6,7 +6,7 @@
 
 	    <div role="main" class="ui-content jqm-content jqm-fullwidth">
 
-            <form id="form" action="{{url('/profile')}}" method="post">
+            <form id="form" action="{{url('/profile')}}" method="post" enctype="multipart/form-data">
 
                 {{Form::hidden('pid',$pid)}}
 
@@ -15,12 +15,14 @@
                         <h3><strong>Dados Pessoais</strong></h3>
                     </div>
                     <div class="ui-body ui-body-a">
-                        <label for="name">Sobre nome:</label>
-                        <input type="text" name="lname" id="lname" value="{{$person->name_last}}">
-
-                        <label for="name">Primeiro Nome:</label>
+                        
+						<label for="name">Primeiro Nome:</label>
                         <input type="text" name="fname" id="fname" value="{{$person->name_first}}">
 
+						<label for="name">Sobre nome:</label>
+                        <input type="text" name="lname" id="lname" value="{{$person->name_last}}">
+
+                        
                         <label for="date">Aniversário:</label>
                         <input type="date" name="birthdate" id="birthdate" value="{{Str::limit($person->date_birth,10,'')}}">
 
@@ -39,6 +41,8 @@
                             <input type="radio" name="disease" id="radio-choice-f" value="ELA" @if($person->disease == "ELA")checked="checked"@endif>
                             <label for="radio-choice-f">ELA</label>
                         </fieldset>
+						
+						<input type="file" id="imagem" name="imagem">
 
                     </div>
                     <div class="ui-bar ui-bar-a" style="height: 44px;">
@@ -54,6 +58,9 @@
 
 	</div><!-- /page -->
 
+	
+	
+	
 @stop
 
 @section("script")

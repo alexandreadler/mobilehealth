@@ -103,7 +103,7 @@
 			
 		}
 		
-		#profile_picture #picture {
+		#profile_picture img {
 			float: left;
 			display: block;
 			border-radius: 50%;
@@ -211,16 +211,34 @@
         <h1 style="color: white;"><strong>@if(isset($title)){{$title}} @else Home @endif</strong></h1>
         <a href="{{url("/users/logout")}}" data-rel="logout" class="btn btn-default btn-lg ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-icon-home" style="margin: 0;"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
 		
+		@if(isset($show_search) and $show_search)
+
+            <div id="search_bar" data-theme="a" class="ui-bar ui-bar-a">
+                <form id="search-form" action="{{url("app/search-video")}}" method="get">
+                    <div class="left">
+                        <label for="search" class="ui-hidden-accessible">Search Input:</label>
+                        <input type="search" name="search" id="search" value="@if(isset($q)){{$q}}@endif" placeholder="Search...">
+                    </div>
+                    <div class="right">
+                        <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="videoSearch()">Video</button>
+                        <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="webSearch()">Web</button>
+                    </div>
+                </form>
+            </div>
+
+        @endif
+		
 	</div>
 	
 		<div id="profile">
 			<ul id="menu">
 				<li>
-					<a href="{{url("/")}}">
+					<a href="{{url('profile/personalpage')}}">
 						<div class="divisions_profile"> 
-							<a href="{{url('/profile')}}">
-								<div id="profile_picture">			
-									<img id="picture" src="{{Session::get('profilePicture')}}" />
+							<a href="{{url('profile/personalpage')}}">
+								<div id="profile_picture">	
+									{{ HTML::image(Session::get('profilePicture'), '') }}
+									
 								</div>
 								
 								<div id="name">
@@ -257,22 +275,9 @@
 		
 		</div>
 		
-        @if(isset($show_search) and $show_search)
-
-            <div id="search_bar" data-theme="a" class="ui-bar ui-bar-a">
-                <form id="search-form" action="{{url("app/search-video")}}" method="get">
-                    <div class="left">
-                        <label for="search" class="ui-hidden-accessible">Search Input:</label>
-                        <input type="search" name="search" id="search" value="@if(isset($q)){{$q}}@endif" placeholder="Search...">
-                    </div>
-                    <div class="right">
-                        <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="videoSearch()">Video</button>
-                        <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="webSearch()">Web</button>
-                    </div>
-                </form>
-            </div>
-
-        @endif
+		<br>
+		<br>
+        
 
    
 

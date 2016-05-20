@@ -22,25 +22,21 @@ class AppController extends Controller
 		$name = DB::connection("app")->select(DB::raw("select p.name_first, p.name_last from public.person p where (p.id =".Confide::user()->person->id.")"));
 		
 		$name = $name[0]->name_first . " " . $name[0]->name_last;
-		
 		Session::put('fullName', $name);
-		Session::put('profilePicture', 'imgs/27_1.jpg');
+		Session::put('profilePicture', 'imgs/'.Confide::user()->photo);
 		
 		if(Confide::user()->type){
 			$sid = Confide::user()->person->id;
 			
 			$relates = DB::connection("public")->select(DB::raw("select *,u.email,p.id from app.users u, public.person p, public.relate_person_supervisor rps where rps.id_supervisor = ".$sid." and rps.id_person = p.id and u.person_id = p.id"));			
 			
-			//dd($relates);
 			return View::make('/supervisor/home', compact('relates', 'message'));
 			
 		} else {
 			
 			$pid = Confide::user()->person->id;
-			//$u = Recommendation::where('id_person', '=', $pid)->take(1)->get();
-			//dd($u);
 			$rcs = Recommendation::where('id_person','=',$pid)->where('visited', '=', false)->where('evaluation', '=', 'true')->lists('id_content');
-			
+
 			
 			if ($rcs){
 				
@@ -56,7 +52,7 @@ class AppController extends Controller
 		//************************************ Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 		
-			$contents = DB::connection("public")->select(DB::raw("select c.id, c.description, c.title, c.url_online, rpc.id_person, p.name_first from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person"));	
+			$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id"));	
 		
 		//************************************ [FIM] Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
@@ -254,6 +250,7 @@ class AppController extends Controller
 		if ($v->liked <= 0) {
 
 			$v->liked = 1;
+			$v->from 	=-1;
 			$v->save();
 
 			$c = Content::find($v->id_content);
@@ -273,6 +270,7 @@ class AppController extends Controller
 
 		if ($v->liked >= 0) {
 			$v->liked = -1;
+			$v->from 	=-1;
 			$v->save();
 
 			$c = Content::find($v->id_content);
@@ -480,9 +478,9 @@ class AppController extends Controller
 		$pid = Confide::user()->person->id;
 		$id_content = $_GET['id'];
 		
-		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2"));
-
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 		
+
 		if(empty($v)){
 			
 			$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
@@ -492,10 +490,11 @@ class AppController extends Controller
 			$c->date_relation   = \Carbon\Carbon::now();
 			$c->id_content      = $id_content;
 			$c->id_person       = $pid;
-			$c->liked           = 0;
+			$c->liked           = 1;
+			$c->person_from			= $_GET['from'];
 			$c->save();
 			
-			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2"));
+			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 			$v = $v[0]->liked;
 			
 		} else {
@@ -506,7 +505,7 @@ class AppController extends Controller
 		
 		if ($v == 0 || $v == -1) {
 			$v = 1;
-			$u = DB::connection("public")->select(DB::raw("update relatepersoncontent set liked =".$v." where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2"));
+			$u = DB::connection("public")->select(DB::raw("update relatepersoncontent set liked =".$v." where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 
 			$c = Content::find($id_content);
 			$c->local_likes += 1;
@@ -534,7 +533,7 @@ class AppController extends Controller
 
 		$pid = Confide::user()->person->id;
 		$id_content = $_GET['id'];
-		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2"));
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2  and person_from=".$_GET['from']));
 		
 		if(empty($v)){
 			
@@ -546,9 +545,10 @@ class AppController extends Controller
 			$c->id_content      = $id_content;
 			$c->id_person       = $pid;
 			$c->liked           = 0;
+			$c->person_from			=$_GET['from'];
 			$c->save();
 			
-			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2"));
+			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 			$v = $v[0]->liked;
 
 		} else {
@@ -560,7 +560,7 @@ class AppController extends Controller
 	
 		if ($v == 0 || $v == 1) {
 			$v = -1;
-			$u = DB::connection("public")->select(DB::raw("update relatepersoncontent set liked=".$v." where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2"));
+			$u = DB::connection("public")->select(DB::raw("update relatepersoncontent set liked=".$v." where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 
 			$c = Content::find($id_content);
 			$c->local_likes -= 1;
@@ -587,51 +587,34 @@ class AppController extends Controller
 	public function getComp() {
 		
 		$pid = Confide::user()->person->id;
-		$id_content = $_GET['id'];
+		$id_content = $_GET['id_content'];
 		
-		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked = 2" ));
+		
+			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked = 2 and person_from =".$_GET['from'] ));
 
-		
-		if(empty($v)){
 			
-			$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
-		
-			$c = new Relatepersoncontent;
-			$c->id				= $rpcid[0]->nextval;
-			$c->date_relation   = \Carbon\Carbon::now();
-			$c->id_content      = $id_content;
-			$c->id_person       = $pid;
-			$c->liked           = 2;
-			$c->save();
+			if(empty($v)){
+				
+				$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
 			
-			
-		}		
+				$c = new Relatepersoncontent;
+				$c->id				= $rpcid[0]->nextval;
+				$c->date_relation   = \Carbon\Carbon::now();
+				$c->id_content      = $id_content;
+				$c->id_person       = $pid;
+				$c->liked           = 2;
+				$c->person_from		= $_GET['from'];
+				$c->save();
+				
+				
+				
+			}		
 		
+		 
 
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 
 	// Redireciona para a página da url recebida am 'a'
 	public function getUrl(){
@@ -689,6 +672,7 @@ class AppController extends Controller
 		
 	}
 	
+
 
 	
 	

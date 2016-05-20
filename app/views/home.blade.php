@@ -32,7 +32,7 @@
                 <div class="ui-body ui-body-a">
 						@if(isset($c))
 							@if(!empty($c))
-								@foreach( $c as $v )
+							@foreach( $c as $v )
 									<div class="video">
 										<span class="thumbnail">
 											<a href="{{url("/app/video/" . $v['vid'])}}">
@@ -42,10 +42,12 @@
 											</a>
 										</span>
 									</div>
-								@endforeach
+							@endforeach
+							
 							@else
 								Sem Resultados.
-							@endif						
+							@endif	
+							
 						@else
 							 Sem Resultados.
 						@endif
@@ -67,8 +69,8 @@
 									<p class="title">
 										{{Str::limit($v->title,40)}}
 										<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-										    <a id="like" href="app/likec?id={{$v->id}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Like</a>
-										    <a id="unlike" href="app/unlikec?id={{$v->id}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Unlike</a>
+										    <a id="like" href="app/likec?id={{$v->id}}&from=-1" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Like</a>
+										    <a id="unlike" href="app/unlikec?id={{$v->id}}&from=-1" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Unlike</a>
 										</div>
 										
 									</p>
@@ -130,7 +132,7 @@
 							
 							<div class="contentPost" style="background: rgb(220, 255, 200)"> 
 								<div class="namePost" >
-									Recomendação para você
+									Recomendações para você
 								</div>
 								
 								<div class="textPost" >
@@ -147,50 +149,79 @@
 								
 								<div class="divBottom">
 									<ul class="bottom">
-										<a  onclick="like{{$v['id']}}()" href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a  onclick="unlike{{$v['id']}}()" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a  onclick="comp{{$v['id']}}()" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+									<!-- O -1 serve para identificar que o conteudo foi uma recomendação-->
+										<a id="alike" onclick="like('app/likec?id={{$v['id']}}&from=-1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}&from=-1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}&from=-1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 							</div>
 						</div>
 					@endforeach
+				@else
+					Sem Resultados.
 				@endif
-			@endif	
+			@else
+				Sem Resultados.
+			@endif
 		
-		
-			@foreach($contents as $con)
-					<div class="post" >
-						<div class="headPost">
-							<div class="imgPost" >
-								<img id="picture" src="{{Session::get('profilePicture')}}" />
-							</div>
-						</div>
-						
-						<div class="contentPost"> 
-							<div class="namePost">
-							{{$con->name_first}}
+		@if(isset($contents))
+			@if(!empty($contents))
+				@foreach($contents as $con)
+						<div class="post" >
+							<div class="headPost">
+								<div class="imgPost" >
+									<img id="picture" src="imgs/{{$con->photo}}" />
+								</div>
 							</div>
 							
-							<div class="textPost">
-								<p>{{$con->title}}</p>
-
-								<p>
-									<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
-										
-								</p>
-							</div>
-							
-							<div class="divBottom">
-								<ul class="bottom">
-									<a  onclick="like{{$con->id}}()" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-									<a  onclick="unlike{{$con->id}}()" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-									<a onclick="comp{{$con->id}}()" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
-								</ul>
+							<div class="contentPost"> 
+								<div class="namePost">
+								{{$con->name_first}}
+								</div>
+								
+								<div class="textPost">
+									
+									@if(!empty($con->thumburl))
+										<div class="video">
+											<span class="thumbnail" >
+												<a href="{{url("/app/video/" . $con->vid)}}" target="new">
+												<img src="{{$con->thumburl}}" align="left" />
+												<p class="title">{{Str::limit($con->title,40)}}</p>
+												<p class="desc">{{ Str::limit($con->description, 120) }}</p>
+												</a>
+											</span>
+										</div>
+								
+									@else
+								
+								
+										<p>{{$con->title}}</p>
+										<img src="{{$con->thumburl}}" align="left" />
+										<p>
+											<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
+												
+										</p>
+									
+									@endif
+								</div>
+								
+								<div class="divBottom">
+									<ul class="bottom">
+										<a id="alike" onclick="like('app/likec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}&from={{$con->id_person}}');mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+									</ul>
+								</div>
 							</div>
 						</div>
-					</div>
-			@endforeach
+				@endforeach
+			@else
+				Sem Resultados.
+			@endif
+		@else
+			Sem Resultados.
+		@endif
 		</div>
 		
 		
@@ -203,75 +234,111 @@
 @stop
 
 
+
 @section("script")
 
+function like(link){
 	
-@foreach($contents as $con)
-
-	function like{{$con->id}}(){
-		
-		$.get("app/likec", { id: {{$con->id}}} );
-		$("#like{{$con->id}}").css('border', 'solid 3px rgb(149,148,255)');
-		$("#unlike{{$con->id}}").css('border', 'solid 1px gray');
-		
-	}
-	
-	function unlike{{$con->id}}(){
-		
-		$.get("app/unlikec", { id: {{$con->id}} } );
-		$("#unlike{{$con->id}}").css('border', 'solid 3px rgb(149,148,255)');
-		$("#like{{$con->id}}").css('border', 'solid 1px gray');
-		
-	}
-	
-	function comp{{$con->id}}(){
-		
-		$.get("app/comp", { id: {{$con->id}} } )
-		.done(function() {
-			alert( "Você compartilho isso.");
+	$.ajax({
+				url: link,
+				type: "GET",
+				data: { sim: link},
+				dataType: "html",
+				success: function(sucesso){
+					$('#retornodoresultado').html(sucesso);
+					
+				},
+				beforeSend: function () {
+					$('#carregando').css({display: "block"});
+				},
+				complete: function () {
+					$('#carregando').css({display: "none"});
+				},
+				error: function(){
+					$('#retornodoresultado').html('Desculpe pelo transtorno, houve um erro, tente novamente.');
+				}
 		});
-		$("#comp{{$con->id}}").css('border', 'solid 3px rgb(149,148,255)');
-		
-	}
-@endforeach
+		return false;
+			
+
+}
 
 
 
-@foreach( $c as $v )
-
-	function like{{$v['id']}}(){
-		
-		$.get("app/likec", { id: "{{$v['id']}}" } );
-		
-		$("#like{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
-		$("#unlike{{$v['id']}}").css('border', 'solid 1px gray');
-		
-	}
+function unlike(link){
 	
-	function unlike{{$v['id']}}(){
-		
-		$.get("app/unlikec", { id: "{{$v['id']}}" } );
-		
-		$("#unlike{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
-		$("#like{{$v['id']}}").css('border', 'solid 1px gray');
-		
-	}
-	
-	function comp{{$v['id']}}(){
-		
-		$.get("app/comp", { id: {{$con->id}} } )
-		.done(function() {
-			alert( "Você compartilho isso.");
+	$.ajax({
+				url: link,
+				type: "GET",
+				data: { sim: link},
+				dataType: "html",
+				success: function(sucesso){
+					$('#retornodoresultado').html(sucesso);
+					
+				},
+				beforeSend: function () {
+					$('#carregando').css({display: "block"});
+				},
+				complete: function () {
+					$('#carregando').css({display: "none"});
+				},
+				error: function(){
+					$('#retornodoresultado').html('Desculpe pelo transtorno, houve um erro, tente novamente.');
+				}
 		});
-		$("#comp{{$v['id']}}").css('border', 'solid 3px rgb(149,148,255)');
-		
-	}
+		return false;
+			
+
+}
+
+
+function comp(link){
 	
-@endforeach
+	$.ajax({
+				url: link,
+				type: "GET",
+				data: { sim: link},
+				dataType: "html",
+				success: function(sucesso){
+					alert("Você compartilhou esse conteúdo");
+					
+				},
+				beforeSend: function () {
+					$('#carregando').css({display: "block"});
+				},
+				complete: function () {
+					$('#carregando').css({display: "none"});
+				},
+				error: function(){
+					$('#retornodoresultado').html('Desculpe pelo transtorno, houve um erro, tente novamente.');
+				}
+		});
+		return false;
+			
+
+}
+
+function mudaFundoLike(div){
+	
+	$("#like"+div).css('border', 'solid 2px blue');
+	$("#unlike"+div).css('border', 'solid 1px gray');
+	
+}
 
 
+function mudaFundoUnLike(div){
+	
+	$("#unlike"+div).css('border', 'solid 2px blue');
+	$("#like"+div).css('border', 'solid 1px gray');
+	
+}
 
+function mudaFundoComp(div){
+	
+	$("#comp"+div).css('border', 'solid 2px blue');
 
+	
+}
 
 	function aba(a) 
 	{ 
@@ -401,11 +468,7 @@
 		border-right: solid  1px #9ee88b;
 		
 	}
-	
-	
-	.ativa span, .selected span{
-		color:#fff;
-	}
+
 	
 	.TabControl .conteudo{
 		width:100%; 
@@ -508,7 +571,9 @@
 		
 	}
 	
-	
+	.ativa span, .selected span{
+		color:#fff;
+	}
 	
 	
 @stop
