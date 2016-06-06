@@ -12,7 +12,7 @@ $m = 0;
 if($_GET['t'] == 0){
 	
 	$plot->SetTitle("Glicose");
-	$records = Bloodglucose::select(DB::raw('measure as data, datetime, min(measure) as minimo'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$records = Bloodglucose::select(DB::raw('measure as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	$m = 10;
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(10);
@@ -20,24 +20,27 @@ if($_GET['t'] == 0){
 } else if($_GET['t'] == 1){
 	
 	$plot->SetTitle("Pressão Sanguínia");
-	$records = Bloodpressure::select(DB::raw('pulse as data, datetime, min(pulse) as minimo'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$records = Bloodpressure::select(DB::raw('pulse as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(2);
 	
+	
 } else if($_GET['t'] == 2){
 	
-	$plot->SetTitle("Peso");
+	$plot->SetTitle("Peso (Kg)");
 	$records = Weight::select(DB::raw('weight as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	$m = 40;
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(10);
+	$m = 40;
 	
 } else if($_GET['t'] == 3){
 	
-	$plot->SetTitle("Altura");
-	$records = Height::select(DB::raw('height as data, datetime, min(height) as minimo'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$plot->SetTitle("Altura (cm)");
+	$records = Height::select(DB::raw('height as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
-	$plot->SetYTickIncrement(1);
+	$plot->SetYTickIncrement(10);
+	$m = 100;
 	
 }
 
@@ -90,8 +93,6 @@ $plot->SetDataValues($data);
 $plot->SetXTickPos('none');
 
 # Make sure Y=0 is displayed:
-
-
 $plot->SetPlotAreaWorld(NULL, $m);
 
 

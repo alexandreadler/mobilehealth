@@ -20,7 +20,7 @@
 									@if(!empty($v->thumburl))
 										
 										<span class="thumbnail">
-										<a href="{{url("/supervisor/video/" . $v->id)}}">
+										<a href="{{url("/supervisor/video/" . $v->id."/".$id)}}">
 										<img src="{{$v->thumburl}}" align="left" />
 										<p class="title">{{Str::limit($v->title,40)}}</p>
 										<p class="desc">{{ Str::limit($v->description, 120) }}</p>
@@ -28,13 +28,7 @@
 										
 									</span>
 										
-									@else
-											
 										
-									
-									
-									
-									
 									@endif
 									
 								</div>
@@ -53,6 +47,39 @@
 			
 			
 			
+            <div class="ui-corner-all custom-corners">
+                <div class="ui-bar ui-bar-a">
+                    <h3>Links Recomendados.</h3>
+                </div>
+                <div class="ui-body ui-body-a">
+									
+					@if(isset($c2))
+						@if(!empty($c2))
+						@foreach( $c2 as $v )
+								
+								<a href="{{URL("supervisor/url?a=$v->url_online")}}" target="new">
+									<p class="title">
+										{{Str::limit($v->title,40)}}
+										<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+											<a id="like" href="{{URL("/supervisor/like?vid=$v->id&pid=$id")}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "></a>
+											<a id="unlike" href="{{URL("/supervisor/unlike?vid=$v->id&pid=$id")}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"></a>
+										</div>
+										
+									</p>
+								</a>
+
+                        @endforeach
+						
+						@else
+							Sem Resultados.
+						@endif
+					
+					@else
+						Sem Resultados.
+					@endif
+				  
+                </div>
+            </div>
 			
 			
             <br>

@@ -114,7 +114,7 @@ class SupervisorController extends Controller
 	
 	
 	// ************************ Redireciona para a página de visualizaçãpo do video **************************
-	public function getVideo($id, $pid) {
+	public function getVideo($id) {
 		
 		// Pega os metadados do video
 		$data = VideoApi::setType('youtube')->getVideoDetail($id);
@@ -124,7 +124,7 @@ class SupervisorController extends Controller
 		$vid = $con[0]->id;
 
 		// redireciona para a pagina onde o video é exibido
-		return View::make('supervisor.video', compact("id","data","vid", "pid"));
+		return View::make('supervisor.video', compact("id","data","vid"));
 
 	}
 	
@@ -376,7 +376,32 @@ class SupervisorController extends Controller
 	
 	//****************** FIM - METÓDOS RELACIONADOS AO PERFIL DO USUÁRIO QUE O SUPERVISOR ESTÁ ACOMPANHANDO *****************
 	
+	public function getAprovarfonte($f){
+		
+		//DB::connection("public")->table('content')->where('url_online', 'like', '%'.$f.'%')->update(['font' => true]);
+		
+		return Redirect::to('/');
+		
+	}
 	
+	public function getReprovarfonte($f){
+		
+		// ****************************************************************
+		//						Implementar
+		//		1º Descidir o que vai acontecer caso um link seja reprovado
+		// *******************************************************************
+		return Redirect::to('/');
+		
+	}
+	
+
+
+	public function getAvaliarlink($f){
+		
+		$c = DB::connection("public")->table('content')->select()->where('url_online', 'like', '%'.$f.'%')->get();
+		return View::make('supervisor/avaliarconteudo',compact('c'));
+		
+	}
 	
 	
 

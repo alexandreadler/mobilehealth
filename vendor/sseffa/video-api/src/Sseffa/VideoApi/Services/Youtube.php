@@ -63,21 +63,27 @@ class Youtube implements ServicesInterface {
 		$comment_Count = null;
 		
 		foreach ( $b as $c ){
+			
 			$id	= $c->id;
+			
 			foreach($c as $d){
+				
 				if($x == 3){
+					
 					$e = $d->thumbnails;
 					foreach($e as $f){
+						
 						if($y == 0){
-							$title	=	$d->title;
-							$description   =	$d->description;
-							$upload_date   =	$d->publishedAt;
-							$channelId		= $d->channelId;
+							$title				= $d->title;
+							$description   		= $d->description;
+							$upload_date   		= $d->publishedAt;
+							$channelId			= $d->channelId;
 							$thumbnail_small	= $f->url;
 							$y++;
 						}	
 					}	
 				}
+				
 				if($x == 4){
 					
 					$duaration	=	$d->duration;
@@ -86,9 +92,9 @@ class Youtube implements ServicesInterface {
 				
 				if($x == 5){
 					
-					$view_Count		=	$d->viewCount;
-					$like_Count			=	$d->likeCount;
-					$comment_Count			=	$d->commentCount;
+					$view_Count			= $d->viewCount;
+					$like_Count			= $d->likeCount;
+					$comment_Count		= $d->commentCount;
 					
 					break;
 				}	
@@ -106,7 +112,7 @@ class Youtube implements ServicesInterface {
             'like_count'      => isset($like_count) ? $like_count: 0,
             'view_count'      => isset($view_count) ? $view_count : 0,
             'comment_count'   => isset($comment_count) ? $comment_count : 0,
-			'uploader'        => $channelId
+			//'uploader'        => $channelId
 		
 		);
 		

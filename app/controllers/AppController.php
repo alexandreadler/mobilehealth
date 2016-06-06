@@ -27,10 +27,117 @@ class AppController extends Controller
 		
 		if(Confide::user()->type){
 			$sid = Confide::user()->person->id;
+			$aux = array();
+			$teste = false;
+			$c = 1;
 			
-			$relates = DB::connection("public")->select(DB::raw("select *,u.email,p.id from app.users u, public.person p, public.relate_person_supervisor rps where rps.id_supervisor = ".$sid." and rps.id_person = p.id and u.person_id = p.id"));			
+			$fontes = DB::connection("public")->select(DB::raw("select c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
 			
-			return View::make('/supervisor/home', compact('relates', 'message'));
+			for($i =0; $i < count($fontes); $i++){
+				
+				$teste = false;
+				
+				
+				$rest = substr($fontes[$i]->url_online, 0,6);
+
+				if(strcmp('http:/', $rest) != 0){	
+				
+					$temp = substr($fontes[$i]->url_online, 8-strlen($fontes[$i]->url_online));
+					$fonte = strstr($temp, '/', true);
+					
+					//Caso comece com https
+					if(count($aux) == 0){
+					
+						$aux[0][0] = $fonte;
+						$aux[0][1] = $fonte;
+						$aux[0][2] = $fontes[$i]->thumburl;
+						$aux[0][3] = 1;
+						
+					} else {
+					
+						
+						for($j = 0; $j < $c; $j++){
+						
+							if(strcmp($fonte, $aux[$j][0]) == 0){
+								$teste = true;	
+								$aux[$j][3]++;								
+								
+							}
+							
+							
+							
+						}
+						
+						
+						if(!$teste){
+							
+							$aux[$c][0] = $fonte;
+							$aux[$c][1] = $fonte;
+							$aux[$c][2] = $fontes[$i]->thumburl;
+							$aux[$c][3] = 1;
+							$c++;
+							
+						}
+					
+					}
+					
+					
+				} else {
+					
+					$temp = substr($fontes[$i]->url_online, 7-strlen($fontes[$i]->url_online));
+					$fonte = strstr($temp, '/', true);
+					
+					//Caso comece com http
+					
+					if(count($aux) == 0){
+					
+						
+						$aux[0][0] = $fonte;
+						$aux[0][1] = $fonte;
+						$aux[0][2] = $fontes[$i]->thumburl;
+						$aux[0][3] = 1;
+						
+					} else {
+					
+											
+						for($j = 0; $j < $c; $j++){
+						
+							if(strcmp($fonte, $aux[$j][0]) == 0){
+								$teste = true;	
+								$aux[$j][3]++;
+								
+							}
+							
+						}
+						
+						
+						if(!$teste){
+							
+							
+							$aux[$c][0] = $fonte;
+							$aux[$c][1] = $fonte;
+							$aux[$c][2] = $fontes[$i]->thumburl;
+							$aux[$c][3] = 1;
+							$c++;
+							
+						}
+					}	
+				}				
+			}
+			
+			for($i = 0; $i < $c; $i++){
+			
+				$rest = substr($aux[$i][0], 0,6);
+				if(strcmp('http:/', $rest) != 0){
+					$aux[$i][0] = strtolower(urlencode("https://".$aux[$i][0]));
+				} else {
+					
+					$aux[$i][0] = strtolower(urlencode("http://".$aux[$i][0]));
+					
+				}
+			}
+			
+			return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c'));
 			
 		} else {
 			
@@ -432,17 +539,7 @@ class AppController extends Controller
 	
 	
 	public function getViewmessage(){
-		/*
-		$pid = Confide::user()->person->id;
-		$id_person_from = $_GET['id_person_from'];
-		
-		$message = DB::connection("app")->select(DB::raw("select distinct p.name_first, p.name_last, m.id, m.message, m.id_person_from from public.person p, app.message m  where m.viewed = false and ((m.id_person_to =". $pid .") and (m.id_person_from =". $id_person_from .") and (p.id =". $id_person_from .")) order by p.name_first limit 20"));
-		$a = DB::connection("app")->select(DB::raw("update app.message set viewed = true  where id_person_to =". $pid ." and id_person_from =".$id_person_from));
-		
-		//echo $message[0]->name_first;
-		
-		return View::make('viewmessage',compact('message', 'id_person_from'));
-		*/
+
 		$pid = Confide::user()->person->id;
 		$id_person_from = $_GET['id_person_from'];
 		$name = DB::connection("app")->select(DB::raw("select p.name_first, p.name_last from public.person p where (p.id =".$id_person_from.")"));
@@ -672,8 +769,7 @@ class AppController extends Controller
 		
 	}
 	
-
-
+	
 	
 	
 	

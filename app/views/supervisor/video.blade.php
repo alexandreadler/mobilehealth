@@ -20,11 +20,11 @@
                         <span id="pub"><strong>Published:</strong> {{Str::limit($data["upload_date"],10,"")}}</span><br>
                         <span id="views"><strong>Views:</strong> {{$data["view_count"]}}</span>
                     </div>
-
-                    <div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-						<a id="like" href="{{URL("/supervisor/like?vid=$vid&pid=$pid")}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up"></a>
-						<a id="unlike" href="{{URL("/supervisor/unlike?vid=$vid&pid=$pid")}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"></a>
-                    </div>
+					
+					<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+						<a id="like" href="supervisor/aprovarfonte/{{$id}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Contéudo</a>
+						<a id="unlike" href="supervisor/reprovarfonte/{{$id}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Contéudo </a>
+					</div>
                 </span>
 
             </div>
@@ -33,22 +33,6 @@
 		</div><!-- /content -->
 
 	</div><!-- /page -->
-
-@stop
-
-@section("script")
-
-    $('#like').click(function(){
-        $.get( "{{url("/supervisor/like/".$vid)}}", function( data ) {});
-        $("#unlike").css("background-color","#ccc");
-        $("#like").css("background-color","#7B7");
-    });
-
-    $('#unlike').click(function(){
-        $.get( "{{url("/supervisor/unlike/".$vid)}}", function( data ) {});
-        $("#like").css("background-color","#ccc");
-        $("#unlike").css("background-color","#E77");
-    });
 
 @stop
 

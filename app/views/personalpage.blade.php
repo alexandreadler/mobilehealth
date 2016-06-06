@@ -34,8 +34,8 @@
 			
 			<div style="text-align:center">
 				
-				<a id="bootom" href="#" class="active ui-btn ui-corner-all ui-icon-delete fa"> Dados<br > Pessoais</a>
-				<a id="bootom" href="#" class="active ui-btn ui-corner-all ui-icon-delete fa"> Dados<br > sobre Sáude</a>
+				<a id="bootom" href="{{url("/profile")}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Dados<br > Pessoais</a>
+				<a id="bootom" href="{{url("/phr")}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Dados<br > sobre Sáude</a>
 				<a id="bootom" href="#" class="active ui-btn ui-corner-all ui-icon-delete fa"> Gerenciar<br > Amigos</a>
 			
 			
@@ -45,43 +45,64 @@
 			
 			<h3>Posts Compartilhados </h3>
 			<div class="conteudo" id="Feed" style="">
-				
-				
-				
-				@foreach($contents as $con)
+			
+			
+			@if(isset($contents))
+				@if(!empty($contents))
+					@foreach($contents as $con)
 						<div class="post" >
-							<div class="headPost" >
+							<div class="headPost">
 								<div class="imgPost" >
-									{{ HTML::image(Session::get('profilePicture'), 'a picture') }}
+									{{ HTML::image('imgs/'.$con->photo, '') }}
 								</div>
 							</div>
 							
-							<div class="contentPost" > 
+							<div class="contentPost"> 
 								<div class="namePost">
 								{{$con->name_first}}
 								</div>
 								
 								<div class="textPost">
-									<p>{{$con->title}}</p>
-
-									<p>
-										<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
-											
-									</p>
+									@if(!empty($con->thumburl))
+										<div class="video">
+											<span class="thumbnail" >
+												<a href="{{url("/app/video/" . $con->vid)}}" target="new">
+												<img src="{{$con->thumburl}}" align="left" />
+												<p class="title">{{Str::limit($con->title,40)}}</p>
+												<p class="desc">{{ Str::limit($con->description, 120) }}</p>
+												</a>
+											</span>
+										</div>
+								
+									@else
+								
+								
+										<p>{{$con->title}}</p>
+										<img src="{{$con->thumburl}}" align="left" />
+										<p>
+											<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
+												
+										</p>
+									
+									@endif
 								</div>
 								
 								<div class="divBottom">
 									<ul class="bottom">
-										<a  onclick="like{{$con->id}}()" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a  onclick="unlike{{$con->id}}()" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										
+										<a id="alike" onclick="like('app/likec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}&from={{$con->id_person}}');mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 							</div>
-							
-							<br style="clear:both" /> 
 						</div>
 				@endforeach
+			@else
+				Sem Resultados.
+			@endif
+		@else
+			Sem Resultados.
+		@endif
 				
 				<br style="clear:both" /> 
 		</div>

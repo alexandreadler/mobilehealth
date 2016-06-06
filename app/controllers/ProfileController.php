@@ -41,8 +41,8 @@ class ProfileController extends \BaseController {
 		//************************************ Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 		
-			$contents = DB::connection("public")->select(DB::raw("select c.id from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (".$pid." = rpc.id_person) and (rpc.liked = 2)"));	
-		
+			//$contents = DB::connection("public")->select(DB::raw("select c.id from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (".$pid." = rpc.id_person) and (rpc.liked = 2)"));	
+			$contents = DB::connection("public")->select(DB::raw("select p.id as id_person, p.name_first, u.photo, c.*  from public.person as p inner join app.users as u on p.id = u.person_id and p.id in (select rpc.person_from from public.relatepersoncontent as rpc where liked = 2 and id_person = ".$pid.") inner join public.content as c on c.id in (select rpc.id_content from public.relatepersoncontent as rpc where liked = 2 and person_from = p.id)"));	
 		//************************************ [FIM] Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 
