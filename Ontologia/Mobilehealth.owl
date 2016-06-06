@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://www.owl-ontologies.com/Ontology1465214926.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsp="http://www.owl-ontologies.com/2005/08/07/xsp.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+  xml:base="http://www.owl-ontologies.com/Ontology1465214926.owl">
+  <owl:Ontology rdf:about=""/>
+  <owl:Class rdf:ID="Person">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Person</rdfs:label>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="Amigos">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+          <owl:Class rdf:about="#Person"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="#Person"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Amigos</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:ID="Name">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Name</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+          <owl:Class rdf:about="#Person"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Id">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Id</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+          <owl:Class rdf:about="#Person"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:FunctionalProperty>
+  <Person rdf:about="Mobilehealth_Class13">
+    <Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Jerffeson Gomes</Name>
+    <Amigos>
+      <Person rdf:about="Mobilehealth_Class12">
+        <Id rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >27</Id>
+        <Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Pinho Alvez</Name>
+        <Amigos rdf:resource="Mobilehealth_Class13"/>
+        <Amigos>
+          <Person rdf:about="Mobilehealth_Class14">
+            <Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Bruno Elvez</Name>
+            <Id rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+            >22</Id>
+          </Person>
+        </Amigos>
+      </Person>
+    </Amigos>
+    <Id rdf:datatype="http://www.w3.org/2001/XMLSchema#int">8</Id>
+  </Person>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.4.8, Build 629)  http://protege.stanford.edu -->
