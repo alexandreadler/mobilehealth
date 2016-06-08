@@ -488,12 +488,10 @@ function mudaFundoComp(div){
 	
 	
 	.post{
-		
-		
+
 		display:block;
 		color: black;
 		clear:both;
-
 	}
 	
 	.imgPost {

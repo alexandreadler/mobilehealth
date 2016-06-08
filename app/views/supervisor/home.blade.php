@@ -12,25 +12,22 @@
                     <h3>Avaliar Conteúdo</h3>
                 </div>
                 <div class="ui-body ui-body-a">
-				
-				
-						
 					@if(!empty($aux))
-					
 							@for($i =0; $i < ($c-1); $i++)
-							
 								<div class="video">
-									
 									<span class="thumbnail">
 										
 										@if(!empty($aux[$i][2]))
-											
+											<!--Caso seja um video-->
 											<img style="float:left" src="{{$aux[$i][2]}}" />
 											<p>
-												<b> Fonte: {{$aux[$i][1]}}</b> ({{$aux[$i][3]}})
+												<b><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{$aux[$i][1]}}</a></b> 
 											</p>
 											<p>
-												<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a>
+												
+												@if($aux[$i][3] > 1)
+													<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
+												@endif
 											</p>
 											
 											<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
@@ -39,13 +36,15 @@
 											</div>
 											
 										@else
-										
+											<!--Caso seja um lik de site/pdf/outros -->
 											<img style="float:left" width="100px" height="100px" src="http://s.wordpress.com/mshots/v1/{{$aux[$i][0]}}?w=100&h=100" />
 											<p>
-												<b style="font-color: blue">Fonte: {{($aux[$i][1])}}</b> ({{$aux[$i][3]}})
+												<b style="font-color: blue"><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{($aux[$i][1])}}</a></b>
 											</p>
 											<p>
-												<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a>
+												@if($aux[$i][3] > 1)
+													<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
+												@endif
 											</p>
 											
 											<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
@@ -102,7 +101,7 @@
 					
                 </div>
             </div>
-			<p align="right"><a href="{{url("supervisor/novosupervisor/")}}">Novo Supervisor</a></p>
+			<p align="right"><a href="{{url("supervisor/novoconteudo/")}}">Novo Contéudo</a> | <a href="{{url("supervisor/novosupervisor/")}}">Novo Supervisor</a></p>
 		</div><!-- /content -->
 		
 		

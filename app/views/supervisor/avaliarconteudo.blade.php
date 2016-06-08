@@ -15,29 +15,46 @@
                     @if(isset($c))
 						@if(!empty($c))
 							@foreach( $c as $v )
-								<div class="video">
-								
-									@if(!empty($v->thumburl))
-										
-										<span class="thumbnail">
-										<a href="{{url("/supervisor/video/" . $v->id)}}">
-										<img src="{{$v->thumburl}}" align="left" />
-										<p class="title">{{Str::limit($v->title,40)}}</p>
-										<p class="desc">{{ Str::limit($v->description, 120) }}</p>
-										</a>
-										
-									</span>
-										
-									@else
+								@if(!empty($v->thumburl))
+									<div class="video">
+									
+											<span class="thumbnail">
+												<a href="{{url("/supervisor/video/" . $v->id)}}">
+												<img src="{{$v->thumburl}}" align="left" />
+												<p class="title">{{Str::limit($v->title,40)}}</p>
+												<p class="desc">{{ Str::limit($v->description, 120) }}</p>
+												</a>
 											
+											</span>
+									</div>
+								
+								@else
+									
+										<div class="video">
 										
+											<span class="thumbnail">
+												<a href="{{url($v->url_online)}}" target="new">
+													<img style="float:left" width="100px" height="100px" src="http://s.wordpress.com/mshots/v1/{{urlencode($v->url_online)}}?w=100&h=100" />
+													
+													<p class="title">
+														{{$v->title}}
+													</p>
+													
+													<p class="desc">
+														{{ Str::limit($v->description, 120) }}
+													</p>
+													
+												</a>
+												<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+											    	<a id="like" href="supervisor/aprovarConteudo/{{$v->id}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Fonte</a>
+											    	<a id="unlike" href="supervisor/reprovarConteudo/{{$v->id}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Fonte</a>
+												</div>
+											</span>
+											
+										</div>
 									
+								@endif
 									
-									
-									
-									@endif
-									
-								</div>
 							@endforeach
 						@else
 							Sem Resultados.

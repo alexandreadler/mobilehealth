@@ -376,9 +376,11 @@ class SupervisorController extends Controller
 	
 	//****************** FIM - METÓDOS RELACIONADOS AO PERFIL DO USUÁRIO QUE O SUPERVISOR ESTÁ ACOMPANHANDO *****************
 	
+	// atualiza uma lista de conteudos
+	// EX: Caso a fonte abcsaude.com seja aprovada, atualiza toda a base de dados
 	public function getAprovarfonte($f){
 		
-		//DB::connection("public")->table('content')->where('url_online', 'like', '%'.$f.'%')->update(['font' => true]);
+		DB::connection("public")->table('content')->where('url_online', 'like', '%'.$f.'%')->update(['font' => true]);
 		
 		return Redirect::to('/');
 		
@@ -386,15 +388,29 @@ class SupervisorController extends Controller
 	
 	public function getReprovarfonte($f){
 		
-		// ****************************************************************
-		//						Implementar
-		//		1º Descidir o que vai acontecer caso um link seja reprovado
-		// *******************************************************************
+		DB::connection("public")->table('content')->where('url_online', 'like', '%'.$f.'%')->delete();
 		return Redirect::to('/');
 		
 	}
 	
-
+	
+	public function getAprovarConteudo($id){
+		// atualiza uma conteudos
+		// EX: Caso a fonte abcsaude.com seja totalmente confiavel, atualiza um conteudo em especifico dessa fonte
+		DB::connection("public")->table('content')->where('id', '=', $id)->update(['font' => true]);
+		
+		return Redirect::to('/');
+		
+	}
+	
+	public function getReprovarConteudo($id){
+		// atualiza uma conteudos
+		// EX: Caso a fonte abcsaude.com seja totalmente confiavel, atualiza um conteudo em especifico dessa fonte
+		DB::connection("public")->table('content')->where('id', '=', $id)->delete();
+		
+		return Redirect::to('/');
+		
+	}
 
 	public function getAvaliarlink($f){
 		
@@ -404,6 +420,18 @@ class SupervisorController extends Controller
 	}
 	
 	
+	public function getNovoconteudo(){
+		
+		return View::make('supervisor/novoConteudo');
+		
+		
+	}
+	
+	public function postCadastraconteudo(){
+		
+		
+		
+	}
 
 	
 }

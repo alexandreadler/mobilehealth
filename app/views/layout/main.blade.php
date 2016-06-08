@@ -5,12 +5,13 @@
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	
 	<title>MobiLEHealth</title>
-
 	<!-- Core CSS - Include with every page -->
 	<link href="{{ asset("css/cerulean/bootstrap.min.css") }}" rel="stylesheet">
 {{--	<link href="{{ asset("js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.css") }}" rel="stylesheet">--}}
+
+	<script src="{{asset("js/jquery.maskedinput.js")}}" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" media="print" href="{{ asset("css/bootstrap.min.css") }}">
 	<link href="{{ asset("css/font-awesome-4.2.0/css/font-awesome.css") }}" rel="stylesheet">
 
@@ -42,7 +43,7 @@
 
 	@yield('head')
 	@yield('head2')
-
+	
 </head>
 
 <body>
