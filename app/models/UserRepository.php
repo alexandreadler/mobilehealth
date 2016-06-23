@@ -34,6 +34,7 @@ class UserRepository
         $user->ultimo_acesso         = \Carbon\Carbon::now();
 		$user->gender = array_get($input, 'gender');
 		$user->type = array_get($input, 'supervisor');
+		$user->photo = "padrao.png";
         // Save if valid. Password field will be hashed before save
 		$this->save($user);
 		return $user;

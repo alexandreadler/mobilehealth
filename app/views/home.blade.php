@@ -132,10 +132,11 @@
 							
 							<div class="contentPost" style="background: rgb(220, 255, 200)"> 
 								<div class="namePost" >
-									Recomendações para você
+									Videos Recomendados para você
 								</div>
 								
-								<div class="textPost" >
+								<div class="textPost">
+								
 									<div class="video">
 										<span class="thumbnail" >
 											<a href="{{url("/app/video/" . $v['vid'])}}" target="new">
@@ -164,6 +165,53 @@
 			@else
 				Sem Resultados.
 			@endif
+			
+			
+			
+				@if(isset($c2))
+					@if(!empty($c2))
+						<div class="post" >
+								
+							<div class="namePost" >
+								Links Recomendados para você
+							</div>
+								
+							@foreach( $c2 as $v )
+							
+								<div class="contentPost" style="background: rgb(220, 255, 200)"> 
+									
+									<div class="textPost">
+										<a href="app/url?a={{$v->url_online}}" target="new">
+											<p class="title">
+												{{Str::limit($v->title,40)}}
+												<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+													   <a id="like" href="app/likec?id={{$v->id}}&from=-1" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Like</a>
+													   <a id="unlike" href="app/unlikec?id={{$v->id}}&from=-1" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Unlike</a>
+												</div>
+													
+											</p>
+										</a>
+									</div>
+									<div class="divBottom">
+										<ul class="bottom">
+										<!-- O -1 serve para identificar que o conteudo foi uma recomendação-->
+											<a id="alike" onclick="like('app/likec?id={{$v['id']}}&from=-1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+											<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}&from=-1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+											<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}&from=-1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+										</ul>
+									</div>
+																	
+								</div>
+							@endforeach
+								
+						</div>
+					@endif
+
+				@endif
+
+			
+				
+		
 		
 		@if(isset($contents))
 			@if(!empty($contents))
@@ -215,12 +263,8 @@
 								</div>
 							</div>
 						</div>
-				@endforeach
-			@else
-				Sem Resultados.
+				@endforeach	
 			@endif
-		@else
-			Sem Resultados.
 		@endif
 		</div>
 		

@@ -25,7 +25,9 @@
 		</div>
 		
 		<input type="hidden" name="supervisor" value="false"><br>
-
+		
+		
+		
         @if (Session::get('error'))
             <div class="alert alert-error alert-danger">
                 @if (is_array(Session::get('error')))

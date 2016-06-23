@@ -9,6 +9,7 @@ Route::get( 'users/logout',                 'UsersController@getLogout');
 
 Route::controller( 'users', 'UsersController');
 Route::controller( 'supervisor', 'SupervisorController');
+Route::controller( 'supervisor/locuraA', 'SupervisorController');
 
 
 

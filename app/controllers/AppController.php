@@ -142,7 +142,7 @@ class AppController extends Controller
 		} else {
 			
 			$pid = Confide::user()->person->id;
-			$rcs = Recommendation::where('id_person','=',$pid)->where('visited', '=', false)->where('evaluation', '=', 'true')->lists('id_content');
+			$rcs = Recommendation::where('id_person','=',$pid)->where('visited', '=', false)->lists('id_content');
 
 			
 			if ($rcs){
@@ -151,10 +151,7 @@ class AppController extends Controller
 				$c2 = Content::whereIn('id',$rcs)->where('subtype','=','3')->take(3)->get();
 			}
 			
-		//************************************ [FIM] Recupera os contéudos recomendados ******************************************
-		//******************************************************************************************************************
-		
-		
+
 		
 		//************************************ Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************

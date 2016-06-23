@@ -46,8 +46,8 @@
 													
 												</a>
 												<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-											    	<a id="like" href="supervisor/aprovarConteudo/{{$v->id}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Fonte</a>
-											    	<a id="unlike" href="supervisor/reprovarConteudo/{{$v->id}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Fonte</a>
+											    	<a id="like" href="{{url("supervisor/aprovarconteudo/".$v->id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Fonte</a>
+											    	<a id="unlike" href="{{url("supervisor/reprovarconteudo/".$v->id)}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Fonte</a>
 												</div>
 											</span>
 											
