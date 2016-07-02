@@ -13,7 +13,7 @@
                 </div>
                 <div class="ui-body ui-body-a">
 					@if(!empty($aux))
-							@for($i =0; $i < ($c-1); $i++)
+							@for($i =0; $i < ($c); $i++)
 								<div class="video">
 									<span class="thumbnail">
 										

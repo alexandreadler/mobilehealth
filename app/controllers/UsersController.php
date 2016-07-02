@@ -47,10 +47,14 @@ class UsersController extends Controller
 
 	        $p = new Person;
 	        $p->id = $pid[0]->nextval;
-			$p->name_first = $user->username;
+			$p->name_first = Input::get('firstname');
+			$p->name_last = Input::get('lastname');
 			$p->date_birth = Carbon\Carbon::now();
 			$p->gender = $user->gender;
-	        $p->save();
+			$p->date_birth = Input::get('datebirth');
+	        
+			
+			$p->save();
 
 	        $id = $p->id;
 	        $user->person_id = $id;

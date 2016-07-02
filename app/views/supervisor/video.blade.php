@@ -22,8 +22,9 @@
                     </div>
 					
 					<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-						<a id="like" href="supervisor/aprovarfonte/{{$id}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Contéudo</a>
-						<a id="unlike" href="supervisor/reprovarfonte/{{$id}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Contéudo </a>
+						<a id="like" href="{{url("supervisor/aprovarconteudo/".$id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Contéudo</a>
+						
+						<a id="unlike" href="{{url("supervisor/aprovarconteudo/".$id)}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Contéudo </a>
 					</div>
                 </span>
 

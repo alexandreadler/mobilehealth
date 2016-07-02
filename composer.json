@@ -12,7 +12,8 @@
         "zizaco/confide": "<dev-master",
         "guzzlehttp/guzzle": "~4.0",
         "sseffa/video-api": "dev-master",
-        "awjudd/feed-reader": "1.1.*"
+        "awjudd/feed-reader": "1.1.*",
+		"sonata-project/user-bundle": "^3.0"
     },
 	"autoload": {
 		"classmap": [

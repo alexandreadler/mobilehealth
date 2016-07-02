@@ -33,6 +33,8 @@ class UserRepository
         $user->confirmation_code     = md5(uniqid(mt_rand(), true));
         $user->ultimo_acesso         = \Carbon\Carbon::now();
 		$user->gender = array_get($input, 'gender');
+		$user->tempodoenca = array_get($input, 'tempodoenca');
+		$user->afinidade = array_get($input, 'afinidade');
 		$user->type = array_get($input, 'supervisor');
 		$user->photo = "padrao.png";
         // Save if valid. Password field will be hashed before save

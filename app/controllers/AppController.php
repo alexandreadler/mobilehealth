@@ -14,6 +14,9 @@ class AppController extends Controller
 	const BASE_YOUTUBE_URL  = "https://www.youtube.com/watch?v=";
 
 
+	
+	
+	
 	public function getHome() {
 
 		//************************************ Recupera os contéudos recomendados ******************************************
@@ -26,118 +29,198 @@ class AppController extends Controller
 		Session::put('profilePicture', 'imgs/'.Confide::user()->photo);
 		
 		if(Confide::user()->type){
+			
+			$f = new Fonts;
+			$f = Fonts::where('valued', '=', false)->get();
+			
+			//dd($f);
+			
+			$fontes = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
+			
 			$sid = Confide::user()->person->id;
 			$aux = array();
 			$teste = false;
+			$teste2 = true;
 			$c = 1;
 			
-			$fontes = DB::connection("public")->select(DB::raw("select c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
+			//$fontes = DB::connection("public")->select(DB::raw("select c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
 			
 			for($i =0; $i < count($fontes); $i++){
 				
 				$teste = false;
-				
+				$teste2 = true;
 				
 				$rest = substr($fontes[$i]->url_online, 0,6);
 
+				
 				if(strcmp('http:/', $rest) != 0){	
 				
 					$temp = substr($fontes[$i]->url_online, 8-strlen($fontes[$i]->url_online));
 					$fonte = strstr($temp, '/', true);
 					
-					//Caso comece com https
-					if(count($aux) == 0){
 					
-						$aux[0][0] = $fonte;
-						$aux[0][1] = $fonte;
-						$aux[0][2] = $fontes[$i]->thumburl;
-						$aux[0][3] = 1;
+					for($h = 0; $h < count($f); $h++){
+						$t = "https://".$fonte;
+						
+						if(strcmp($t, $f[$h]->url_fonts) == 0){
+							
+							$teste2 = false;
+							//
+						}
+						
+					}
+					
+					if($teste2){
+						
+						// Caso a fonte ja tenha sido aprovada anteiromente 
+						DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
+						unset($fontes[$i]);
 						
 					} else {
 					
+						//Caso comece com https
+						if(count($aux) == 0){
 						
-						for($j = 0; $j < $c; $j++){
+							$aux[0][0] = $fonte;
+							$aux[0][1] = $fonte;
+							$aux[0][2] = $fontes[$i]->thumburl;
+							$aux[0][3] = 1;
+							$aux[0][4] = $fontes[$i]->url_online;
+							
+						} else {
 						
-							if(strcmp($fonte, $aux[$j][0]) == 0){
-								$teste = true;	
-								$aux[$j][3]++;								
-								
+							
+							for($j = 0; $j < $c; $j++){
+							
+								if(strcmp($fonte, $aux[$j][0]) == 0){
+									$teste = true;	
+									$aux[$j][3]++;								
+									
+								}
+
 							}
 							
 							
-							
+							if(!$teste){
+								
+								$aux[$c][0] = $fonte;
+								$aux[$c][1] = $fonte;
+								$aux[$c][2] = $fontes[$i]->thumburl;
+								$aux[$c][3] = 1;
+								$aux[$c][4] = $fontes[$i]->url_online;
+								$c++;
+								
+							}
 						}
-						
-						
-						if(!$teste){
-							
-							$aux[$c][0] = $fonte;
-							$aux[$c][1] = $fonte;
-							$aux[$c][2] = $fontes[$i]->thumburl;
-							$aux[$c][3] = 1;
-							$c++;
-							
-						}
-					
 					}
-					
 					
 				} else {
 					
 					$temp = substr($fontes[$i]->url_online, 7-strlen($fontes[$i]->url_online));
 					$fonte = strstr($temp, '/', true);
 					
-					//Caso comece com http
 					
-					if(count($aux) == 0){
 					
+					for($h = 0; $h < count($f); $h++){
+						$t = "http://".$fonte;
 						
-						$aux[0][0] = $fonte;
-						$aux[0][1] = $fonte;
-						$aux[0][2] = $fontes[$i]->thumburl;
-						$aux[0][3] = 1;
+						if(strcmp($t, $f[$h]->url_fonts) == 0){
+							
+							$teste2 = false;
+						}
 						
+					}
+					
+					
+					
+					
+					if($teste2){
+						//
+						// Caso a fonte ja tenha sido aprovada anteiromente 
+						
+						DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
+						unset($fontes[$i]);
+
 					} else {
 					
-											
-						for($j = 0; $j < $c; $j++){
+					
+						//Caso comece com http
 						
-							if(strcmp($fonte, $aux[$j][0]) == 0){
-								$teste = true;	
-								$aux[$j][3]++;
+						if(count($aux) == 0){
+						
+							
+							$aux[0][0] = $fonte;
+							$aux[0][1] = $fonte;
+							$aux[0][2] = $fontes[$i]->thumburl;
+							$aux[0][3] = 1;
+							$aux[0][4] = $fontes[$i]->url_online;
+							
+						} else {
+						
+												
+							for($j = 0; $j < $c; $j++){
+							
+								if(strcmp($fonte, $aux[$j][0]) == 0){
+									$teste = true;	
+									$aux[$j][3]++;
+									
+								}
 								
 							}
 							
+							
+							if(!$teste){
+								
+								
+								$aux[$c][0] = $fonte;
+								$aux[$c][1] = $fonte;
+								$aux[$c][2] = $fontes[$i]->thumburl;
+								$aux[$c][3] = 1;
+								$aux[$c][4] = $fontes[$i]->url_online;
+								$c++;
+								
+							}
 						}
-						
-						
-						if(!$teste){
-							
-							
-							$aux[$c][0] = $fonte;
-							$aux[$c][1] = $fonte;
-							$aux[$c][2] = $fontes[$i]->thumburl;
-							$aux[$c][3] = 1;
-							$c++;
-							
-						}
-					}	
+
+					}
+					
 				}				
 			}
 			
-			for($i = 0; $i < $c; $i++){
 			
-				$rest = substr($aux[$i][0], 0,6);
+			//dd($aux);
+			for($i = 0; $i < $c; $i++){
+				//$f = new Fonts;
+				//$fid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
+				
+				$rest = substr($aux[$i][4], 0,6);
 				if(strcmp('http:/', $rest) != 0){
+					
+					/*
+					$f->id = $fid[0]->nextval;
+					$f->url_fonts = "https://".$aux[$i][0];
+					$f->valued = false;
+					$f->save();
+					*/
+					
 					$aux[$i][0] = strtolower(urlencode("https://".$aux[$i][0]));
+					
 				} else {
 					
+					/*
+					$f->id = $fid[0]->nextval;
+					$f->url_fonts = "http://".$aux[$i][0];
+					$f->valued = false;
+					$f->save();
+					*/
 					$aux[$i][0] = strtolower(urlencode("http://".$aux[$i][0]));
 					
 				}
 			}
 			
+
 			return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c'));
+
 			
 		} else {
 			
@@ -166,6 +249,7 @@ class AppController extends Controller
 		}
 	}
 
+	
     public function getSearch()
     {
 
@@ -298,7 +382,7 @@ class AppController extends Controller
 			$content->acceptancerate    = 0;
 			$content->thumburl          = $data["thumbnail_small"];
 			$content->vid               = $data["id"];
-			
+			$content->font 			= false;
 			$content->save();
 			
 			$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));

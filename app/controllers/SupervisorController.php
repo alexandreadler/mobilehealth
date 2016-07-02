@@ -57,6 +57,7 @@ class SupervisorController extends Controller
 	public function getAprovarfonte($f){
 		
 		DB::connection("public")->table('content')->where('url_online', 'like', '%'.$f.'%')->update(['font' => true]);
+		DB::connection("public")->table('fonts')->where('url_fonts', 'like', '%'.$f.'%')->update(['valued' => true]);
 		
 		return Redirect::to('/');
 		
@@ -65,6 +66,7 @@ class SupervisorController extends Controller
 	public function getReprovarfonte($f){
 		
 		DB::table('content')->where('url_online', 'like', '%'.$f.'%')->delete();
+		DB::table('fonts')->where('url_fonts', 'like', '%'.$f.'%')->delete();
 		
 		return Redirect::to('/');
 		
@@ -157,7 +159,7 @@ class SupervisorController extends Controller
 					$c->local_views       = 1;
 					$c->local_likes       = 0;
 					$c->acceptancerate    = 0;
-				
+					$c->font 			= false;
 					$c->save();
 				
 					$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
@@ -201,7 +203,7 @@ class SupervisorController extends Controller
 					$c->acceptancerate    = 0;
 					$c->thumburl          = $data["thumbnail_small"];
 					$c->vid               = $data["id"];
-					
+					$c->font 			= false;
 					$c->save();
 					
 					$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
