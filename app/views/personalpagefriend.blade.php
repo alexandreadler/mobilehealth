@@ -4,54 +4,23 @@
 
 	<div data-role="page" data-title="Profile">
 
-	    <div role="main" class="ui-content jqm-content jqm-fullwidth" style="border: solid 1px red;">
+	    <div role="main" class="ui-content jqm-content jqm-fullwidth">
 			
-			<div id="possiblefriends" >
-
-			@if(isset($possiblefriends))
-				@if(!empty($possiblefriends))
-					@foreach($possiblefriends as $friends)
-						<div class="box"  >
-							
-							<div id="profile_picture">	
-								{{ HTML::image('imgs/'.$friends->photo, '') }}							
-							</div>
-										
-							<div class="boxName">
-											
-											{{Str::limit($friends->name_first . " ". $friends->name_last, 15)}}
-											
-							</div>
-							
-							<a id="like" href="{{url("app/follow/" . $friends->id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Adicionar</a>
-
-						
-							
+			<div id="cabecalho"> 
+			
+				<div class="box">
+					
+						<div id="profile_picture">	
+							{{ HTML::image('imgs/'.$person->photo, '') }}							
 						</div>
-					@endforeach
-				@else
-					Sem Resultados.
-				@endif
-			@else
-				Sem Resultados.
-			@endif	
-
-			
-			</div><!--  /possiblefriends-->
-            
-			
-			<div style="text-align:center">
-				
-				<a id="bootom" href="{{url("/profile")}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Dados<br > Pessoais</a>
-				<a id="bootom" href="{{url("/phr")}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Dados<br > sobre Sáude</a>
-				<a id="bootom" href="{{url('/app/friendship')}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Gerenciar<br > Amigos</a>
+					
+				</div>
 			
 			
 			</div>
 			
 			
-			
-			<h3>Posts Compartilhados </h3>
+			<h3>Posts Compartilhados por {{$person->name_first}}</h3>
 			<div class="conteudo" id="Feed" style="">
 		
 
@@ -91,13 +60,14 @@
 						</div>
 				@endforeach
 			@else
-				
+				{{$person->name_first}} não publicou nada ainda<br>
 			@endif
 		@else
 			
 		@endif
 
-		
+
+			
 			@if(isset($contents))
 				@if(!empty($contents))
 					@foreach($contents as $con)
@@ -139,8 +109,8 @@
 								
 								<div class="divBottom">
 									<ul class="bottom">
-										<a id="alike" onclick="like('{{url('app/likec?id=$con->id&from=$pid')}}');mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a id="aulike" onclick="unlike('{{url('app/unlikec?id=$con->id&from=$pid')}}');mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="alike" onclick="like('{{url('app/likec?id='.$con->id.'&from='.Confide::user()->person->id)}}');mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulike" onclick="unlike('{{url('app/unlikec?id='.$con->id.'&from='.Confide::user()->person->id)}}');mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
 										
 									</ul>
 								</div>
@@ -148,13 +118,21 @@
 						</div>
 				@endforeach
 			@else
-				
+				{{$person->name_first}} não compoartilhou nada ainda
 			@endif
 		@else
 			
 		@endif
 		
-	
+		
+		
+		
+		
+		
+		
+		
+		
+				
 				<br style="clear:both" /> 
 		</div>
 			
@@ -309,27 +287,38 @@ function mudaFundoComp(div){
         background: #CFC;
 }
 
-#Feed{
+
+.cabecalho{
+	border-top: solid 1px green;
+	padding-top: 10px;
+	color: black;
 	clear:both;
-
-}
-
-
-.post{
-		border-top: solid 1px green;
-		padding-top: 10px;
-		color: black;
-		clear:both;
+	
 }
 
 .box{
 	
 	width: auto;
-	margin: 5px;
 	padding: 10px;
 	height: auto;
-	float: left;
-	border: solid 1px blue;
+	overflow: auto;
+	padding-left: 40%;
+	
+	
+
+	
+	
+	
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00e1ff+0,ffffff+100&0.9+36,0.69+66 */
+background: -moz-linear-gradient(top,  rgba(0,225,255,0.9) 0%, rgba(92,236,255,0.9) 36%, rgba(168,245,255,0.69) 66%, rgba(255,255,255,0.69) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top,  rgba(0,225,255,0.9) 0%,rgba(92,236,255,0.9) 36%,rgba(168,245,255,0.69) 66%,rgba(255,255,255,0.69) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom,  rgba(0,225,255,0.9) 0%,rgba(92,236,255,0.9) 36%,rgba(168,245,255,0.69) 66%,rgba(255,255,255,0.69) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e600e1ff', endColorstr='#b0ffffff',GradientType=0 ); /* IE6-9 */
+
+	
+	
+	
+	
 }
 
 .boxName{
@@ -370,7 +359,6 @@ function mudaFundoComp(div){
 .namePost {
 		
 		font-weight:bold;
-		float:left;
 		margin: 15px;
 		
 }

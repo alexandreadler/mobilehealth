@@ -118,7 +118,17 @@
 		
 		
 		<div class="conteudo" id="Feed">
-		
+			<div id="userpost" style="margin: 20px;">
+				<h4>Compartilhe suas esperiências</h4>
+				<form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
+					<textArea id="texto" name="texto"> </textArea>
+					<input type="file" id="imagem" name="imagem">
+				</form>
+				
+				<div class="ui-bar ui-bar-a" style="height: 44px;">
+                    <a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;">Publicar</a>
+                </div>
+			</div>
 		
 			@if(isset($c))
 				@if(!empty($c))
@@ -209,10 +219,6 @@
 
 				@endif
 
-			
-				
-		
-		
 		@if(isset($contents))
 			@if(!empty($contents))
 				@foreach($contents as $con)
@@ -263,9 +269,56 @@
 								</div>
 							</div>
 						</div>
-				@endforeach	
+					@endforeach	
+				@endif
 			@endif
+			
+			
+			@if(isset($posts))
+				@if(!empty($posts))
+					@foreach($posts as $p)
+						<div class="post" >
+							<div class="headPost">
+								<div class="imgPost" >
+									<img id="picture" src="imgs/{{$p->photo}}" />
+								</div>
+							</div>
+							
+							<div class="contentPost"> 
+								<div class="namePost">
+								{{$p->name_first}}
+								</div>
+								
+								<div class="textPost">
+
+										<p>{{$p->texto}}</p>
+										@if(strcmp($p->imagem, ' ') != 0)
+											{{ HTML::image('imgs/'.$p->imagem, '') }}
+										@endif
+
+
+								</div>
+								
+								<div class="divBottom">
+									<ul class="bottom">
+										<a id="alikep" onclick="like('{{url('app/likep?id='.$pid.'&from='.$p->person)}}');mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulikep" onclick="unlike('{{url('app/unlikep?id='.$pid.'&from='.$p->person)}}');mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('{{url('app/compp?id_post='.$p->id.'&from='.$p->person)}}');mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+									</ul>
+								</div>
+							</div>
+						</div>
+				@endforeach
+			@else
+				Sem Resultados.
+			@endif
+		@else
+			Sem Resultados.
 		@endif
+			
+			
+			
+			
 		</div>
 		
 		
@@ -411,10 +464,32 @@ function mudaFundoComp(div){
 	}
 	
 	
+function mudaFundoLikep(div){
+	
+	$("#likep"+div).css('border', 'solid 2px blue');
+	$("#unlikep"+div).css('border', 'solid 1px gray');
+	
+}
+
+
+function mudaFundoUnLikep(div){
+	
+	$("#unlikep"+div).css('border', 'solid 2px blue');
+	$("#likep"+div).css('border', 'solid 1px gray');
+	
+}
+
+function mudaFundoCompp(div){
+	
+	$("#compp"+div).css('border', 'solid 2px blue');
 
 	
-	
-	
+}
+
+$('#save').click(function(){
+    $('#form').submit()
+});
+
 
 
 @stop

@@ -13,10 +13,6 @@ class AppController extends Controller
 	const VIDEO             = 2;
 	const BASE_YOUTUBE_URL  = "https://www.youtube.com/watch?v=";
 
-
-	
-	
-	
 	public function getHome() {
 
 		//************************************ Recupera os contéudos recomendados ******************************************
@@ -29,6 +25,28 @@ class AppController extends Controller
 		Session::put('profilePicture', 'imgs/'.Confide::user()->photo);
 		
 		if(Confide::user()->type){
+			// Quando supervisor
+			
+			$pid = Confide::user()->person->id;
+			
+			//************************************ Recupera os conteudos do FEED **********************************************************
+			//******************************************************************************************************************
+			
+				$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id"));	
+
+			//************************************ [FIM] Recupera os cpnteudos do FEED **********************************************************
+			//******************************************************************************************************************
+			
+			
+			//************************************ Recupera os post do FEED **********************************************************
+			//******************************************************************************************************************
+			
+				$posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =".$pid.")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person"));	
+
+			//************************************ [FIM] Recupera os post do FEED **********************************************************
+			//******************************************************************************************************************
+
+			
 			
 			$f = new Fonts;
 			$f = Fonts::where('valued', '=', false)->get();
@@ -218,8 +236,8 @@ class AppController extends Controller
 				}
 			}
 			
-
-			return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c'));
+			
+			return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c', 'contents', 'posts', 'pid'));
 
 			
 		} else {
@@ -236,16 +254,27 @@ class AppController extends Controller
 			
 
 		
-		//************************************ Recupera os post do FEED **********************************************************
+		//************************************ Recupera os cpnteudos do FEED **********************************************************
 		//******************************************************************************************************************
 		
 			$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id"));	
+
+		//************************************ [FIM] Recupera os cpnteudos do FEED **********************************************************
+		//******************************************************************************************************************
 		
+		
+		//************************************ Recupera os post do FEED **********************************************************
+		//******************************************************************************************************************
+		
+			$posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =".$pid.")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person"));	
+
 		//************************************ [FIM] Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
-
+		
+			
+		
 			$title = "Feed";			
-			return View::make('home',compact('c', 'c2', 'message', 'title', 'contents'));
+			return View::make('home',compact('c', 'c2', 'message', 'title', 'contents', 'posts', 'pid'));
 		}
 	}
 
@@ -476,24 +505,23 @@ class AppController extends Controller
 	}
 
 	public function getFriendship() {
-	
+		$pid = Confide::user()->person_id;
 		$title      = "Friendship";
 		$f_ids    = Follow::where('id_follower','=',Confide::user()->person_id)->lists('id_following');
-
+		$followers = DB::connection("public")->select(DB::raw("select  p.id, p.name_first, p.name_last, u.photo, u.gender from app.users as u inner join public.person as p on u.person_id in (select id_following from app.follow where id_follower = ".$pid.") and u.person_id = p.id"));
+		/*
 		if (!empty($f_ids))
 			$followers  = Person::whereIn('id',$f_ids)->get();
 		else
 			$followers = array();
 
 		$pessoas = Person::orderBy('name_first')->get();
-
-		return View::make('friendship',compact('title','pessoas','followers'));
+		*/
+		return View::make('friendship',compact('title','followers'));
 
 	}
 
-	public function getFollow() {
-
-		$fpersonid = Input::segment(3);
+	public function getFollow($fpersonid) {
 
 		$me = Confide::user()->person_id;
 
@@ -501,6 +529,13 @@ class AppController extends Controller
 		$f->id_follower     = $me;
 		$f->id_following    = $fpersonid;
 		$f->save();
+		
+		$f = new Follow;
+		$f->id_follower     = $fpersonid;
+		$f->id_following    = $me;
+		$f->save();
+		
+		DB::connection("public")->select(DB::raw("delete from app.possiblefriends where friendto=".$me . " and possiblefriend=" .$fpersonid));
 
 		return Redirect::to('app/friendship');
 
@@ -522,7 +557,7 @@ class AppController extends Controller
 		$m->save();
 
 
-		return Redirect::to('app/friendship');
+		return Redirect::to('app/viewmessage?id_person_from='.$fpersonid);
 	
 	}
 	
@@ -552,8 +587,7 @@ class AppController extends Controller
 
 	}
 	
-    public function getInbox()
-    {
+    public function getInbox() {
 	    $title = "Inbox";
 
 	    $pid = Confide::user()->person->id;
@@ -598,8 +632,7 @@ class AppController extends Controller
     }
 
 
-    public function getPhr()
-    {
+    public function getPhr(){
 	    $title = "My Health";
 	    return View::make('phr',compact('title'));
     }
@@ -623,8 +656,9 @@ class AppController extends Controller
 
 		$pid = Confide::user()->person->id;
 		$id_person_from = $_GET['id_person_from'];
-		$name = DB::connection("app")->select(DB::raw("select p.name_first, p.name_last from public.person p where (p.id =".$id_person_from.")"));
-		$m = DB::connection("app")->select(DB::raw("select distinct p.name_first, p.name_last, m.id, m.message, m.id_person_from, m.created_at from public.person p, app.message m  where ((m.id_person_to =".$pid.") and (m.id_person_from =".$id_person_from.") and (p.id =".$id_person_from.")) or ((m.id_person_to =".$id_person_from.") and (m.id_person_from =".$pid.") and (p.id =".$pid.")) order by m.created_at desc limit 20"));
+		$name = DB::connection("public")->select(DB::raw("select p.name_first, p.name_last from public.person p where (p.id =".$id_person_from.")"));
+		$photo = DB::connection("app")->select(DB::raw("select u.photo from app.users u where u.person_id =".$id_person_from));
+		$m = DB::connection("app")->select(DB::raw("select distinct p.name_first, p.name_last, m.id, m.message, m.id_person_from, m.created_at from public.person p, app.message m, app.users u  where ((m.id_person_to =".$pid.") and (m.id_person_from =".$id_person_from.") and (p.id =".$id_person_from.")) or ((m.id_person_to =".$id_person_from.") and (m.id_person_from =".$pid.") and (p.id =".$pid.")) order by m.created_at desc limit 20"));
 		$a = DB::connection("app")->select(DB::raw("update app.message set viewed = true  where id_person_to =". $pid ." and id_person_from =".$id_person_from));
 		
 		$message = array();
@@ -645,11 +679,26 @@ class AppController extends Controller
 		}
 		
 		$n = $name[0]->name_first." ".$name[0]->name_last;
+		$photo = $photo[0]->photo;
 		
-		return View::make('viewmessage',compact('message', 'id_person_from', 'tamanho', 'n'));
+		return View::make('viewmessage',compact('message', 'id_person_from', 'tamanho','photo', 'n'));
 		
 
 	}
+	
+
+	public function getFindfirends(){
+		
+		$pid = Confide::user()->person_id;
+		$title      = "Encontre Novos Amigos";
+		$f_ids    = Follow::where('id_follower','=',Confide::user()->person_id)->lists('id_following');
+		$findfriends = DB::connection("public")->select(DB::raw("select  p.id, p.name_first, p.name_last, u.photo, u.gender from app.users as u inner join public.person as p on u.person_id <> ".$pid." and u.person_id not in (select id_following from app.follow where id_follower = ".$pid.") and u.person_id = p.id"));
+		
+		return View::make('findfriends',compact('title','findfriends'));
+		
+		
+	}
+
 	
 	public function getLikec() {
 		
@@ -657,7 +706,6 @@ class AppController extends Controller
 		$id_content = $_GET['id'];
 		
 		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
-		
 
 		if(empty($v)){
 			
@@ -761,6 +809,118 @@ class AppController extends Controller
 	}	
 	
 	
+	public function getLikep() {
+		
+		$pid = Confide::user()->person->id;
+		$id_post = $_GET['id'];
+		
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersonpost where id_person = ".$pid." and id_post = ".$id_post." and liked <> 2 and person_from=".$_GET['from']));
+
+		if(empty($v)){
+			
+			$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relatepersonpost_id_seq')"));
+		
+			$c = new Relatepersonpost;
+			$c->id				= $rpcid[0]->nextval;
+			$c->date_relation   = \Carbon\Carbon::now();
+			$c->id_post      = $id_post;
+			$c->id_person       = $pid;
+			$c->liked           = 1;
+			$c->person_from			= $_GET['from'];
+			$c->save();
+			
+		} else {
+			
+			$v = $v[0]->liked;
+			
+		}
+		
+		if ($v == 0 || $v == -1) {
+			$v = 1;
+			$u = DB::connection("public")->select(DB::raw("update relatepersonpost set liked =".$v." where id_person = ".$pid." and id_post = ".$id_post." and liked <> 2 and person_from=".$_GET['from']));
+
+		}
+	
+		return Redirect::to('/');
+	
+		
+	}
+
+	public function getUnlikep() {
+
+		$pid = Confide::user()->person->id;
+		$id_post = $_GET['id'];
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersonpost where id_person = ".$pid." and id_post = ".$id_post." and liked <> 2  and person_from=".$_GET['from']));
+		
+		if(empty($v)){
+			
+			$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relatepersonpost_id_seq')"));
+		
+			$c = new Relatepersonpost;
+			$c->id				= $rpcid[0]->nextval;
+			$c->date_relation   = \Carbon\Carbon::now();
+			$c->id_post      = $id_post;
+			$c->id_person       = $pid;
+			$c->liked           = 0;
+			$c->person_from			=$_GET['from'];
+			$c->save();
+			
+			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersonpost where id_person = ".$pid." and id_post = ".$id_post." and liked <> 2 and person_from=".$_GET['from']));
+			$v = $v[0]->liked;
+
+		} else {
+			
+			$v = $v[0]->liked;
+		
+		}
+		
+	
+		if ($v == 0 || $v == 1) {
+			$v = -1;
+			$u = DB::connection("public")->select(DB::raw("update relatepersonpost set liked=".$v." where id_person = ".$pid." and id_post = ".$id_post." and liked <> 2 and person_from=".$_GET['from']));
+		}
+		
+		return Redirect::to('/');
+
+	}
+	
+	
+	
+	public function getCompp() {
+		
+		$pid = Confide::user()->person->id;
+		$id_post = $_GET['id_post'];
+		
+		
+			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersonpost where id_person = ".$pid." and id_post = ".$id_post." and liked = 2 and person_from =".$_GET['from'] ));
+
+			
+			if(empty($v)){
+				
+				$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relatepersonpost_id_seq')"));
+			
+				$c = new Relatepersonpost;
+				$c->id				= $rpcid[0]->nextval;
+				$c->date_relation   = \Carbon\Carbon::now();
+				$c->id_post      = $id_post;
+				$c->id_person       = $pid;
+				$c->liked           = 2;
+				$c->person_from		= $_GET['from'];
+				$c->save();
+				
+				
+				
+			}		
+		
+		 
+
+	}
+	
+	
+	
+	
+
+	
 
 	public function getComp() {
 		
@@ -847,6 +1007,37 @@ class AppController extends Controller
 		
 		return Redirect::to('app/friendship');
 		
+		
+	}
+	
+	
+	public function postPublicacao(){
+		$me = Confide::user()->person_id;
+		$input = Input::all();
+		$img = " ";
+		$create_at = \Carbon\Carbon::now();
+		if(Input::hasFile('imagem')){
+			
+			$imagem = Input::file('imagem');	
+			$extensao = $imagem->getClientMimeType();
+			
+			if($extensao != 'image/jpeg' && $extensao != 'image/png'){
+				
+				echo "Estensão errada";
+				
+			} else {
+				
+				
+				Input::file('imagem')->move(public_path()."/imgs/", $imagem);
+				$img= $imagem->getFilename();
+				//DB::connection("app")->select(DB::raw("update users set photo='".$imagem->getFilename()."' where person_id=".$pid));
+			}
+			
+		}
+		
+		
+		DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$me.", '".$input['texto']."', '".$img."', '".$create_at."')"));
+		return Redirect::to('/');
 		
 	}
 	

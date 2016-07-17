@@ -32,24 +32,84 @@ class ProfileController extends \BaseController {
 		//************************************ Recupera os amigos recomendados ******************************************
 		//******************************************************************************************************************
 			
-			$friends = null;
+			$possiblefriends = DB::connection("public")->select(DB::raw("select  p.id, p.name_first, p.name_last, u.photo from app.users as u inner join public.person as p on u.person_id in (select possiblefriend from app.possiblefriends where friendTo = ".$pid.") and u.person_id = p.id"));
+
+			//dd($possiblefriends);
 		//************************************ [FIM] Recupera os amigos recomendados ******************************************
 		//******************************************************************************************************************
 		
 		
+		//********************************* REUPERA os posts do usuario **************************************************
+		//*****************************************************************************************************************
+		
+		$posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = ".$pid));
+		
+		//********************************* [FIM] REUPERA os posts do usuario **************************************************
+		//*****************************************************************************************************************
 		
 		//************************************ Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 		
-			//$contents = DB::connection("public")->select(DB::raw("select c.id from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (".$pid." = rpc.id_person) and (rpc.liked = 2)"));	
-			$contents = DB::connection("public")->select(DB::raw("select p.id as id_person, p.name_first, u.photo, c.*  from public.person as p inner join app.users as u on p.id = u.person_id and p.id in (select rpc.person_from from public.relatepersoncontent as rpc where liked = 2 and id_person = ".$pid.") inner join public.content as c on c.id in (select rpc.id_content from public.relatepersoncontent as rpc where liked = 2 and person_from = p.id)"));	
+			$contents = DB::connection("public")->select(DB::raw("select c.* from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (".$pid." = rpc.id_person) and (rpc.liked = 2)"));	
+			//$contents = DB::connection("public")->select(DB::raw("select p.id as id_person, p.name_first, u.photo, c.*  from public.person as p inner join app.users as u on p.id = u.person_id and p.id in (select rpc.person_from from public.relatepersoncontent as rpc where liked = 2 and id_person = ".$pid.") or p.id inner join public.content as c on c.id in (select rpc.id_content from public.relatepersoncontent as rpc where liked = 2 and person_from = p.id)"));	
+		
 		//************************************ [FIM] Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 
 			$title = "Página Pessoal";			
-			return View::make('personalpage',compact('friends', 'title', 'contents'));
+			return View::make('personalpage',compact('possiblefriends', 'title', 'contents', 'posts', 'pid'));
 		
 	}
+	
+	
+	
+	
+	public function getPersonalpagefriend($pid) {
+		
+		$person = DB::connection("public")->select(DB::raw("select * from app.users as u inner join public.person as p on u.person_id = p.id and p.id = ".$pid));
+		
+		//********************************* REUPERA os posts do usuario **************************************************
+		//*****************************************************************************************************************
+		
+		$posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = ".$pid));
+		
+		//********************************* [FIM] REUPERA os posts do usuario **************************************************
+		//*****************************************************************************************************************
+		
+		//************************************ Recupera os post do FEED **********************************************************
+		//******************************************************************************************************************
+		
+			$contents = DB::connection("public")->select(DB::raw("select c.* from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (".$pid." = rpc.id_person) and (rpc.liked = 2)"));	
+			//$contents = DB::connection("public")->select(DB::raw("select p.id as id_person, p.name_first, u.photo, c.*  from public.person as p inner join app.users as u on p.id = u.person_id and p.id in (select rpc.person_from from public.relatepersoncontent as rpc where liked = 2 and id_person = ".$pid.") or p.id inner join public.content as c on c.id in (select rpc.id_content from public.relatepersoncontent as rpc where liked = 2 and person_from = p.id)"));	
+		
+		//************************************ [FIM] Recupera os post do FEED **********************************************************
+		//******************************************************************************************************************
+
+			$person = $person[0];
+			$title = "Página Pessoal: ". $person->name_first;	
+			
+			return View::make('personalpagefriend',compact('person', 'title', 'contents', 'posts'));
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	/**
@@ -130,7 +190,7 @@ class ProfileController extends \BaseController {
 			
 			if($extensao != 'image/jpeg' && $extensao != 'image/png'){
 				
-				echo "Estencão errada";
+				echo "Estensão errada";
 				
 			} else {
 				

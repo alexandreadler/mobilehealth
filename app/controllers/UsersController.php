@@ -361,5 +361,16 @@ class UsersController extends Controller
 	}
 	
 	
+	
+	public function getNewfriend($newFrind){
+		
+		
+		
+		
+		
+		
+		
+	}
+	
 
 }

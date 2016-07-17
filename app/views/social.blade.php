@@ -16,6 +16,8 @@
                     <br>
                     <a href="{{url('/app/inbox')}}" class="ui-shadow ui-btn ui-corner-all">Mensagens</a>
                     <br>
+					<a href="{{url('/app/findfirends')}}" class="ui-shadow ui-btn ui-corner-all">Buscar Amigos</a>
+                    <br>
                 </div>
             </div>
             <br>

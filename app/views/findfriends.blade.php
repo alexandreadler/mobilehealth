@@ -9,7 +9,7 @@
 
             <div class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a">
-                     <h3>Seguindo</h3>
+                     <h3>Encontre Novos Amigos</h3>
                 </div>
                 <div class="ui-body ui-body-a">
 
@@ -17,21 +17,21 @@
                         <input data-type="search" id="searchForCollapsibleSetChildren">
                     </form>
 
-                    @foreach($followers as $p)
+                    @foreach($findfriends as $p)
 
                         <div data-role="collapsibleset" style="clear: left" data-filter="true" data-children="> div, > div div ul li" data-inset="true" id="collapsiblesetForFilterChildren" data-input="#searchForCollapsibleSetChildren">
 
 							<div class="box">
-							<a href="{{url('profile/personalpagefriend/'.$p->id)}}">
+							 <a href="{{url('profile/personalpagefriend/'.$p->id)}}">
 									<div id="profile_picture">	
-										 {{ HTML::image('imgs/'.$p->photo, '') }}							
+										{{ HTML::image('imgs/'.$p->photo, '') }}					
 									</div>
-								</a>
+							</a>
 							</div>
                             <div data-role="collapsible" data-collapsed-icon="carat-d" and data-expanded-icon="carat-u">
 								
 								
-                                 <h3>{{$p->name_first}} {{$p->name_last}}</h3>
+                                <h3>{{$p->name_first}} {{$p->name_last}}</h3>
 
                                 Gender: @if ($p->gender == '1') Male @else Female @endif
 								
@@ -49,21 +49,8 @@
                                     </form>
                                 </div>
 								
-								<a href="#popupDefazamizade{{$p->id}}" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-btn-inline ui-icon-mail ui-btn-icon-top">Desfazer Amizade</a>
-							
-								<a href="{{url('app/viewmessage?id_person_from='.$p->id)}}" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-btn-inline ui-icon-mail ui-btn-icon-top">Ver Mensagens</a>
-							
-							
-								<div data-role="popup" id="popupDefazamizade{{$p->id}}" data-theme="a" class="ui-corner-all">
-									<form action="{{url('app/desfazeramizade/'.$p->id)}}" method="post">
-										
-										<div style="padding:10px 20px;">
-											<h3>Deseja desfazer está Amizade?</h3>
-
-											<button type="submit"  class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-right ui-icon-arrow-r">Sim</button>-
-										</div>
-									</form>
-								</div>
+								<a href="{{url('app/follow/'.$p->id)}}" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-btn-inline ui-icon-mail ui-btn-icon-top">Fazer Amizade</a>
+	
 								
 
                             </div>

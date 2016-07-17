@@ -19,8 +19,17 @@
 							
 						<div data-role="collapsibleset" data-filter="true" data-children="> div, > div div ul li" data-inset="true" id="collapsiblesetForFilterChildren" data-input="#searchForCollapsibleSetChildren">
 						
+							<div class="box"  >
+								
+								<div id="profile_picture">	
+									{{ HTML::image('imgs/'.$photo, '') }}							
+								</div>						
+									
+							</div>
+
+							<h3 style="padding-top: 40px;">{{$n}}</h3>
 							@if(!empty($message))
-									<h3>{{$n}}</h3>
+																
 									@for($x = $tamanho-1; $x >= 0; $x--)
 										@if($message[$x]['id_person_from'] == $id_person_from)
 											
@@ -75,3 +84,25 @@ return out;
 
 
 @stop
+
+
+
+
+@section("style")
+
+.box{
+	
+	width: auto;
+	margin: 5px;
+	padding: 10px;
+	height: auto;
+	float: left;
+
+}
+
+
+@stop
+
+
+
+

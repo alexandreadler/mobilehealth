@@ -1,5 +1,13 @@
 @extends("layout.main-mobile")
+
+
+
+
+
+
 @section("content")
+
+<iframe name="myframe" src="{{url("https://www.google.com.br")}}" height="100%" width="100%"></iframe>
 
 	<div data-role="page" data-title="Supervisor - Home">
 
@@ -10,27 +18,51 @@
                     <h3>Avaliar Conteúdo</h3>
                 </div>
                 <div class="ui-body ui-body-a">
-						
-					@if(!empty($relates))
-					
-							@foreach( $relates as $p )
-							
+					@if(!empty($aux))
+							@for($i =0; $i < ($c); $i++)
 								<div class="video">
-									 {{ucfirst($p->name_first) }} {{ ucfirst($p->name_last)}}
 									<span class="thumbnail">
-										<a href="{{url("/supervisor/avaliarconteudo/".$p->id)}}">
-										<!-- ucfirst([string]) Deixa a primeira letra da String maiúscula -->
-										<span><b>Doença: @if ($p->disease == "diabetes")<img src={{URL::to('imgs/circuloazul.png')}} alt="Símbolo Mundial da Díabetes" height="30" width="30" /> {{ucfirst($p->disease)}} @else <img src={{URL::to('imgs/Cornflowerblue.png')}} alt="Símbolo Mundial da Díabetes" height="30" width="30" /> {{ucfirst($p->disease)}}</b>@endif</span>
-										<br/>
-										<b style="margin-left:15px; color:rgb(185,185,185);">Sexo: @if ($p->gender == '1') <span style="margin-top: 5px; color:rgb(0, 128,255);">Masculino</span> @else <span style="margin-top: 5px; color:rgb(255, 132,193);">Feminino</span> @endif</b>
-										<br />
-										<span style="margin-left:15px; color:rgb(185,185,185);">E-mail:</span> {{$p->email}}
-
-										</a>
+										
+										@if(!empty($aux[$i][2]))
+											<!--Caso seja um video-->
+											<img style="float:left" src="{{$aux[$i][2]}}" />
+											<p>
+												<b><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{$aux[$i][1]}}</a></b> 
+											</p>
+											<p>
+												
+												@if($aux[$i][3] > 1)
+													<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
+												@endif
+											</p>
+											
+											<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+										    	<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Fonte</a>
+										    	<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Fonte</a>
+											</div>
+											
+										@else
+											<!--Caso seja um lik de site/pdf/outros -->
+											<img style="float:left" width="100px" height="100px" src="http://s.wordpress.com/mshots/v1/{{$aux[$i][0]}}?w=100&h=100" />
+											<p>
+												<b style="font-color: blue"><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{($aux[$i][1])}}</a></b>
+											</p>
+											<p>
+												@if($aux[$i][3] > 1)
+													<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
+												@endif
+											</p>
+											
+											<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+										    	<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Fonte</a>
+										    	<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Fonte</a>
+											</div>
+										@endif
+										
 									</span>
 								</div>
 								
-							@endforeach
+							@endfor
                     @else
                          Sem Resultados.
                     @endif
@@ -75,12 +107,21 @@
 					
                 </div>
             </div>
-			<p align="right"><a href="{{url("/supervisor/novosupervisor/")}}">Novo Supervisor</a></p>
+			<p align="right"><a href="{{url("supervisor/novoconteudo/")}}">Novo Contéudo</a> | <a href="{{url("supervisor/novosupervisor/")}}">Novo Supervisor</a></p>
 		</div><!-- /content -->
 		
+		
+		
 	</div><!-- /page -->
-
 @stop
+
+
+
+
+
+
+
+
 @section("style")
 
 	#like {
