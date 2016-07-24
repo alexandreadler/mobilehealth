@@ -41,13 +41,13 @@
 @section("script")
 
     $('#like').click(function(){
-        $.get( "{{url("/app/like/".$vid)}}", function( data ) {});
+        $.get( "{{url("/app/like/".$idcontent."/".$from)}}", function( data ) {});
         $("#unlike").css("background-color","#ccc");
         $("#like").css("background-color","#7B7");
     });
 
     $('#unlike').click(function(){
-        $.get( "{{url("/app/unlike/".$vid)}}", function( data ) {});
+        $.get( "{{url("/app/unlike/".$idcontent."/".$from)}}", function( data ) {});
         $("#like").css("background-color","#ccc");
         $("#unlike").css("background-color","#E77");
     });

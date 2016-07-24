@@ -4,7 +4,7 @@
 
 	<div data-role="page" data-title="Profile">
 
-	    <div role="main" class="ui-content jqm-content jqm-fullwidth" style="border: solid 1px red;">
+	    <div role="main" class="ui-content jqm-content jqm-fullwidth" >
 			
 			<div id="possiblefriends" >
 
@@ -71,12 +71,14 @@
 								</div>
 								
 								<div class="textPost">
-
+										
 										<p>{{$p->texto}}</p>
 										@if(strcmp($p->imagem, ' ') != 0)
-											{{ HTML::image('imgs/'.$p->imagem, '') }}
-										@endif
+											
+											<img src="{{url('imgs/'.$p->imagem)}}" width="50%" />
 
+										@endif
+			
 
 								</div>
 								

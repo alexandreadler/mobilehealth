@@ -242,6 +242,8 @@ class AppController extends Controller
 			
 		} else {
 			
+			// Quando usuario
+			
 			$pid = Confide::user()->person->id;
 			$rcs = Recommendation::where('id_person','=',$pid)->where('visited', '=', false)->lists('id_content');
 
@@ -366,13 +368,11 @@ class AppController extends Controller
 
 	}
 
-	public function getVideo() {
-
-		$id = Input::segment(3);
+	public function getVideo($id, $from) {
+		
 		$data = VideoApi::setType('youtube')->getVideoDetail($id);
 
 		$cid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
-
 
 		// Criar o conteúdo, caso não exista
 		$c = Content::where('url_online','=',AppController::BASE_YOUTUBE_URL . $data["id"])->count();
@@ -443,31 +443,52 @@ class AppController extends Controller
 		}
 
 		// Gerar uma nova visualização (relatepersoncontent)
-		$vid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
-
-		$vid = $vid[0]->nextval;
-
-		$v                  = new Relatepersoncontent;
-		$v->id              = $vid;
-		$v->date_relation    = \Carbon\Carbon::now();
-		$v->id_content      = $content->id;
-		$v->id_person       = Confide::user()->person->id;
-		$v->liked           = 0;
-		$v->save();
-
-		return View::make('video', compact("id","data","vid"));
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$content->id." and liked <> 2 and person_from=".$from));
+		
+		
+		if(empty($v)){
+			
+			$vid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
+			$vid = $vid[0]->nextval;
+			
+			$v                  = new Relatepersoncontent;
+			$v->id              = $vid;
+			$v->date_relation    = \Carbon\Carbon::now();
+			$v->id_content      = $content->id;
+			$v->id_person       = Confide::user()->person->id;
+			$v->liked           = 0;
+			$v->person_from		= $from;
+			$v->save();
+			
+		} else {
+			
+			$v[0]->liked = 1;
+			
+			
+		}
+		
+		$idcontent = $content->id;
+		
+		return View::make('video', compact("id","data", 'idcontent', 'from'));
 
 	}
 
-	public function getLike() {
+	public function getLike($id, $from) {
 
-		$vid = Input::segment(3);
-		$v = Relatepersoncontent::find($vid);
+		//$v = Relatepersoncontent::find($id);
+		
+		
+		$pid = Confide::user()->person->id;
+		
+		// Gerar uma nova visualização (relatepersoncontent)
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
+		$v = $v[0];
 
 		if ($v->liked <= 0) {
-
+			
+			$v = Relatepersoncontent::find($v->id);
+			
 			$v->liked = 1;
-			$v->from 	=-1;
 			$v->save();
 
 			$c = Content::find($v->id_content);
@@ -479,15 +500,18 @@ class AppController extends Controller
 
 	}
 
-	public function getUnlike() {
+	public function getUnlike($id, $from) {
 
-		$vid = Input::segment(3);
-
-		$v = Relatepersoncontent::find($vid);
-
+		$pid = Confide::user()->person->id;
+		
+		// Gerar uma nova visualização (relatepersoncontent)
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
+		$v = $v[0];
 		if ($v->liked >= 0) {
+			
+			$v = Relatepersoncontent::find($v->id);
+			
 			$v->liked = -1;
-			$v->from 	=-1;
 			$v->save();
 
 			$c = Content::find($v->id_content);
@@ -497,7 +521,6 @@ class AppController extends Controller
 		}
 
 	}
-
 
 	public function getSocial() {
 		$title = "Social";
@@ -560,9 +583,7 @@ class AppController extends Controller
 		return Redirect::to('app/viewmessage?id_person_from='.$fpersonid);
 	
 	}
-	
-	
-	
+		
 	public function postMessageto2() {
 
 		//$fpersonid = Input::segment(3);
@@ -650,8 +671,6 @@ class AppController extends Controller
 		}
 	}
 	
-	
-	
 	public function getViewmessage(){
 
 		$pid = Confide::user()->person->id;
@@ -685,7 +704,6 @@ class AppController extends Controller
 		
 
 	}
-	
 
 	public function getFindfirends(){
 		
@@ -699,7 +717,6 @@ class AppController extends Controller
 		
 	}
 
-	
 	public function getLikec() {
 		
 		$pid = Confide::user()->person->id;
@@ -808,7 +825,6 @@ class AppController extends Controller
 
 	}	
 	
-	
 	public function getLikep() {
 		
 		$pid = Confide::user()->person->id;
@@ -884,8 +900,6 @@ class AppController extends Controller
 
 	}
 	
-	
-	
 	public function getCompp() {
 		
 		$pid = Confide::user()->person->id;
@@ -916,12 +930,6 @@ class AppController extends Controller
 
 	}
 	
-	
-	
-	
-
-	
-
 	public function getComp() {
 		
 		$pid = Confide::user()->person->id;
@@ -953,7 +961,6 @@ class AppController extends Controller
 	}
 	
 
-
 	// Redireciona para a página da url recebida am 'a'
 	public function getUrl(){
 		
@@ -968,14 +975,10 @@ class AppController extends Controller
 		
 		$rc = Recommendation::where('id_person', '=', $pid)
 							->where('id_content', '=', $con[0]->id)->get();
-
-			
 		
 		$rc = $rc[0];
-		//$rc->visited = true;
+		$rc->visited = true;
 		$rc->save();
-		
-		
 		
 		$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
 		

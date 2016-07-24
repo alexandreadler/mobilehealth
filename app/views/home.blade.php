@@ -35,7 +35,7 @@
 							@foreach( $c as $v )
 									<div class="video">
 										<span class="thumbnail">
-											<a href="{{url("/app/video/" . $v['vid'])}}">
+											<a href="{{url("/app/video/" . $v['vid']."/-1")}}">
 											<img src="{{$v['thumburl']}}" align="left" />
 											<p class="title">{{Str::limit($v['title'],40)}}</p>
 											<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
@@ -149,7 +149,7 @@
 								
 									<div class="video">
 										<span class="thumbnail" >
-											<a href="{{url("/app/video/" . $v['vid'])}}" target="new">
+											<a href="{{url("/app/video/" . $v['vid']."/-1")}}" target="new">
 											<img src="{{$v['thumburl']}}" align="left" />
 											<p class="title">{{Str::limit($v['title'],40)}}</p>
 											<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
@@ -239,7 +239,7 @@
 									@if(!empty($con->thumburl))
 										<div class="video">
 											<span class="thumbnail" >
-												<a href="{{url("/app/video/" . $con->vid)}}" target="new">
+												<a href="{{url("/app/video/" . $con->vid."/".$con->id_person)}}" target="new">
 												<img src="{{$con->thumburl}}" align="left" />
 												<p class="title">{{Str::limit($con->title,40)}}</p>
 												<p class="desc">{{ Str::limit($con->description, 120) }}</p>
