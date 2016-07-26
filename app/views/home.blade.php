@@ -6,6 +6,13 @@
 
 
 <div class="TabControl">
+	
+	@if(!isset($megERRO))
+				
+	@else
+		{{$megERRO}}
+	@endif
+
 	<div id="header" style="overflow: auto;">
 		<ul class="abas" style="clear: both;">
 			<li onclick="aba(0)"> 

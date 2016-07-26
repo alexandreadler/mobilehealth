@@ -922,8 +922,6 @@ class AppController extends Controller
 				$c->person_from		= $_GET['from'];
 				$c->save();
 				
-				
-				
 			}		
 		
 		 
@@ -1026,7 +1024,7 @@ class AppController extends Controller
 			
 			if($extensao != 'image/jpeg' && $extensao != 'image/png'){
 				
-				echo "Estensão errada";
+				$megERRO = "Extensões de imgens validos: .jpeg e .png";
 				
 			} else {
 				
@@ -1034,13 +1032,18 @@ class AppController extends Controller
 				Input::file('imagem')->move(public_path()."/imgs/", $imagem);
 				$img= $imagem->getFilename();
 				//DB::connection("app")->select(DB::raw("update users set photo='".$imagem->getFilename()."' where person_id=".$pid));
+				DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$me.", '".$input['texto']."', '".$img."', '".$create_at."')"));
+				
+				
 			}
+			
+			
+			return View::make('home', compact("megERRO"));
 			
 		}
 		
 		
-		DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$me.", '".$input['texto']."', '".$img."', '".$create_at."')"));
-		return Redirect::to('/');
+		
 		
 	}
 	
