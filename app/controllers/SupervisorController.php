@@ -114,7 +114,15 @@ class SupervisorController extends Controller
 		
 		$c = new Content;
 		
-		if(empty(Input::get('author')) or empty(Input::get('dataCretion')) or empty(Input::get('title')) or empty(Input::get('description')) or empty(Input::get('url'))){
+		$author = Input::get('author');
+		$dataCretion = Input::get('author');
+		$title = Input::get('author');
+		$description = Input::get('author');
+		$url = Input::get('author');
+		
+		
+		
+		if(empty($author) or empty($dataCretion) or empty($title) or empty($description) or empty($url)){
 			
 			return View::make('supervisor.novoConteudo');
 			
