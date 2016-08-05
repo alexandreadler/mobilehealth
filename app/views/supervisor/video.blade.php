@@ -7,25 +7,26 @@
 	    <div role="main" class="ui-content jqm-content jqm-fullwidth">
 
 
-            <div id="video_player">
+            <div id="video_player" >
                 <span class="thumbnail">
                     <iframe width="320" height="240" src="//www.youtube.com/embed/{{$id}}" frameborder="0" allowfullscreen></iframe>
                     <p class="title">{{$data["title"]}}</p>
                     <p class="desc">{{ $data["description"] }}</p>
                 </span>
 
-                <span id="controls" class="thumbnail">
+                <span id="controls" class="thumbnail" style="height: auto; ">
 
-                    <div id="info">
+                    <div id="info" style="overflow: auto; witdh: 50px; ">
                         <span id="pub"><strong>Published:</strong> {{Str::limit($data["upload_date"],10,"")}}</span><br>
                         <span id="views"><strong>Views:</strong> {{$data["view_count"]}}</span>
+						
                     </div>
 					
-					<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-						<a id="like" href="{{url("supervisor/aprovarconteudo/".$id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Contéudo</a>
-						
+					<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true" style="witdh: auto;">
+						<a id="like" href="{{url("supervisor/aprovarconteudo/".$id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Contéudo</a>						
 						<a id="unlike" href="{{url("supervisor/aprovarconteudo/".$id)}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Contéudo </a>
 					</div>
+					
                 </span>
 
             </div>
@@ -80,7 +81,6 @@
         height: 50px;
     }
     #info {
-        position: absolute;
         left: 30px;
         font-size: 0.8em;
     }
@@ -90,9 +90,6 @@
     #info #views {
         float: left;
     }
-    #likes {
-        position: absolute;
-        right: 0;
-    }
+
 
 @stop

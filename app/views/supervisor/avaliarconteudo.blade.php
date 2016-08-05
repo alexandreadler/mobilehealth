@@ -16,9 +16,8 @@
 						@if(!empty($c))
 							@foreach( $c as $v )
 								@if(!empty($v->thumburl))
-									<div class="video">
-									
-											<span class="thumbnail">
+									<div class="video" style="overflow: auto;">
+											<span class="thumbnail" style="height: auto;">
 												<a href="{{url("/supervisor/video/" . $v->id)}}">
 												<img src="{{$v->thumburl}}" align="left" />
 												<p class="title">{{Str::limit($v->title,40)}}</p>

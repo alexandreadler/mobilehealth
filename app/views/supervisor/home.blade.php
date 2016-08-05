@@ -39,8 +39,8 @@
 						<div class="ui-body ui-body-a">
 							@if(!empty($aux))
 								@for($i =0; $i < ($c); $i++)
-									<div class="video">
-										<span class="thumbnail">
+									<div class="video" style="overflow: auto;">
+										<span class="thumbnail" style="height: auto;">
 										
 											@if(!empty($aux[$i][2]))
 												<!--Caso seja um video-->
@@ -56,8 +56,8 @@
 												</p>
 											
 												<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-										    		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Fonte</a>
-										    		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Fonte</a>
+										    		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up" style="font-size:10px;"> Aprovar Fonte</a>
+										    		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
 												</div>
 											
 											@else
@@ -73,8 +73,8 @@
 												</p>
 											
 												<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-										    		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Aprovar Fonte</a>
-										    		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Reprovar Fonte</a>
+										    		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up " style="font-size:10px;"> Aprovar Fonte</a>
+										    		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
 												</div>
 											@endif
 										
@@ -89,13 +89,6 @@
 						</div>
 					</div>
 					<br>
-			
-					<div class="ui-corner-all custom-corners">
-						<div class="ui-bar ui-bar-a">
-							<h3><h1><a href="{{url('/supervisor/acompanharnovo/')}}">Acompanhar Novo Pacinete</a></h1></h3>
-						</div>
-
-					</div>
 			
 			
 					<br>

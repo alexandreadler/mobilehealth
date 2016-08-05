@@ -95,8 +95,10 @@ class SupervisorController extends Controller
 
 	public function getAvaliarlink($f){
 		
+		$title = "Avaliar links";
+		
 		$c = DB::connection("public")->table('content')->select()->where('url_online', 'like', '%'.$f.'%')->get();
-		return View::make('supervisor/avaliarconteudo',compact('c'));
+		return View::make('supervisor/avaliarconteudo',compact('c', 'title'));
 		
 	}
 	
