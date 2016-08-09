@@ -32,7 +32,7 @@ class AppController extends Controller
 			//************************************ Recupera os conteudos do FEED **********************************************************
 			//******************************************************************************************************************
 			
-				$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id"));	
+				$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id order by rpc.date_relation desc"));	
 
 			//************************************ [FIM] Recupera os cpnteudos do FEED **********************************************************
 			//******************************************************************************************************************
@@ -41,7 +41,7 @@ class AppController extends Controller
 			//************************************ Recupera os post do FEED **********************************************************
 			//******************************************************************************************************************
 			
-				$posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =".$pid.")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person"));	
+				$posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =".$pid.")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));	
 
 			//************************************ [FIM] Recupera os post do FEED **********************************************************
 			//******************************************************************************************************************
