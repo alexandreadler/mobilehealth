@@ -60,10 +60,12 @@
 						<div class="form-group last" style="padding: 0 15px;">
 
                             <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                                  <a id="submit" class="btn btn-success btn-sm" role="button"><span class="glyphicon glyphicon-log-in"></span> Redefinir</a>
+                                  <a id="submit" style="background: #007700;" class="btn btn-success btn-sm" role="button"> Redefinir</a>
+								  <a href="{{url("/")}}" class="btn btn-success btn-sm" role="button"> Voltar</a>
                             </div>
 
                         </div>
+						
 
                     {{ Form::close() }}
 					

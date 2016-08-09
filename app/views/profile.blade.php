@@ -42,6 +42,9 @@
                             <label for="radio-choice-f">ELA</label>
                         </fieldset>
 						
+						<br >
+						Imagem de perfil
+						<br >
 						<input type="file" id="imagem" name="imagem">
 
                     </div>

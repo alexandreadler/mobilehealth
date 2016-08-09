@@ -8,15 +8,13 @@ class PhrController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function getIndex()
-	{
+	public function getIndex(){
 		$title = "My Health";
 		return View::make('phr',compact('title'));
 	}
 
 
-	public function getGlucose()
-	{
+	public function getGlucose(){
 
 		$title = "Blood Glucose";
 
@@ -28,8 +26,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function postGlucose()
-	{
+	public function postGlucose(){
 
 		$input = Input::all();
 
@@ -50,8 +47,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function getPressure()
-	{
+	public function getPressure(){
 
 		$title = "Blood Pressure";
 		$pid = Confide::user()->person->id;
@@ -61,8 +57,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function postPressure()
-	{
+	public function postPressure(){
 
 		$input = Input::all();
 
@@ -83,8 +78,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function getWeight()
-	{
+	public function getWeight(){
 		
 		$title = "Weight";
 		$pid = Confide::user()->person->id;
@@ -101,8 +95,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function postWeight()
-	{
+	public function postWeight(){
 
 		$input = Input::all();
 
@@ -121,8 +114,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function getHeight()
-	{
+	public function getHeight(){
 
 		$title = "Height";
 		$pid = Confide::user()->person->id;
@@ -132,8 +124,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function postHeight()
-	{
+	public function postHeight(){
 
 		$input = Input::all();
 
@@ -153,8 +144,7 @@ class PhrController extends \BaseController {
 	}
 
 
-	public function getAllergy()
-	{
+	public function getAllergy(){
 
 		$title = "Allergy";
 
@@ -167,8 +157,7 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function postAllergy()
-	{
+	public function postAllergy(){
 		$input = Input::all();
 
 		$pid = Confide::user()->person->id;
