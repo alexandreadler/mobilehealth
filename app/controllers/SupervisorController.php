@@ -115,10 +115,10 @@ class SupervisorController extends Controller
 		$c = new Content;
 		
 		$author = Input::get('author');
-		$dataCretion = Input::get('author');
-		$title = Input::get('author');
-		$description = Input::get('author');
-		$url = Input::get('author');
+		$dataCretion = Input::get('dataCretion');
+		$title = Input::get('title');
+		$description = Input::get('description');
+		$url = Input::get('url');
 		
 		
 		if(empty($author) or empty($dataCretion) or empty($title) or empty($description) or empty($url)){
@@ -133,6 +133,7 @@ class SupervisorController extends Controller
 				
 				$megERRO = "Contéudo já está cadastrado";
 				return View::make('supervisor.novoConteudo', compact("megERRO"));
+				
 			} else {
 			
 				// verifica se encontra youtube no link
@@ -179,12 +180,18 @@ class SupervisorController extends Controller
 					
 					// link do youtbe
 					
+					
+					$id = substr($url, 32, (strlen($url)));
+					
 					$data = VideoApi::setType('youtube')->getVideoDetail($id);
 					
+					$cid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
 					$frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
 					$file_id = DB::connection("public")->select(DB::raw("insert into file values (nextval('file_id_seq'), 0, null, null, 0,0,0,0,0)"));
 					
-					$c->id                = $cid[0]->nextval;
+					
+					
+					$c->id              = $cid[0]->nextval;
 					$c->p1				= 0;
 					$c->p2				= 0;
 					$c->p3				= 0;
@@ -192,7 +199,7 @@ class SupervisorController extends Controller
 					$c->ss1				= 0;
 					$c->acceptancerate	= 0;
 					$c->bytes_online		= 0;
-					$c->author            = $data["uploader"];
+					$c->author            = Input::get('author');
 					$c->averagerating     = $data["like_count"];
 					$c->date_add          = Carbon\Carbon::now();
 					$c->date_creation     = $data["upload_date"];
@@ -200,7 +207,7 @@ class SupervisorController extends Controller
 					$c->rate_acceptance	= 0;
 					$c->rate_colab_ponder	= 0;
 					$c->rating			= 0;
-					$c->seconds_online    = 0;//$data["duration"];
+					$c->seconds_online    = $data["duration"];
 					$c->subtype           = AppController::VIDEO;
 					$c->title             = $data["title"];
 					$c->type				= 0;

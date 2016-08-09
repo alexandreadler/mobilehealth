@@ -281,8 +281,7 @@ class AppController extends Controller
 	}
 
 	
-    public function getSearch()
-    {
+    public function getSearch() {
 
 	    $show_search = true;
 	    $title = "Youtube Search";
@@ -958,7 +957,6 @@ class AppController extends Controller
 
 	}
 	
-
 	// Redireciona para a página da url recebida am 'a'
 	public function getUrl(){
 		

@@ -40,6 +40,14 @@ class Youtube implements ServicesInterface {
      * @param  string   $id
      * @return mixed
      */
+	 
+	 
+	
+	 
+	 
+	 
+	 
+	
     public function getVideoDetail($id)
     {
         $this->setId($id);
@@ -86,7 +94,15 @@ class Youtube implements ServicesInterface {
 				
 				if($x == 4){
 					
-					$duaration	=	$d->duration;
+					// videos de horas de duração - PT5H21M13S (PThhHmmMssS)
+					// videos com minutos de duração - PT21M13S (PTmmMssS)
+					// videos com segundos de duração - PT13S
+					
+					
+					$duration	=	$d->duration;				
+					$duration = ($this->getHoras($duration)*360) + ($this->getMinutos($duration) * 60) + $this->getSegundos($duration);
+					
+					$duration;
 					
 				}
 				
@@ -101,6 +117,8 @@ class Youtube implements ServicesInterface {
 				$x++;
 			}
 		}
+		
+		
 		
 		return array(
 			'id'              => $id,
@@ -143,8 +161,7 @@ class Youtube implements ServicesInterface {
      * @param   string  $id
      * @return  mixed
      */
-    public function getVideoList($id)
-    {
+    public function getVideoList($id){
         $this->setId($id);
 
         $list = array();
@@ -171,4 +188,121 @@ class Youtube implements ServicesInterface {
         return $list;
     }
 
+	
+	
+	public function getHoras($duration){
+		
+		
+		// Tiver um H então é um videos de horas de duração
+		$teste = strripos($duration, "H");
+		$horas = 0;
+		if($teste){
+			
+			$duration = substr($duration, 2, (strlen($duration)));
+			echo "<br >Horas: " .$duration;
+			
+			if(strcmp($duration[1],"H") == 0){
+				
+				// é H logo tem menos de 10 horas 
+				$horas = $duration[0];
+				
+				
+			} else {
+				
+				// não é H logo tem mais de 10 horas 
+				$horas = $duration[0] . $horas = $duration[1];
+				
+			}
+			
+		} 
+			return $horas;
+		
+	} 
+	
+	
+	
+	
+	public function getMinutos($duration){
+		
+		
+		// Tiver um H então é um videos de minutos de duração
+		$teste = strripos($duration, "M");
+		$minutos = 0;
+		
+		if($teste){
+			
+			$pos = strpos($duration, "M");
+			echo "<br> Posição: " . $pos;
+			
+			
+			if(strcmp($duration[$pos-2],"H") == 0 || strcmp($duration[$pos-2],"T") == 0){
+				
+				// é H logo tem menos de 10 minutos 
+				$minutos = $duration[$pos-1];
+				
+				
+			} else {
+				
+				// não é H logo tem mais de 10 minutos 
+				$minutos = $duration[$pos-2] . $duration[$pos-1];
+				
+			}
+			
+			
+		}
+		
+		return $minutos;
+		
+	}
+	
+	public function getSegundos($duration){
+		
+		
+		// Tiver um H então é um videos de minutos de duração
+		$teste = strripos($duration, "S");
+		$segundos = 0;
+		
+		if($teste){
+			
+			$pos = strlen($duration) - 1;
+			echo "<br> Posição: " . $pos;
+			
+			// Caso tenha 
+			if(strcmp($duration[$pos-2],"M") == 0 || strcmp($duration[$pos-2],"H") == 0 || strcmp($duration[$pos-2],"T") == 0){
+				
+				// é H logo tem menos de 10 segundos 
+				$segundos = $duration[$pos-1];
+				
+				
+			} else {
+				
+				// não é H logo tem mais de 10 segundos 
+				$segundos = $duration[$pos-2] . $duration[$pos-1];
+				
+			}
+			
+			
+		}
+		
+		return $segundos;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
