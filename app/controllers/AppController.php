@@ -1011,10 +1011,12 @@ class AppController extends Controller
 	
 	
 	public function postPublicacao(){
+		
 		$me = Confide::user()->person_id;
 		$input = Input::all();
 		$img = " ";
 		$create_at = \Carbon\Carbon::now();
+		
 		if(Input::hasFile('imagem')){
 			
 			$imagem = Input::file('imagem');	
@@ -1038,6 +1040,10 @@ class AppController extends Controller
 			
 			return View::make('home', compact("megERRO"));
 			
+		} else {
+			
+			DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$me.", '".$input['texto']."', '".$img."', '".$create_at."')"));
+			return Redirect::to("/");
 		}
 		
 		
