@@ -107,6 +107,7 @@
 
         <div class="form-actions form-group">
           <button type="submit" class="btn btn-primary">{{{ Lang::get('confide::confide.signup.submit') }}}</button>
+		  <a href="{{url("/")}}" class="btn btn-success btn-sm" role="button"> Voltar</a>
         </div>
 
     </fieldset>

@@ -19,10 +19,14 @@ class AppController extends Controller
 		//******************************************************************************************************************
 		$message = DB::connection("app")->select(DB::raw("select distinct p.name_first, p.name_last, p.id, m.id_person_from from public.person p, app.message m where m.viewed = false and (m.id_person_to =".Confide::user()->person->id.") and ((m.id_person_from = p.id))"));
 		$name = DB::connection("app")->select(DB::raw("select p.name_first, p.name_last from public.person p where (p.id =".Confide::user()->person->id.")"));
+
 		
 		$name = $name[0]->name_first . " " . $name[0]->name_last;
 		Session::put('fullName', $name);
 		Session::put('profilePicture', 'imgs/'.Confide::user()->photo);
+		
+		
+		
 		
 		if(Confide::user()->type){
 			// Quando supervisor
@@ -280,7 +284,6 @@ class AppController extends Controller
 		}
 	}
 
-	
     public function getSearch() {
 
 	    $show_search = true;
@@ -472,55 +475,6 @@ class AppController extends Controller
 
 	}
 
-	public function getLike($id, $from) {
-
-		//$v = Relatepersoncontent::find($id);
-		
-		
-		$pid = Confide::user()->person->id;
-		
-		// Gerar uma nova visualização (relatepersoncontent)
-		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
-		$v = $v[0];
-
-		if ($v->liked <= 0) {
-			
-			$v = Relatepersoncontent::find($v->id);
-			
-			$v->liked = 1;
-			$v->save();
-
-			$c = Content::find($v->id_content);
-			$c->local_likes += 1;
-			$c->acceptancerate = $c->local_likes / $c->local_views;
-			$c->save();
-
-		}
-
-	}
-
-	public function getUnlike($id, $from) {
-
-		$pid = Confide::user()->person->id;
-		
-		// Gerar uma nova visualização (relatepersoncontent)
-		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
-		$v = $v[0];
-		if ($v->liked >= 0) {
-			
-			$v = Relatepersoncontent::find($v->id);
-			
-			$v->liked = -1;
-			$v->save();
-
-			$c = Content::find($v->id_content);
-			$c->local_likes -= 1;
-			$c->acceptancerate = $c->local_likes / $c->local_views;
-			$c->save();
-		}
-
-	}
-
 	public function getSocial() {
 		$title = "Social";
 		return View::make('social',compact('title'));
@@ -651,7 +605,6 @@ class AppController extends Controller
 
     }
 
-
     public function getPhr(){
 	    $title = "My Health";
 	    return View::make('phr',compact('title'));
@@ -715,6 +668,79 @@ class AppController extends Controller
 		
 		
 	}
+	
+	public function getLike($id, $from) {
+
+		/* 
+			
+			******** MÉTODO APENAS PARA VIDEOS,PARA COMTEÚDOS HÁ O METODO getLikec($id, $from)
+		
+			Não é necessário fazar a verificação para saber se a relação existe,
+		pois os videos são redirecionados para a pagina de visualização atravez do metodo getVideo($id, $from).
+		Lá eu verifica se há a relação, se não existir eu crio a relação e exitir não faz nada
+		
+		*/
+		
+		//$v = Relatepersoncontent::find($id);
+		$pid = Confide::user()->person->id;
+		
+		// Gerar uma nova visualização (relatepersoncontent)
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
+		$v = $v[0];
+
+		if ($v->liked <= 0) {
+			
+			$v = Relatepersoncontent::find($v->id);
+			
+			$v->liked = 1;
+			$v->save();
+
+			$c = Content::find($v->id_content);
+			$c->local_likes += 1;
+			$c->acceptancerate = $c->local_likes / $c->local_views;
+			$c->save();
+			
+			$this->atualizaFreuqnciaPositiva($pid, $id);
+
+		}
+
+	}
+
+	public function getUnlike($id, $from) {
+
+	
+	
+		/* 
+			
+			******** MÉTODO APENAS PARA VIDEOS,PARA COMTEÚDOS HÁ O METODO getUnlikec($id, $from)
+		
+			Não é necessário fazar a verificação para saber se a relação existe,
+		pois os videos são redirecionados para a pagina de visualização atravez do metodo getVideo($id, $from).
+		Lá eu verifica se há a relação, se não existir eu crio a relação e exitir não faz nada
+		
+		*/
+	
+	
+		$pid = Confide::user()->person->id;
+		
+		// Gerar uma nova visualização (relatepersoncontent)
+		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
+		$v = $v[0];
+		if ($v->liked >= 0) {
+			
+			$v = Relatepersoncontent::find($v->id);
+			
+			$v->liked = -1;
+			$v->save();
+
+			$c = Content::find($v->id_content);
+			$c->local_likes -= 1;
+			$c->acceptancerate = $c->local_likes / $c->local_views;
+			$c->save();
+			$this->atualizaFreuqnciaNegativa($pid, $id);
+		}
+
+	}
 
 	public function getLikec() {
 		
@@ -739,9 +765,13 @@ class AppController extends Controller
 			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 			$v = $v[0]->liked;
 			
+			$this->atualizaFreuqnciaPositiva($pid, $id_content);
+			
 		} else {
 			
 			$v = $v[0]->liked;
+			
+			$this->atualizaFreuqnciaPositiva($pid, $id_content);
 			
 		}
 		
@@ -765,6 +795,7 @@ class AppController extends Controller
 			$c->save();
 
 		}
+		
 	
 		return Redirect::to('/');
 	
@@ -792,10 +823,14 @@ class AppController extends Controller
 			
 			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 			$v = $v[0]->liked;
+			
+			$this->atualizaFreuqnciaNegativa($pid, $id_content);
 
 		} else {
 			
 			$v = $v[0]->liked;
+			$this->atualizaFreuqnciaNegativa($pid, $id_content);
+
 		
 		}
 		
@@ -818,8 +853,12 @@ class AppController extends Controller
 			}
 			
 			$c->save();
+			
+			$this->atualizaFreuqnciaNegativa($pid, $id_content);
+			
 		}
 		
+
 		return Redirect::to('/');
 
 	}	
@@ -843,6 +882,7 @@ class AppController extends Controller
 			$c->liked           = 1;
 			$c->person_from			= $_GET['from'];
 			$c->save();
+			  
 			
 		} else {
 			
@@ -993,9 +1033,7 @@ class AppController extends Controller
 		
 		
 	}
-
 	
-	// Redireciona para a página da url recebida am 'a'
 	public function postDesfazeramizade($id){
 		
 		$me = Confide::user()->person_id;
@@ -1008,8 +1046,7 @@ class AppController extends Controller
 		
 		
 	}
-	
-	
+		
 	public function postPublicacao(){
 		
 		$me = Confide::user()->person_id;
@@ -1050,12 +1087,236 @@ class AppController extends Controller
 		
 		
 	}
+		
+	public function diaSemana($diaSemana){
+		
+		if(strcmp($diaSemana, "Monday") == 0){
+			return 0;
+		} else if(strcmp($diaSemana, "Tuesday") == 0){
+			return 1;
+		} else if(strcmp($diaSemana, "Wednesday") == 0){
+			return 2;
+		} else if(strcmp($diaSemana, "Thursday") == 0){
+			return 3;
+		} else if(strcmp($diaSemana, "Friday") == 0){
+			return 4;
+		} else if(strcmp($diaSemana, "Saturday") == 0){
+			return 5;
+		} else {
+			return 6;
+		}
+		
+		
+	}
 	
-	
-	
-	
-	
-	
-	
+	public function atualizaFreuqnciaPositiva($pid, $id_content){
+		
+		
+		// Modifica a zona de tempo a ser utilizada. Disnovível desde o PHP 5.1
+		date_default_timezone_set('America/Sao_Paulo');
 
+		// Exibe alguma coisa como: Monday
+		$diaSemana = $this->diaSemana(date("l"));
+		
+		$hora = date("g");
+		$manhaTarde = date("a");
+		
+		if(strcmp($manhaTarde,"pm") == 0){
+			
+			// Esta de tarde, então somo mais 12 horas
+			$hora += 12;
+			
+		}
+		
+		
+		// Atualiza frequnecia do usuario
+		
+		$id_frequency = DB::connection("app")->select(DB::raw("select p.id_frequency from public.person p where p.id =".$pid));
+		$f = new Frequency;
+		$f = Frequency::where('id', '=', $id_frequency[0]->id_frequency)->get();
+		
+		$f = $f[0];
+
+		
+		$aux = preg_split('/,/', $f->h24_positive, -1, PREG_SPLIT_NO_EMPTY);
+		$aux[$hora-1] = $aux[$hora-1]+ 1; 
+		
+		$f->h24_positive = "";
+		for($i = 0; $i < 24; $i++){
+			
+			$f->h24_positive .= $aux[$i];
+			if($i != 23){
+				$f->h24_positive .= ",";
+			}
+		
+		}
+		
+		$aux = preg_split('/,/', $f->h7_positive, -1, PREG_SPLIT_NO_EMPTY);
+		$aux[$diaSemana] = $aux[$diaSemana]+ 1; 
+		
+		$f->h7_positive = "";
+		for($i = 0; $i < 7; $i++){
+			
+			$f->h7_positive .= $aux[$i];
+			if($i != 23){
+				$f->h7_positive .= ",";
+			}
+		
+		}
+		
+		$f->save();
+		
+		
+		
+		
+		
+		
+		// Atualiza frequnecia do conteudo
+		
+		$id_frequency = DB::connection("app")->select(DB::raw("select c.id_frequency from public.content c where c.id =".$id_content));
+		$f = new Frequency;
+		$f = Frequency::where('id', '=', $id_frequency[0]->id_frequency)->get();
+		
+		$f = $f[0];
+
+		
+		$aux = preg_split('/,/', $f->h24_positive, -1, PREG_SPLIT_NO_EMPTY);
+		$aux[$hora-1] = $aux[$hora-1]+ 1; 
+		
+		$f->h24_positive = "";
+		for($i = 0; $i < 24; $i++){
+			
+			$f->h24_positive .= $aux[$i];
+			if($i != 23){
+				$f->h24_positive .= ",";
+			}
+		
+		}
+		
+		$aux = preg_split('/,/', $f->h7_positive, -1, PREG_SPLIT_NO_EMPTY);
+		$aux[$diaSemana] = $aux[$diaSemana]+ 1; 
+		
+		$f->h7_positive = "";
+		for($i = 0; $i < 7; $i++){
+			
+			$f->h7_positive .= $aux[$i];
+			if($i != 7){
+				$f->h7_positive .= ",";
+			}
+		
+		}
+		
+		$f->save();
+		
+		
+		
+		
+		
+	}
+			
+	public function atualizaFreuqnciaNegativa($pid, $id_content){
+		
+		
+		// Modifica a zona de tempo a ser utilizada. Disnovível desde o PHP 5.1
+		date_default_timezone_set('America/Sao_Paulo');
+
+		// Exibe alguma coisa como: Monday
+		$diaSemana = $this->diaSemana(date("l"));
+		
+		$hora = date("g");
+		$manhaTarde = date("a");
+		
+		if(strcmp($manhaTarde,"pm") == 0){
+			
+			// Esta de tarde, então somo mais 12 horas
+			$hora += 12;
+			
+		}
+		
+		// Atualiza frequnecia do usuario
+		
+		$id_frequency = DB::connection("app")->select(DB::raw("select p.id_frequency from public.person p where p.id =".$pid));
+		$f = new Frequency;
+		$f = Frequency::where('id', '=', $id_frequency[0]->id_frequency)->get();
+		
+		$f = $f[0];
+ 
+		$aux = preg_split('/,/', $f->h24_negative, -1, PREG_SPLIT_NO_EMPTY);
+		$aux[$hora-1] = $aux[$hora-1]+ 1; 
+		
+		$f->h24_negative = "";
+		for($i = 0; $i < 24; $i++){
+			
+			$f->h24_negative .= $aux[$i];
+			if($i != 23){
+				$f->h24_negative .= ",";
+			}
+		
+		}
+		
+		$aux = preg_split('/,/', $f->h7_negative, -1, PREG_SPLIT_NO_EMPTY);
+		
+		
+		
+		$aux[$diaSemana] = $aux[$diaSemana]+ 1; 
+		
+		$f->h7_negative = "";
+		for($i = 0; $i < 7; $i++){
+			
+			$f->h7_negative .= $aux[$i];
+			if($i != 7){
+				$f->h7_negative .= ",";
+			}
+		
+		}
+		
+		$f->save();
+		
+		
+		
+		
+		
+		
+		// Atualiza frequnecia do conteudo
+		
+		$id_frequency = DB::connection("app")->select(DB::raw("select c.id_frequency from public.content c where c.id =".$id_content));
+		$f = new Frequency;
+		$f = Frequency::where('id', '=', $id_frequency[0]->id_frequency)->get();
+		
+		$f = $f[0];
+
+		
+		$aux = preg_split('/,/', $f->h24_negative, -1, PREG_SPLIT_NO_EMPTY);
+		$aux[$hora-1] = $aux[$hora-1]+ 1; 
+		
+		$f->h24_negative = "";
+		for($i = 0; $i < 24; $i++){
+			
+			$f->h24_negative .= $aux[$i];
+			if($i != 23){
+				$f->h24_negative .= ",";
+			}
+		
+		}
+		
+		$aux = preg_split('/,/', $f->h7_negative, -1, PREG_SPLIT_NO_EMPTY);
+		$aux[$diaSemana] = $aux[$diaSemana]+ 1; 
+		
+		$f->h7_negative = "";
+		for($i = 0; $i < 7; $i++){
+			
+			$f->h7_negative .= $aux[$i];
+			if($i != 23){
+				$f->h7_negative .= ",";
+			}
+		
+		}
+		
+		$f->save();
+		
+		
+		
+		
+		
+	}
 }

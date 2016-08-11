@@ -15,8 +15,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function getCreate()
-    {
+    public function getCreate(){
 	    return View::make('user.signup');
     }
 
@@ -25,8 +24,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function postIndex()
-    {
+    public function postIndex(){
         $repo = App::make('UserRepository');
         $user = $repo->signup(Input::all());
 		
@@ -44,7 +42,8 @@ class UsersController extends Controller
             }
 
 	        $pid = DB::connection("public")->select(DB::raw("SELECT nextval('person_seq')"));
-
+			
+			
 	        $p = new Person;
 	        $p->id = $pid[0]->nextval;
 			$p->name_first = Input::get('firstname');
@@ -52,10 +51,14 @@ class UsersController extends Controller
 			$p->date_birth = Carbon\Carbon::now();
 			$p->gender = $user->gender;
 			$p->date_birth = Input::get('datebirth');
+			$p->disease = Input::get('disease');
 	        
 			
 			$p->save();
 
+			$frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
+			$frequenci_id = DB::connection("public")->select(DB::raw("update person set id_frequency=(currval('frequency_id_seq')) where id=".$p->id));
+			
 	        $id = $p->id;
 	        $user->person_id = $id;
 			
@@ -123,8 +126,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function getLogin()
-    {
+    public function getLogin() {
         if (Confide::user()) {
             return Redirect::to('/');
         } else {
@@ -138,8 +140,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function postLogin()
-    {
+    public function postLogin() {
         $repo = App::make('UserRepository');
         $input = Input::all();
 
@@ -173,8 +174,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function getConfirm($code)
-    {
+    public function getConfirm($code) {
         if (Confide::confirm($code)) {
             $notice_msg = Lang::get('confide::confide.alerts.confirmation');
             return Redirect::action('UsersController@postLogin')
@@ -191,8 +191,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function getForgot()
-    {
+    public function getForgot() {
         return View::make(Config::get('confide::forgot_password_form'));
     }
 
@@ -201,8 +200,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function postForgot()
-    {
+    public function postForgot() {
 
 		$us = new User();
         $username = $_POST['username'];
@@ -266,8 +264,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function getReset($token)
-    {
+    public function getReset($token){
         return View::make(Config::get('confide::reset_password_form'))
                 ->with('token', $token);
     }
@@ -277,8 +274,7 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function postForgotpassword()
-    {
+    public function postForgotpassword() {
 		
         $repo = App::make('UserRepository');
 		
@@ -316,26 +312,22 @@ class UsersController extends Controller
      *
      * @return  Illuminate\Http\Response
      */
-    public function getLogout()
-    {
+    public function getLogout(){
         Confide::logout();
 
         return Redirect::to('/');
     }
-
 
 	/**
 	 * Display a listing of users
 	 *
 	 * @return Response
 	 */
-	public function listar()
-	{
+	public function listar(){
 		$users 	= User::all();
 
 		return View::make('user.list', compact('users'));
 	}
-
 
 	public function testemail($email, $token) {
 
@@ -360,17 +352,6 @@ class UsersController extends Controller
 
 	}
 	
-	
-	
-	public function getNewfriend($newFrind){
-		
-		
-		
-		
-		
-		
-		
-	}
 	
 
 }
