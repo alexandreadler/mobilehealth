@@ -25,9 +25,6 @@ class AppController extends Controller
 		Session::put('fullName', $name);
 		Session::put('profilePicture', 'imgs/'.Confide::user()->photo);
 		
-		
-		
-		
 		if(Confide::user()->type){
 			// Quando supervisor
 			
@@ -38,7 +35,7 @@ class AppController extends Controller
 			
 				$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id order by rpc.date_relation desc"));	
 
-			//************************************ [FIM] Recupera os cpnteudos do FEED **********************************************************
+			//************************************ [FIM] Recupera os conteudos do FEED **********************************************************
 			//******************************************************************************************************************
 			
 			
@@ -373,16 +370,18 @@ class AppController extends Controller
 	public function getVideo($id, $from) {
 		
 		$data = VideoApi::setType('youtube')->getVideoDetail($id);
-
+		$pid = Confide::user()->person->id;
 		$cid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
 
 		// Criar o conteúdo, caso não exista
 		$c = Content::where('url_online','=',AppController::BASE_YOUTUBE_URL . $data["id"])->count();
 
-		if (!$c) {
+		if (empty($c)) {
 			
 			$frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
 			$file_id = DB::connection("public")->select(DB::raw("insert into file values (nextval('file_id_seq'), 0, null, null, 0,0,0,0,0)"));
+			
+			
 			
 			$content                    = new Content;
 			$content->id                = $cid[0]->nextval;
@@ -401,7 +400,7 @@ class AppController extends Controller
 			$content->rate_acceptance	= 0;
 			$content->rate_colab_ponder	= 0;
 			$content->rating			= 0;
-			$content->seconds_online    = 0;//$data["duration"];
+			$content->seconds_online    = $data["duration"];
 			$content->subtype           = AppController::VIDEO;
 			$content->title             = $data["title"];
 			$content->type				= 0;
@@ -414,26 +413,38 @@ class AppController extends Controller
 			$content->thumburl          = $data["thumbnail_small"];
 			$content->vid               = $data["id"];
 			$content->font 			= false;
+			
+			
+			
 			$content->save();
+			
+			
 			
 			$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
 			$file_id = DB::connection("public")->select(DB::raw("update content set id_file=(currval('file_id_seq')) where id=currval('content_seq')"));
 			
-			
 		} else {
+			
+			
 			
 			$rc = new Recommendation;
 			$con = Content::where('vid', '=', $data["id"])->get();
-			$pid = Confide::user()->person->id;
-			$rc = Recommendation::where('id_person', '=', $pid)
-								->where('id_content', '=', $con[0]->id)->get();
-
-								
-			$rc = $rc[0];
-			$rc->visited = true;
-			$rc->save();
+			
+			$rc = Recommendation::where('id_person', '=', $pid)->where('id_content', '=', $con[0]->id)->get();
+			
+			if(empty($rc)){
+				
+				dd($rc);
+				$rc[0]->visited = true;
+				$rc[0]->save();
+				
+				
+			}
+			
+			
 			
 			$content = Content::where('url_online','=',AppController::BASE_YOUTUBE_URL . $data["id"])->first();
+
 			$content->local_views+= 1;
 
 			if ($content->local_likes)
@@ -443,7 +454,7 @@ class AppController extends Controller
 			
 			$content->save();
 		}
-
+		
 		// Gerar uma nova visualização (relatepersoncontent)
 		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$content->id." and liked <> 2 and person_from=".$from));
 		
@@ -470,7 +481,6 @@ class AppController extends Controller
 		}
 		
 		$idcontent = $content->id;
-		
 		return View::make('video', compact("id","data", 'idcontent', 'from'));
 
 	}

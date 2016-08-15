@@ -86,6 +86,9 @@ class Youtube implements ServicesInterface {
 							$description   		= $d->description;
 							$upload_date   		= $d->publishedAt;
 							$channelId			= $d->channelId;
+							
+							
+							
 							$thumbnail_small	= $f->url;
 							$y++;
 						}	
@@ -119,6 +122,12 @@ class Youtube implements ServicesInterface {
 		}
 		
 		
+		if(empty($description)){
+			
+			$description = "  ";
+		}
+		
+		
 		
 		return array(
 			'id'              => $id,
@@ -130,7 +139,7 @@ class Youtube implements ServicesInterface {
             'like_count'      => isset($like_count) ? $like_count: 0,
             'view_count'      => isset($view_count) ? $view_count : 0,
             'comment_count'   => isset($comment_count) ? $comment_count : 0,
-			//'uploader'        => $channelId
+			'uploader'        => $channelId
 		
 		);
 		

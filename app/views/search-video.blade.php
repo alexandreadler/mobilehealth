@@ -14,7 +14,7 @@
 				@for($x = 0; $x < $w; $x++)
 					<div class="video">
 						<span class="thumbnail">
-							<a href="{{url("/app/video/" . $r[$x]['videoId'])}}">
+							<a href="{{url("/app/video/" . $r[$x]['videoId']."/-2")}}">
 							<img src="{{$r[$x]['thumbnailDefautlUrl']}}" align="left" />
 							<p class="title">{{Str::limit($r[$x]['title'],40)}}</p>
 							<p class="desc">{{ Str::limit($r[$x]['description'], 120) }}</p>
