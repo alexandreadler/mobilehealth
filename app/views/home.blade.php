@@ -300,7 +300,8 @@
 
 										<p>{{$p->texto}}</p>
 										@if(strcmp($p->imagem, ' ') != 0)
-											{{ HTML::image('imgs/'.$p->imagem, '') }}
+											<img id="imageFromPost" src="imgs/{{$p->imagem}}" />
+											
 										@endif
 
 
@@ -642,6 +643,17 @@ $('#save').click(function(){
 		
 	}
 	
+	
+	#imageFromPost {
+		
+		
+		margin: 10px;
+		height: 80%;
+		width: 80%;
+		
+		
+	}
+	
 	.contentPost{
 		
 		border-left: solid 2px gray;
@@ -657,6 +669,8 @@ $('#save').click(function(){
 	}
 	
 	.textPost{
+		
+		
 		margin: 5px;
 		clear: both;
 		
@@ -664,6 +678,7 @@ $('#save').click(function(){
 	
 	.divBottom{
 		
+
 		padding: 0;
 		margin: 0;
 		
