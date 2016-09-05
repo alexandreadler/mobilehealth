@@ -254,10 +254,8 @@ class AppController extends Controller
 				$c = Content::whereIn('id',$rcs)->where('subtype','=','2')->take(3)->get();
 				$c2 = Content::whereIn('id',$rcs)->where('subtype','=','3')->take(3)->get();
 			}
-			
-
 		
-		//************************************ Recupera os cpnteudos do FEED **********************************************************
+		//************************************ Recupera os conteudos do FEED **********************************************************
 		//******************************************************************************************************************
 		
 			$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id"));	
@@ -269,12 +267,95 @@ class AppController extends Controller
 		//************************************ Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 		
-			$posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =".$pid.")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person"));	
+			$posts = DB::connection("public")->select(DB::raw("select pt.*, p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =".$pid.")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));	
 
 		//************************************ [FIM] Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 		
 			
+		
+			// verifica se encontra youtube no texto
+			for($i =0; $i < count($posts); $i++){
+				
+				$pos = strripos($posts[$i]->texto, "youtube.com");
+				
+				if(!($pos === false)){
+					
+					// Encontrou
+					
+					$pos  = strripos($posts[$i]->texto, "?v=");
+					$temp = substr($posts[$i]->texto, $pos);
+					// retorna ?v=IdVideo[...]
+					
+					
+					// Decobre se existe um espaço depois do IdVideo
+					$pos  = strpos($temp, ' ');
+					
+					$pos  = strripos($posts[$i]->texto, "=");
+					$temp = substr($posts[$i]->texto, $pos+1);
+					
+					$vid = "";
+					
+					if($pos >= 0){
+						
+						// Significa que o link do youtube não está no final da string [...] https://www.youtube.com/?v=IdVideo [...]
+						
+					
+						for($j = 0; $j < strlen($temp);$j++){
+						
+							if(strcmp($temp[$j], ' ') == 0){
+								break;							
+							} else {
+								$vid .= $temp[$j];								
+							}
+
+						}
+						
+						
+						
+						
+					} else {
+						
+						// Link é a última coisa do texto.
+						
+						for($i = 0; $i < strlen($temp);$i++){
+
+								$vid .= $temp[$i];								
+
+						}
+						
+						
+					}
+					
+					// ************************* codigo para tentar mesclar array *************************************************
+						$data = VideoApi::setType('youtube')->getVideoDetail($vid);
+						$aux = array();
+						
+						//dd($data);
+						//print_r($posts[0]);
+						
+						for($j = 0; $j < count($posts);$j++){
+							
+							if($j == $i){
+								
+								$posts[$i] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => $posts[$j]->imagem, "create_at" => $posts[$j]->create_at, "name_first" => $posts[$j]->name_first, "photo" => $posts[$j]->photo, "photo" => $posts[$j]->photo, "vid" => $data["id"], "title" => $data["title"], "description" => $data["description"], "thumburl" => $data["thumbnail_small"]];
+							
+							}
+						}
+						
+					
+					// **************************************************************************
+					
+					
+				} 
+				
+				
+				
+			}
+	
+			//echo "<br >".$posts[0]->id."<br >";
+		
+			//dd($posts);
 		
 			$title = "Feed";			
 			return View::make('home',compact('c', 'c2', 'message', 'title', 'contents', 'posts', 'pid'));
@@ -373,6 +454,11 @@ class AppController extends Controller
 		$pid = Confide::user()->person->id;
 		$cid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
 
+		if($from == -2){
+			
+			return View::make('video-search', compact("id","data"));
+			
+		}
 		// Criar o conteúdo, caso não exista
 		$c = Content::where('url_online','=',AppController::BASE_YOUTUBE_URL . $data["id"])->count();
 
@@ -433,8 +519,7 @@ class AppController extends Controller
 			$rc = Recommendation::where('id_person', '=', $pid)->where('id_content', '=', $con[0]->id)->get();
 			
 			if(empty($rc)){
-				
-				dd($rc);
+		
 				$rc[0]->visited = true;
 				$rc[0]->save();
 				
@@ -681,6 +766,8 @@ class AppController extends Controller
 	
 	public function getLike($id, $from) {
 
+		$pid = Confide::user()->person->id;
+	
 		/* 
 			
 			******** MÉTODO APENAS PARA VIDEOS,PARA COMTEÚDOS HÁ O METODO getLikec($id, $from)
@@ -691,27 +778,47 @@ class AppController extends Controller
 		
 		*/
 		
-		//$v = Relatepersoncontent::find($id);
-		$pid = Confide::user()->person->id;
+		if($from == -2){
+			
+			/*
+				$from > 0 -> Vindo de usurários
+				$from == -1 -> Vem de uma recpmendação do mobilehealth
+				$from == -2 -> vem de uma pesquisa, seja video ou web
+			
+			*/
+			
+			// vídeo de uma pesquisa, ou seja, será tratado como um post
+			$id = "https://www.youtube.com/watch?v=".$id;
+			$create_at = \Carbon\Carbon::now();
+			DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$pid.", '".$id."',' ', '".$create_at."')"));
+			
+			
+			
+		} else {
 		
-		// Gerar uma nova visualização (relatepersoncontent)
-		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
-		$v = $v[0];
-
-		if ($v->liked <= 0) {
+		
+			//$v = Relatepersoncontent::find($id);
 			
-			$v = Relatepersoncontent::find($v->id);
 			
-			$v->liked = 1;
-			$v->save();
+			// Gerar uma nova visualização (relatepersoncontent)
+			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
+			$v = $v[0];
 
-			$c = Content::find($v->id_content);
-			$c->local_likes += 1;
-			$c->acceptancerate = $c->local_likes / $c->local_views;
-			$c->save();
-			
-			$this->atualizaFreuqnciaPositiva($pid, $id);
+			if ($v->liked <= 0) {
+				
+				$v = Relatepersoncontent::find($v->id);
+				
+				$v->liked = 1;
+				$v->save();
 
+				$c = Content::find($v->id_content);
+				$c->local_likes += 1;
+				$c->acceptancerate = $c->local_likes / $c->local_views;
+				$c->save();
+				
+				$this->atualizaFreuqnciaPositiva($pid, $id);
+
+			}
 		}
 
 	}
@@ -754,13 +861,16 @@ class AppController extends Controller
 
 	public function getLikec() {
 		
+		
 		$pid = Confide::user()->person->id;
 		$id_content = $_GET['id'];
 		
+		dd($id_content);
+		
 		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
-
+		
 		if(empty($v)){
-			
+				
 			$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
 		
 			$c = new Relatepersoncontent;
@@ -779,13 +889,20 @@ class AppController extends Controller
 			
 		} else {
 			
+			
+			
 			$v = $v[0]->liked;
 			
 			$this->atualizaFreuqnciaPositiva($pid, $id_content);
-			
+
 		}
 		
+		
+		
 		if ($v == 0 || $v == -1) {
+			
+			
+			
 			$v = 1;
 			$u = DB::connection("public")->select(DB::raw("update relatepersoncontent set liked =".$v." where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 
@@ -1122,11 +1239,15 @@ class AppController extends Controller
 	public function atualizaFreuqnciaPositiva($pid, $id_content){
 		
 		
+		
+		
 		// Modifica a zona de tempo a ser utilizada. Disnovível desde o PHP 5.1
 		date_default_timezone_set('America/Sao_Paulo');
 
 		// Exibe alguma coisa como: Monday
 		$diaSemana = $this->diaSemana(date("l"));
+		
+		
 		
 		$hora = date("g");
 		$manhaTarde = date("a");
@@ -1143,10 +1264,14 @@ class AppController extends Controller
 		
 		$id_frequency = DB::connection("app")->select(DB::raw("select p.id_frequency from public.person p where p.id =".$pid));
 		$f = new Frequency;
-		$f = Frequency::where('id', '=', $id_frequency[0]->id_frequency)->get();
 		
+		
+		
+		$f = Frequency::where('id', '=', $id_frequency[0]->id_frequency)->get();
+		dd($id_frequency);
 		$f = $f[0];
 
+		
 		
 		$aux = preg_split('/,/', $f->h24_positive, -1, PREG_SPLIT_NO_EMPTY);
 		$aux[$hora-1] = $aux[$hora-1]+ 1; 
@@ -1329,4 +1454,18 @@ class AppController extends Controller
 		
 		
 	}
-}
+
+	
+	public function testando(){
+		
+		echo "Imprimir nada";
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	}

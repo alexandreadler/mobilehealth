@@ -113,7 +113,12 @@ class Youtube implements ServicesInterface {
 					
 					$view_Count			= $d->viewCount;
 					$like_Count			= $d->likeCount;
-					$comment_Count		= $d->commentCount;
+					
+					if(isset($d->commentCount)){
+						$comment_Count		= $d->commentCount;
+					}
+					
+					
 					
 					break;
 				}	
@@ -208,7 +213,6 @@ class Youtube implements ServicesInterface {
 		if($teste){
 			
 			$duration = substr($duration, 2, (strlen($duration)));
-			echo "<br >Horas: " .$duration;
 			
 			if(strcmp($duration[1],"H") == 0){
 				
@@ -241,7 +245,7 @@ class Youtube implements ServicesInterface {
 		if($teste){
 			
 			$pos = strpos($duration, "M");
-			echo "<br> Posição: " . $pos;
+			
 			
 			
 			if(strcmp($duration[$pos-2],"H") == 0 || strcmp($duration[$pos-2],"T") == 0){
@@ -274,7 +278,7 @@ class Youtube implements ServicesInterface {
 		if($teste){
 			
 			$pos = strlen($duration) - 1;
-			echo "<br> Posição: " . $pos;
+			
 			
 			// Caso tenha 
 			if(strcmp($duration[$pos-2],"M") == 0 || strcmp($duration[$pos-2],"H") == 0 || strcmp($duration[$pos-2],"T") == 0){
