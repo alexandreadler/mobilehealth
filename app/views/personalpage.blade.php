@@ -78,7 +78,8 @@
 											<img src="{{url('imgs/'.$p->imagem)}}" width="50%" />
 
 										@endif
-			
+										
+										<p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
 
 								</div>
 								
@@ -126,7 +127,7 @@
 												</a>
 											</span>
 										</div>
-								
+										
 									@else
 								
 										<p>{{$con->title}}</p>
@@ -135,6 +136,8 @@
 											<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
 												
 										</p>
+										
+										
 									
 									@endif
 								</div>

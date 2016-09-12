@@ -43,6 +43,37 @@
                         </fieldset>
 						
 						<br >
+						
+						<label for="disease">
+							Tempo com a doença: 
+						</label>
+
+						<select name="tempodoenca">
+							<option value="1" @if($tempodoenca == "1")selected="selected"@endif>até 2 anos</option>
+							<option value="2" @if($tempodoenca == "2")selected="selected"@endif>de 2 a 5 anos</option>
+							<option value="3" @if($tempodoenca == "3")selected="selected"@endif>de 5 a 7 anos</option>
+							<option value="4" @if($tempodoenca == "4")selected="selected"@endif>de 7 a 10 anos</option>
+							<option value="5" @if($tempodoenca == "5")selected="selected"@endif>mais de 10 anos</option>
+						</select>
+						
+						
+						<br>
+						<br>
+						
+						<label >
+							Afinidade com a tecnologia: 
+						</label>
+
+						<select name="afinidade">
+							<option value="1" @if($afinidade == "1")selected="selected"@endif>Baixa</option>
+							<option value="2" @if($afinidade == "2")selected="selected"@endif>Media</option>
+							<option value="3" @if($afinidade == "3")selected="selected"@endif>Alta</option>
+						</select>
+						
+						
+						<input type="hidden" name="supervisor" value="false"><br>
+
+						<br >
 						Imagem de perfil
 						<br >
 						<input type="file" id="imagem" name="imagem">

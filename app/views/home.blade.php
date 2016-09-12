@@ -32,7 +32,14 @@
 	
 	
 	<div id="content">	
+	
+	
+	
 		<div class="conteudo"  id="Rec">
+		<!-- Div geral para os contúedos recomendados pelo mobilehealth, é separada da rede social para dar maior foco as recomendações; 
+			 É a página inical do mobilehealth -->
+		
+		
 			<div class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a" style="border-radius:5px 5px 0px 0px;">
                     <h3>Videos recomendados</h3>
@@ -122,10 +129,13 @@
 			
 			
 			
-		</div>
+		</div> <!-- Fecha div REC -->
 		
 		
 		<div class="conteudo" id="Feed">
+		<!-- Div geral para os Feed da rede social do mobilehealth, é separada, pois dar maior foco as recomendações; -->
+			 
+			 
 			<div id="userpost" style="margin: 20px;">
 				<h4>Compartilhe suas esperiências</h4>
 				<form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
@@ -229,6 +239,11 @@
 
 			@endif
 
+			
+			
+			
+		<!-- Videos compartilhados no feed;
+			É separado para facilitar a inplemnetação;-->
 		@if(isset($contents))
 			@if(!empty($contents))
 				@foreach($contents as $con)
@@ -242,8 +257,6 @@
 							<div class="contentPost"> 
 								<div class="namePost">
 								{{$con->name_first}}
-								
-								----------------------------------------- {{$con->id}}
 								
 								</div>
 								
@@ -286,7 +299,7 @@
 				@endif
 			@endif
 			
-			
+			<!-- Compartilhamento de post (Texto e Imagens) -->
 			@if(isset($posts))
 				@if(!empty($posts))
 					@foreach($posts as $p)
@@ -307,7 +320,7 @@
 										<p>
 											{{$p->texto}}
 											
-											
+											<!-- Caso o texto tenha algum link do youtube -->
 											@if(!empty($p->thumburl))
 												<div class="video">
 													<span class="thumbnail" >

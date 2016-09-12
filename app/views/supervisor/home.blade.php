@@ -191,6 +191,9 @@
 											</p>
 										
 										@endif
+										
+										<p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
+										
 									</div>
 									
 									<div class="divBottom">
@@ -228,8 +231,22 @@
 											@if(strcmp($p->imagem, ' ') != 0)
 												{{ HTML::image('imgs/'.$p->imagem, '') }}
 											@endif
-
-
+											
+											<!-- Caso o texto tenha algum link do youtube -->
+											@if(!empty($p->thumburl))
+												<div class="video">
+													<span class="thumbnail" >
+														<a href="{{url("/app/video/" . $p->vid."/".$p->person)}}" target="new">
+														<img src="{{$p->thumburl}}" align="left" />
+														<p class="title">{{Str::limit($p->title,40)}}</p>
+														<p class="desc">{{ Str::limit($p->description, 120) }}</p>
+														</a>
+													</span>
+												</div>
+										
+											
+											@endif
+											<p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
 									</div>
 									
 									<div class="divBottom">

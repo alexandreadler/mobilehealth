@@ -19,9 +19,15 @@ class ProfileController extends \BaseController {
 		$pid    = $user->person_id;
 
 		$person = $user->person;
+		
+		$tempodoenca = $user->tempodoenca;
+		
+		$afinidade = $user->afinidade;
+		
+		//dd($user);
 
 		$title = 'Profile';
-		return View::make('profile',compact('title','pid','person'));
+		return View::make('profile',compact('title','pid','person', 'tempodoenca', 'afinidade'));
 		
 	}
 
@@ -42,7 +48,7 @@ class ProfileController extends \BaseController {
 		//********************************* REUPERA os posts do usuario **************************************************
 		//*****************************************************************************************************************
 		
-		$posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = ".$pid));
+		$posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = ".$pid . " order by create_at desc"));
 		
 		//********************************* [FIM] REUPERA os posts do usuario **************************************************
 		//*****************************************************************************************************************
@@ -71,7 +77,7 @@ class ProfileController extends \BaseController {
 		//********************************* REUPERA os posts do usuario **************************************************
 		//*****************************************************************************************************************
 		
-		$posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = ".$pid));
+		$posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = ".$pid . " order by create_at desc"));
 		
 		//********************************* [FIM] REUPERA os posts do usuario **************************************************
 		//*****************************************************************************************************************
@@ -79,16 +85,19 @@ class ProfileController extends \BaseController {
 		//************************************ Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 		
-			$contents = DB::connection("public")->select(DB::raw("select c.* from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (".$pid." = rpc.id_person) and (rpc.liked = 2)"));	
+		$contents = DB::connection("public")->select(DB::raw("select c.* from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (".$pid." = rpc.id_person) and (rpc.liked = 2)"));	
 			//$contents = DB::connection("public")->select(DB::raw("select p.id as id_person, p.name_first, u.photo, c.*  from public.person as p inner join app.users as u on p.id = u.person_id and p.id in (select rpc.person_from from public.relatepersoncontent as rpc where liked = 2 and id_person = ".$pid.") or p.id inner join public.content as c on c.id in (select rpc.id_content from public.relatepersoncontent as rpc where liked = 2 and person_from = p.id)"));	
 		
 		//************************************ [FIM] Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
 
-			$person = $person[0];
-			$title = "Página Pessoal: ". $person->name_first;	
+		$person = $person[0];
+		$title = "Página Pessoal: ". $person->name_first;	
 			
-			return View::make('personalpagefriend',compact('person', 'title', 'contents', 'posts'));
+			
+		
+		
+		return View::make('personalpagefriend',compact('person', 'title', 'contents', 'posts'));
 		
 	}
 	
