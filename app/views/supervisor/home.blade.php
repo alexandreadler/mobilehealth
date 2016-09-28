@@ -1,4 +1,5 @@
 @extends("layout.main-mobile")
+
 @section("content")
 
 
@@ -76,6 +77,8 @@
 										    		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up " style="font-size:10px;"> Aprovar Fonte</a>
 										    		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
 												</div>
+												
+				
 											@endif
 										
 										</span>
@@ -152,9 +155,9 @@
 				</div>
 			
 
-			@if(isset($contents))
-				@if(!empty($contents))
-					@foreach($contents as $con)
+				@if(isset($contents))
+					@if(!empty($contents))
+						@foreach($contents as $con)
 							<div class="post" >
 								<div class="headPost">
 									<div class="imgPost" >
@@ -164,7 +167,7 @@
 								
 								<div class="contentPost"> 
 									<div class="namePost">
-									{{$con->name_first}}
+										{{$con->name_first}}
 									</div>
 									
 									<div class="textPost">
@@ -192,7 +195,7 @@
 										
 										@endif
 										
-										<p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
+										<p style="font-size: 10px; color: gray;">{{$con->create_at}}</p>
 										
 									</div>
 									
@@ -202,8 +205,16 @@
 											<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
 											<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}&from={{$con->id_person}}');mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 										</ul>
-									</div>
+									</div>	
+									
+										
+									<!-- Comentários para um post-->
+									<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$con->idpost)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso 22</a></p></div>
+									
+										
 								</div>
+								
+
 							</div>
 						@endforeach	
 					@endif
@@ -251,22 +262,29 @@
 									
 									<div class="divBottom">
 										<ul class="bottom">
-											<a id="alikep" onclick="like('{{url('app/likep?id=Confide::user()->person->id&from=$p->person')}}');mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-											<a id="aulikep" onclick="unlike('{{url('app/unlikep?id=Confide::user()->person->id&from=$p->person')}}');mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-											<a id="acomp" onclick="comp('{{url('app/compp?id_post=$p->id&from=$p->person')}}');mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+											<a id="alikep" onclick="like('app/likep?id={{$p->id}}&from={{$p->person}}');mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+											<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}&from={{$p->person}}');mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+											<a id="acomp" onclick="comp('app/compp?id_post={{$p->id}}&from={{$p->person}}');mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 										</ul>
+										
+													
+										<!-- Comentários para um post-->
+										<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$p->id)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso</a></p></div>
+										
+										
 									</div>
+									
 								</div>
 							</div>
-					@endforeach
+						@endforeach
+					@else
+						Sem Resultados.
+					@endif
 				@else
 					Sem Resultados.
 				@endif
-			@else
-				Sem Resultados.
-			@endif
 			
-		</div><!-- /Feed -->
+			</div><!-- /Feed -->
 			
 			
 			
@@ -436,10 +454,8 @@ function mudaFundoCompp(div){
 	
 	
 	$('#save').click(function(){
-    $('#form').submit()
-});
-
-	
+		$('#form').submit()
+	});
 	
 
 @stop
@@ -450,198 +466,240 @@ function mudaFundoCompp(div){
 
 @section("style")
 
-	#like {
-        background: #7B7;
-    }
-    #like:hover {
-        background: #BEB;
-    }
 
-    #unlike {
-        background: #E66;
-    }
-    #unlike:hover {
-        background: #F88;
-    }
+			
+			
+			
+		#like {
+			background: #7B7;
+		}
+		#like:hover {
+			background: #BEB;
+		}
 
-    .thumbnail {
-        display: block;
-        height: 120px;
-    }
+		#unlike {
+			background: #E66;
+		}
+		#unlike:hover {
+			background: #F88;
+		}
 
-    .thumbnail img {
-        margin: 5px !important;
-    }
-    .thumbnail .title {
-        padding: 2px 5px 0;
-        margin: 0;
-        font-weight: bold;
-        font-size: 0.8em
-    }
-    .thumbnail .desc {
-        font-size: 0.7em;
-        font-weight: normal;
-        padding: 2px 0;
-        margin: 0;
-    }
-    .thumbnail a {
-        text-decoration: none;
-        color: #000 !important;
-        font-weight: normal;
-    }
-	
-	
-	
-	
-	
-	
-	
-	.TabControl{
-		width:100%; 
-		overflow-y:scroll; 
-		height:400px;
-		
-	} 
-	
-	.TabControl #header{ 
-		width:100%; 
-		cursor:hand;
-		
-	} 
-	
-	.TabControl #content{
-		width:100%; 
-		height: 500px;
-		margin-botton: 50%;
-		
-	}
+		.thumbnail {
+			display: block;
+			height: 120px;
+		}
 
-	
-	.TabControl .abas{
-		display:block;
-		list-style-type: none;
-		padding: 0;
+		.thumbnail img {
+			margin: 5px !important;
+		}
+		.thumbnail .title {
+			padding: 2px 5px 0;
+			margin: 0;
+			font-weight: bold;
+			font-size: 0.8em
+		}
+		.thumbnail .desc {
+			font-size: 0.7em;
+			font-weight: normal;
+			padding: 2px 0;
+			margin: 0;
+		}
+		.thumbnail a {
+			text-decoration: none;
+			color: #000 !important;
+			font-weight: normal;
+		}
 		
 		
-	}
-	
-	.TabControl .abas li{
-		width: 50%;
-		float:left;
-	}
-	
+		.TabControl{
+			width:100%; 
+			overflow-y:scroll; 
+			height:400px;
+			
+		} 
+		
+		.TabControl #header{ 
+			width:100%; 
+			cursor:hand;
+			
+		} 
+		
+		.TabControl #content{
+			width:100%; 
+			height: 500px;
+			margin-botton: 50%;
+			
+		}
 
-	
-	.aba{
-		width:100%;
-		height:30px;
-		border-radius:5px 5px 0 0;
-		text-align:center;
-		border-left: solid  1px #9ee88b;
-		border-right: solid  1px #9ee88b;
 		
-	}
+		.TabControl .abas{
+			display:block;
+			list-style-type: none;
+			padding: 0;
+			
+			
+		}
+		
+		.TabControl .abas li{
+			width: 50%;
+			float:left;
+		}
+		
 
-	
-	.TabControl .conteudo{
-		width:100%; 
-		display:block;
-		color:#fff;
-		border-radius: 5px 5px 0px 0px;
 		
-	}
+		.aba{
+			width:100%;
+			height:30px;
+			border-radius:5px 5px 0 0;
+			text-align:center;
+			border-left: solid  1px #9ee88b;
+			border-right: solid  1px #9ee88b;
+			
+		}
 
-	#Rec{
-		display:block;
-	}	
-	
-	#Feed{
-		display:none;
-	}
-	
-	
-	
-	.post{
+		
+		.TabControl .conteudo{
+			width:100%; 
+			display:block;
+			color:#fff;
+			border-radius: 5px 5px 0px 0px;
+			
+		}
 
-		display:block;
-		color: black;
-		clear:both;
-	}
-	
-	.imgPost {
-		float: left;
-		display:block;
-		height: 80px;
-		width: 80px;
+		#Rec{
+			display:block;
+		}	
 		
-	}
-		
-	#picture {
-		margin: 10px;
-		height: 80px;
-		width: 80px;
-	}
-	
-	.namePost {
-		
-		font-weight:bold;
-		float:left;
-		margin: 15px;
-		
-	}
-	
-	.contentPost{
-		
-		border-left: solid 2px gray;
-		border-top: solid 2px gray;
-		border-radius:5px 0 0 0;
-		margin: 15px;
-		float:left;
-		display:block;
-		width: 100%;
-		height: auto;
+		#Feed{
+			display:none;
+		}
 		
 		
-	}
-	
-	.textPost{
-		margin: 5px;
-		clear: both;
 		
-	}
-	
-	.divBottom{
+		.post{
+
+			display:block;
+			color: black;
+			clear:both;
+		}
 		
-		padding: 0;
-		margin: 0;
+		.imgPost {
+			float: left;
+			display:block;
+			height: 80px;
+			width: 80px;
+			margin: 10px;
+			
+		}
 		
-	}
-	
-	.bottom {
-		margin:0;
-		padding:0;
-		display:block;
-		overflow: auto;
-	}
-	
-	.bottom li{
-		margin:0;
-		padding:0;
-		display:block;
-		list-style-type: none;
-		border: solid 1px gray;
-		float: left;
-		width: 25%;
-		text-align: center;
-		border-radius:5px 5px 0 0;
 		
-	}
-	
-	.bottom li img{
 		
-		width: 15px;
+
 		
-	}
+			
+		#picture {
+			
+			height: 80px;
+			width: 80px;
+		}
+		
+		
+		
+		
+		
+		.namePost {
+			
+			font-weight:bold;
+			float:left;
+			margin: 15px;
+			
+		}
+		
+		.contentPost{
+			
+			border-left: solid 2px gray;
+			border-top: solid 2px gray;
+			border-radius:5px 0 0 10px;
+			margin: 15px;
+			float:left;
+			display:block;
+			width: 100%;
+			height: auto;
+			
+			
+		}
+		
+		
+		
+		
+		.imgPostComments {
+			float: left;
+			display:block;
+			height: 50px;
+			width: 50px;
+			margin: 10px;
+			
+		}
+		
+		.imgPostComments {
+			
+			float: left;
+			display:block;
+			height: 50px;
+			width: 50px;
+			margin: 10px;
+			
+		}
+		
+		#pictureComments {
+			
+			height: 50px;
+			width: 50px;
+		}
+		
+		
+		
+		.textPost{
+			margin: 5px;
+			clear: both;
+			
+		}
+		
+		.divBottom{
+			
+			padding: 0;
+			margin: 0;
+			
+		}
+		
+		.bottom {
+			margin:0;
+			padding:0;
+			display:block;
+			overflow: auto;
+		}
+		
+		.bottom li{
+			margin:0;
+			padding:0;
+			display:block;
+			list-style-type: none;
+			border: solid 1px gray;
+			float: left;
+			width: 25%;
+			text-align: center;
+			border-radius:5px 5px 0 0;
+			
+		}
+		
+		.bottom li img{
+			
+			width: 15px;
+			
+		}
+
+		
+		
 
 @stop
 

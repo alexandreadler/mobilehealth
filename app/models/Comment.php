@@ -1,10 +1,11 @@
 <?php
 
-class Post extends \Eloquent {
+class Comment extends \Eloquent {
+
 	protected $fillable = [];
 
 	public $timestamps = false;
-	protected $table = "posts";
+	protected $table = "comments";
 	protected $connection = 'app';
 
 }

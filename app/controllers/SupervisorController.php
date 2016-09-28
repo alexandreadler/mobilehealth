@@ -26,7 +26,6 @@ class SupervisorController extends Controller
 
 	}
 	
-	
 	// Redireciona para a página da url recebida am 'a'
 	public function getUrl(){
 		
@@ -36,13 +35,11 @@ class SupervisorController extends Controller
 		
 	}
 	
-	
 	//****************************** redireciona para a página de cadastro de novo supervisor ****************************
 	public function getNovosupervisor(){
 		
 		return View::make('supervisor.user.signup');
 	}
-	
 	
 	public function postCadastranovosupervisor(){
 		
@@ -51,7 +48,6 @@ class SupervisorController extends Controller
 		
 	}
 	
-
 	// atualiza uma lista de conteudos
 	// EX: Caso a fonte abcsaude.com seja aprovada, atualiza toda a base de dados
 	public function getAprovarfonte($f){
@@ -145,32 +141,36 @@ class SupervisorController extends Controller
 					$frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
 					$file_id = DB::connection("public")->select(DB::raw("insert into file values (nextval('file_id_seq'), 0, null, null, 0,0,0,0,0)"));
 					
-					$c->id			= $cid[0]->nextval;
-					$c->author		= Input::get('author');
-					$c->title		= Input::get('title');
-					$c->date_add	= Carbon\Carbon::now();
-					$c->date_creation	= Input::get('dataCretion');
-					$c->description	= Input::get('description');
-					$c->url_online		= Input::get('url');
-					
-					$c->p1				= 0;
-					$c->p2				= 0;
-					$c->p3				= 0;
-					$c->ss1				= 0;
-					$c->ss1				= 0;
-					$c->acceptancerate	= 0;
-					$c->bytes_online	= 0;
-					$c->rate_acceptance	= 0;
+					$c->id					= $cid[0]->nextval;
+					$c->p1					= 0;
+					$c->p2					= 0;
+					$c->p3					= 0;
+					$c->ss1					= 0;
+					$c->ss1					= 0;
+					$c->acceptancerate		= 0;
+					$c->bytes_online		= 0;
+					$c->author				= Input::get('author');
+					$c->averagerating   	= $data["like_count"];
+					$c->date_add			= Carbon\Carbon::now();
+					$c->date_creation		= Input::get('dataCretion');
+					$c->description			= Input::get('description');
+					$c->acceptancerate		= 0;
+					$c->rate_acceptance		= 0;
 					$c->rate_colab_ponder	= 0;
-					$c->rating			= 0;
-					$c->seconds_online  = 0;
-					$c->type		= 0;
+					$c->rating				= 0;
+					$c->seconds_online  	= 0;
+					$content->subtype    	= 3;
+					$c->title				= Input::get('title');
+					$c->type				= 0;
+					$c->url_online			= Input::get('url');
+					$content->visibility    = 0;
 					$c->visibility_group 	= 0;
-					$c->local_views       = 1;
-					$c->local_likes       = 0;
-					$c->acceptancerate    = 0;
-					$c->font 			= false;
+					$c->local_views       	= 1;
+					$c->local_likes       	= 0;
+					$c->acceptancerate    	= 0;
+					$c->font 				= false;
 					$c->save();
+
 				
 					$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
 					$file_id = DB::connection("public")->select(DB::raw("update content set id_file=(currval('file_id_seq')) where id=currval('content_seq')"));

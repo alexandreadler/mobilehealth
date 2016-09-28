@@ -26,6 +26,7 @@ class AppController extends Controller
 		Session::put('profilePicture', 'imgs/'.Confide::user()->photo);
 		
 		if(Confide::user()->type){
+			
 			// Quando supervisor
 			
 			$pid = Confide::user()->person->id;
@@ -33,8 +34,8 @@ class AppController extends Controller
 			//************************************ Recupera os conteudos do FEED **********************************************************
 			//******************************************************************************************************************
 			
-				$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id order by rpc.date_relation desc"));	
-
+				$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, rpc.date_relation as create_at, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id order by rpc.date_relation desc"));	
+				$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, rpc.date_relation as create_at, u.photo, pt.id as idpost from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id inner join app.posts pt on pt.texto = cast(c.id as text) order by rpc.date_relation desc"));
 			//************************************ [FIM] Recupera os conteudos do FEED **********************************************************
 			//******************************************************************************************************************
 			
@@ -295,7 +296,6 @@ class AppController extends Controller
 					
 					// ************************* codigo para tentar mesclar array *************************************************
 						$data = VideoApi::setType('youtube')->getVideoDetail($vid);
-						$aux = array();
 						
 						//dd($data);
 						//print_r($posts[0]);
@@ -320,20 +320,6 @@ class AppController extends Controller
 			}
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c', 'contents', 'posts', 'pid'));
 
 			
@@ -355,10 +341,11 @@ class AppController extends Controller
 		//******************************************************************************************************************
 		
 			$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =".$pid.") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id"));	
-
+			
 		//************************************ [FIM] Recupera os cpnteudos do FEED **********************************************************
 		//******************************************************************************************************************
 		
+			
 		
 		//************************************ Recupera os post do FEED **********************************************************
 		//******************************************************************************************************************
@@ -452,6 +439,8 @@ class AppController extends Controller
 			//echo "<br >".$posts[0]->id."<br >";
 		
 			//dd($posts);
+		
+			//dd($contents);
 		
 			$title = "Feed";			
 			return View::make('home',compact('c', 'c2', 'message', 'title', 'contents', 'posts', 'pid'));
@@ -552,6 +541,9 @@ class AppController extends Controller
 
 		if($from == -2){
 			
+			
+			
+			
 			return View::make('video-search', compact("id","data"));
 			
 		}
@@ -591,7 +583,6 @@ class AppController extends Controller
 			$content->visibility_group 	= 0;
 			$content->local_views       = 1;
 			$content->local_likes       = 0;
-			$content->acceptancerate    = 0;
 			$content->thumburl          = $data["thumbnail_small"];
 			$content->vid               = $data["id"];
 			$content->font 			= false;
@@ -870,7 +861,7 @@ class AppController extends Controller
 		
 			Não é necessário fazar a verificação para saber se a relação existe,
 		pois os videos são redirecionados para a pagina de visualização atravez do metodo getVideo($id, $from).
-		Lá eu verifica se há a relação, se não existir eu crio a relação e exitir não faz nada
+		Lá eu verifica se há a relação, se não existir eu crio a relação e se exitir não faz nada
 		
 		*/
 		
@@ -878,15 +869,83 @@ class AppController extends Controller
 			
 			/*
 				$from > 0 -> Vindo de usurários
-				$from == -1 -> Vem de uma recpmendação do mobilehealth
+				$from == -1 -> Vem de uma recomendação do mobilehealth
 				$from == -2 -> vem de uma pesquisa, seja video ou web
 			
 			*/
 			
-			// vídeo de uma pesquisa, ou seja, será tratado como um post
-			$id = "https://www.youtube.com/watch?v=".$id;
-			$create_at = \Carbon\Carbon::now();
-			DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$pid.", '".$id."',' ', '".$create_at."')"));
+			$data = VideoApi::setType('youtube')->getVideoDetail($id);
+			$pid = Confide::user()->person->id;
+			$cid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
+			
+			// Criar o conteúdo, caso não exista
+			
+			$c = Content::where('url_online','=',AppController::BASE_YOUTUBE_URL . $data["id"])->count();
+			
+			if (empty($c)) {
+			
+				$frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
+				$file_id = DB::connection("public")->select(DB::raw("insert into file values (nextval('file_id_seq'), 0, null, null, 0,0,0,0,0)"));
+				
+				
+				
+				$content                    = new Content;
+				$content->id                = $cid[0]->nextval;
+				$content->p1				= 0;
+				$content->p2				= 0;
+				$content->p3				= 0;
+				$content->ss1				= 0;
+				$content->ss1				= 0;
+				$content->acceptancerate	= 0;
+				$content->bytes_online		= 0;
+				$content->author            = $data["uploader"];
+				$content->averagerating     = $data["like_count"];
+				$content->date_add          = Carbon\Carbon::now();
+				$content->date_creation     = $data["upload_date"];
+				$content->description       = $data["description"];
+				$content->rate_acceptance	= 0;
+				$content->rate_colab_ponder	= 0;
+				$content->rating			= 0;
+				$content->seconds_online    = $data["duration"];
+				$content->subtype           = AppController::VIDEO;
+				$content->title             = $data["title"];
+				$content->type				= 0;
+				$content->url_online        = AppController::BASE_YOUTUBE_URL . $data["id"];
+				$content->visibility        = $data["view_count"];
+				$content->visibility_group 	= 0;
+				$content->local_views       = 1;
+				$content->local_likes       = 1;
+				$content->thumburl          = $data["thumbnail_small"];
+				$content->vid               = $data["id"];
+				$content->font 			= false;
+				
+				
+				
+				$content->save();
+				
+				
+				
+				$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
+				$file_id = DB::connection("public")->select(DB::raw("update content set id_file=(currval('file_id_seq')) where id=currval('content_seq')"));
+				
+				
+				$this->atualizaFreuqnciaPositiva($pid, $content->id);
+				
+				
+				if(!($this->existePost($content->vid))){
+					
+					//Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
+					$id = "https://www.youtube.com/watch?v=".$content->vid;
+					$create_at = \Carbon\Carbon::now();
+					DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$pid.", '".$id."',' ', '".$create_at."')"));
+					
+				}	
+				
+				
+			}
+
+			
+			
 			
 			
 			
@@ -899,7 +958,7 @@ class AppController extends Controller
 			// Gerar uma nova visualização (relatepersoncontent)
 			$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id." and liked <> 2 and person_from=".$from));
 			$v = $v[0];
-
+			
 			if ($v->liked <= 0) {
 				
 				$v = Relatepersoncontent::find($v->id);
@@ -913,12 +972,46 @@ class AppController extends Controller
 				$c->save();
 				
 				$this->atualizaFreuqnciaPositiva($pid, $id);
-
+				
+				if(!($this->existePost($c->vid))){
+					
+					//Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
+					$id = "https://www.youtube.com/watch?v=".$c->vid;
+					$create_at = \Carbon\Carbon::now();
+					DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$pid.", '".$id."',' ', '".$create_at."')"));
+					
+				}	
+				
+				
 			}
+			
+			
+
+			
+			
 		}
+		
+		
+		
+		
 
 	}
 
+	public function existePost($id){
+		echo "Chamou o metodo";
+		// Criar o conteúdo, caso não exista
+		$id = "https://www.youtube.com/watch?v=".$id;
+		
+		$posts = DB::connection("public")->select(DB::raw("select count(*) from app.posts where person = ".Confide::user()->person->id." and texto = '" .$id."'"));
+		
+		if(empty($posts)){
+			echo "aqui";
+			return true;
+		}
+		echo "aqui2";
+		return false;
+	}
+	
 	public function getUnlike($id, $from) {
 
 	
@@ -957,16 +1050,16 @@ class AppController extends Controller
 
 	public function getLikec() {
 		
-		
 		$pid = Confide::user()->person->id;
 		$id_content = $_GET['id'];
 		
-		dd($id_content);
+		//dd($id_content);
 		
 		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = ".$pid." and id_content = ".$id_content." and liked <> 2 and person_from=".$_GET['from']));
 		
 		if(empty($v)){
-				
+			
+			// Cria uma relação com o conteúdo
 			$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
 		
 			$c = new Relatepersoncontent;
@@ -983,12 +1076,46 @@ class AppController extends Controller
 			
 			$this->atualizaFreuqnciaPositiva($pid, $id_content);
 			
+			
+			// Verifica se o contéudo compartilhado é um video
+			$c = Content::find($id_content);
+			
+			
+			
+			if(Empty($c->thumburl)){
+				
+				// Não é vídeo
+				
+				if(!($this->existePost($id_content))){
+					//Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
+					$create_at = \Carbon\Carbon::now();
+					DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$pid.", '".$c->url_online."',' ', '".$create_at."')"));
+				}
+				
+			} else {
+				
+				$id = "https://www.youtube.com/watch?v=".$c->vid;
+				
+				
+				
+				// É vídeo
+				if(!($this->existePost($id))){
+					//Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
+					
+					$create_at = \Carbon\Carbon::now();
+					DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq'),".$pid.", '".$id."',' ', '".$create_at."')"));
+				}
+				
+			}
+			
+
+			
+			
+			
+			
 		} else {
 			
-			
-			
 			$v = $v[0]->liked;
-			
 			$this->atualizaFreuqnciaPositiva($pid, $id_content);
 
 		}
@@ -1018,6 +1145,8 @@ class AppController extends Controller
 			$c->save();
 
 		}
+		
+		
 		
 	
 		return Redirect::to('/');
@@ -1092,7 +1221,7 @@ class AppController extends Controller
 		$id_post = $_GET['id'];
 		
 		$v = DB::connection("public")->select(DB::raw("SELECT * from relatepersonpost where id_person = ".$pid." and id_post = ".$id_post." and liked <> 2 and person_from=".$_GET['from']));
-
+		
 		if(empty($v)){
 			
 			$rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relatepersonpost_id_seq')"));
@@ -1364,7 +1493,6 @@ class AppController extends Controller
 		
 		
 		$f = Frequency::where('id', '=', $id_frequency[0]->id_frequency)->get();
-		dd($id_frequency);
 		$f = $f[0];
 
 		
@@ -1550,16 +1678,123 @@ class AppController extends Controller
 		
 		
 	}
-
 	
-	public function testando(){
+	public function getComments($idPost){
+	
+		//dd($idPost);
+		$posts = new Post();
+		$posts = DB::connection("public")->select(DB::raw('select pt.*, p.name_first, p.name_last, u.photo from app.posts pt inner join app.users u on pt.id = '.$idPost.' and pt.person = u.person_id inner join public.person as p on p.id = u.person_id'));
 		
-		echo "Imprimir nada";
+		//dd($posts);
+		//dd($idPost);
+	
+		// verifica se encontra youtube no texto
+		for($i =0; $i < count($posts); $i++){
+				
+			$pos = strripos($posts[$i]->texto, "youtube.com");
+				
+			if(!($pos === false)){
+					
+				// Encontrou
+					
+				$pos  = strripos($posts[$i]->texto, "?v=");
+				$temp = substr($posts[$i]->texto, $pos);
+				// retorna ?v=IdVideo[...]
+					
+					
+				// Decobre se existe um espaço depois do IdVideo
+				$pos  = strpos($temp, ' ');
+					
+				$pos  = strripos($posts[$i]->texto, "=");
+				$temp = substr($posts[$i]->texto, $pos+1);
+					
+				$vid = "";
+					
+				if($pos >= 0){
+						
+					// Significa que o link do youtube não está no final da string [...] https://www.youtube.com/?v=IdVideo [...]
+						
+					
+					for($j = 0; $j < strlen($temp);$j++){
+						
+						if(strcmp($temp[$j], ' ') == 0){
+							break;							
+						} else {
+							$vid .= $temp[$j];								
+						}
+
+					}
+							
+				} else {
+						
+					// Link é a última coisa do texto.
+						
+					for($i = 0; $i < strlen($temp);$i++){
+
+							$vid .= $temp[$i];								
+
+					}
+						
+						
+				}
+					
+				// ************************* codigo para tentar mesclar array *************************************************
+				$data = VideoApi::setType('youtube')->getVideoDetail($vid);
+				$aux = array();
+						
+					//dd($data);
+					//print_r($posts[0]);
+						
+				for($j = 0; $j < count($posts);$j++){
+							
+					if($j == $i){
+								
+						$posts[$i] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => $posts[$j]->imagem, "create_at" => $posts[$j]->create_at, "name_first" => $posts[$j]->name_first, "photo" => $posts[$j]->photo, "vid" => $data["id"], "title" => $data["title"], "description" => $data["description"], "thumburl" => $data["thumbnail_small"]];
+							
+					}
+				}
+						
+					
+				// **************************************************************************
+					
+					
+			} 
+				
+				
+				
+		}
 		
+		
+		
+		$title = $posts[0]->name_first;
+		
+		$comments = new Comment();
+
+		$comments = DB::connection("public")->select(DB::raw('select com.*, u.photo, p.name_first, p.name_last from app.comments as com inner join app.users as u on u.person_id = com.comment_of and id_post = '.$idPost.' inner join public.person as p on p.id = com.comment_of'));
+
+		//dd($comments);
+		
+		return View::make('/supervisor/comments',compact('title', 'posts', 'comments'));
 		
 	}
 	
-	
+	public function postComments(){
+		
+		echo Input::get('comment');
+		echo "<br >" . Input::get('idPost');
+
+		$comments = new Comment();
+
+		$comments->comment_of = $pid = Confide::user()->person->id;
+		$comments->id_post = Input::get('idPost');
+		$comments->text = Input::get('comment');
+
+		$comments->save();
+
+		return Redirect::to('app/comments/'.Input::get('idPost'));
+
+
+	}
 	
 	
 	

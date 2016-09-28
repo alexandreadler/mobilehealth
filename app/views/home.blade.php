@@ -47,17 +47,17 @@
                 <div class="ui-body ui-body-a">
 						@if(isset($c))
 							@if(!empty($c))
-							@foreach( $c as $v )
-									<div class="video">
-										<span class="thumbnail">
-											<a href="{{url("/app/video/" . $v['vid']."/-1")}}">
-											<img src="{{$v['thumburl']}}" align="left" />
-											<p class="title">{{Str::limit($v['title'],40)}}</p>
-											<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
-											</a>
-										</span>
-									</div>
-							@endforeach
+								@foreach( $c as $v )
+										<div class="video">
+											<span class="thumbnail">
+												<a href="{{url("/app/video/" . $v['vid']."/-1")}}">
+												<img src="{{$v['thumburl']}}" align="left" />
+												<p class="title">{{Str::limit($v['title'],40)}}</p>
+												<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
+												</a>
+											</span>
+										</div>
+								@endforeach
 							
 							@else
 								Sem Resultados.
@@ -184,6 +184,11 @@
 										<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}&from=-1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
+								
+								
+								
+								
+								
 							</div>
 						</div>
 					@endforeach
@@ -293,6 +298,12 @@
 										<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}&from={{$con->id_person}}');mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
+								
+								
+								<!-- Comentários para um post-->
+								<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$con->id)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso</a></p></div>
+								
+								
 							</div>
 						</div>
 					@endforeach	
@@ -351,6 +362,12 @@
 										<a id="acomp" onclick="comp('{{url('app/compp?id_post='.$p->id.'&from='.$p->person)}}');mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
+								
+								
+								<!-- Comentários para um post -->
+								<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$p->id)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso</a></p></div>
+								
+								
 							</div>
 						</div>
 				@endforeach
@@ -655,11 +672,12 @@ $('#save').click(function(){
 		display:block;
 		height: 80px;
 		width: 80px;
+		margin: 10px;
 		
 	}
 		
 	#picture {
-		margin: 10px;
+		
 		height: 80px;
 		width: 80px;
 	}
