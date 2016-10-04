@@ -7,9 +7,9 @@
 	    <div role="main" class="ui-content jqm-content jqm-fullwidth">
 
 
-            <div id="video_player" >
+            <div id="video_player">
                 <span class="thumbnail">
-                    <iframe width="320" height="240" src="//www.youtube.com/embed/{{$id}}" frameborder="0" allowfullscreen></iframe>
+                    <iframe width="320" height="240" src="{{url('//www.youtube.com/embed/'.$vid)}}" frameborder="0" allowfullscreen></iframe>
                     <p class="title">{{$data["title"]}}</p>
                     <p class="desc">{{ $data["description"] }}</p>
                 </span>

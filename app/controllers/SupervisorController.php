@@ -14,13 +14,18 @@ class SupervisorController extends Controller
 	// ************************ Redireciona para a página de visualizaçãpo do video **************************
 	public function getVideo($id) {
 		
-		// Pega os metadados do video
-		$data = VideoApi::setType('youtube')->getVideoDetail($id);
-
+		
 		// Recupera as informações do videos presentes no banco
-		$con = Content::where('vid', '=', $data["id"])->get();								
-		$vid = $con[0]->id;
+		$con = Content::where('id', '=', $id)->get();
+		
+		// Pega os metadados do video
+		$data = VideoApi::setType('youtube')->getVideoDetail($con[0]->vid);
 
+										
+		$vid = $con[0]->vid;
+
+		//dd($con);
+		
 		// redireciona para a pagina onde o video é exibido
 		return View::make('supervisor.video', compact("id","data","vid"));
 

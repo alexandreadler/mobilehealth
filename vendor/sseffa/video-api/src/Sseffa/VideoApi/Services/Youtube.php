@@ -69,6 +69,7 @@ class Youtube implements ServicesInterface {
 		$view_Count = null;
 		$like_Count = null;
 		$comment_Count = null;
+		$channelId = null;
 		
 		foreach ( $b as $c ){
 			
