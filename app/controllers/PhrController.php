@@ -44,6 +44,8 @@ class PhrController extends \BaseController {
 
 		return Redirect::intended("/phr/glucose");
 
+                
+                
 
 	}
 
@@ -153,6 +155,8 @@ class PhrController extends \BaseController {
 
 		$records = Allergy::with('type','reaction')->where("id_person",'=',Confide::user()->person->id)->orderBy('firstobserved','desc')->get();
 
+		//dd($records);
+		
 		return View::make('phr.allergy',compact('title','areactions','atypes','records'));
 
 	}
@@ -166,19 +170,26 @@ class PhrController extends \BaseController {
 
 		$g                          = new Allergy;
 		$g->id                      = $gid;
-		$g->name                    = $input["name"];
+		$g->name                    = $input["nameAlergy"];
 		$g->observation             = $input["observation"];
 		$g->id_person               = $pid;
 		$g->id_allergytype          = $input["id_allergytype"];
 		$g->id_allergyreaction      = $input["id_allergyreaction"];
 		$g->firstobserved           = $input["firstobserved"];
 		$g->save();
+		
 
 		return Redirect::intended("/phr/allergy");
 
 
 	}
 	
+	
+	public function getDeleteallergy($id){
+		
+		echo $id;
+		
+	}
 	
 	public function getGrafico($tipo){
 		

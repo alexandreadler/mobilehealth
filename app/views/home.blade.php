@@ -6,140 +6,140 @@
 
 
 <div class="TabControl">
-	
-	@if(!isset($megERRO))
-		
-	@else
-		{{$megERRO}}
-	@endif
-	
 
-	<div id="header" style="overflow: auto;">
-		<ul class="abas" style="clear: both;">
-			<li onclick="aba(0)"> 
-				<div class="aba" id="recommandation">
-					<span ><b >Recomenda&ccedil&otilde;es</b></span>
-				</div>
-			</li>
-			<li onclick="aba(1)">
-				<div class="aba" id="feed">
-					<span><b>Feed</b></span>
-				</div>
-			</li>			
-		</ul>
+    @if(!isset($megERRO))
 
-	</div>
-	
-	
-	<div id="content">	
-	
-	
-	
-		<div class="conteudo"  id="Rec">
-		<!-- Div geral para os contúedos recomendados pelo mobilehealth, é separada da rede social para dar maior foco as recomendações; 
-			 É a página inical do mobilehealth -->
-		
-		
-			<div class="ui-corner-all custom-corners">
+    @else
+        {{$megERRO}}
+    @endif
+
+
+    <div id="header" style="overflow: auto;">
+        <ul class="abas" style="clear: both;">
+            <li onclick="aba(0)"> 
+                <div class="aba" id="recommandation">
+                    <span ><b >Recomenda&ccedil&otilde;es</b></span>
+                </div>
+            </li>
+            <li onclick="aba(1)">
+                <div class="aba" id="feed">
+                    <span><b>Feed</b></span>
+                </div>
+            </li>			
+        </ul>
+
+    </div>
+
+
+    <div id="content">	
+
+
+
+        <div class="conteudo"  id="Rec">
+            <!-- Div geral para os contúedos recomendados pelo mobilehealth, é separada da rede social para dar maior foco as recomendações; 
+                     É a página inical do mobilehealth -->
+
+
+            <div class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a" style="border-radius:5px 5px 0px 0px;">
                     <h3>Videos recomendados</h3>
                 </div>
                 <div class="ui-body ui-body-a">
-						@if(isset($c))
-							@if(!empty($c))
-								@foreach( $c as $v )
-										<div class="video">
-											<span class="thumbnail">
-												<a href="{{url("/app/video/" . $v['vid']."/-1")}}">
-												<img src="{{$v['thumburl']}}" align="left" />
-												<p class="title">{{Str::limit($v['title'],40)}}</p>
-												<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
-												</a>
-											</span>
-										</div>
-								@endforeach
-							
-							@else
-								Sem Resultados.
-							@endif	
-							
-						@else
-							 Sem Resultados.
-						@endif
+                    @if(isset($c))
+                        @if(!empty($c))
+                            @foreach( $c as $v )
+                            <div class="video">
+                                <span class="thumbnail">
+                                    <a href="{{url("/app/video/" . $v['vid']."/-1")}}">
+                                        <img src="{{$v['thumburl']}}" align="left" />
+                                        <p class="title">{{Str::limit($v['title'],40)}}</p>
+                                        <p class="desc">{{ Str::limit($v['description'], 120) }}</p>
+                                    </a>
+                                </span>
+                            </div>
+                            @endforeach
+
+                        @else
+                            Sem Resultados.
+                        @endif	
+
+                    @else
+                        Sem Resultados.
+                    @endif
                 </div>
             </div> 	
-			
-			
-			<div class="ui-corner-all custom-corners" >
+
+
+            <div class="ui-corner-all custom-corners" >
                 <div class="ui-bar ui-bar-a" style="border-radius:5px 5px 0px 0px;">
                     <h3>Links Recomendados.</h3>
                 </div>
                 <div class="ui-body ui-body-a">
-									
-					@if(isset($c2))
-						@if(!empty($c2))
-						@foreach( $c2 as $v )
-								
-								<a href="app/url?a={{$v->url_online}}" target="new">
-									<p class="title">
-										{{Str::limit($v->title,40)}}
-										<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-										    <a id="like" href="app/likec?id={{$v->id}}&from=-1" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Like</a>
-										    <a id="unlike" href="app/unlikec?id={{$v->id}}&from=-1" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Unlike</a>
-										</div>
-										
-									</p>
-								</a>
 
-                        @endforeach
-						
-						@else
-							Sem Resultados.
-						@endif
-					
-					@else
-						Sem Resultados.
-					@endif
-				  
+                    @if(isset($c2))
+                        @if(!empty($c2))
+                            @foreach( $c2 as $v )
+
+                                <a href="app/url?a={{$v->url_online}}" target="new">
+                                    <p class="title">
+                                        {{Str::limit($v->title,40)}}
+                                    <div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <a id="like" href="app/likec?id={{$v->id}}&from=-1" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Like</a>
+                                            <a id="unlike" href="app/unlikec?id={{$v->id}}&from=-1" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Unlike</a>
+                                    </div>
+
+                                    </p>
+                                </a>
+
+                            @endforeach
+
+                        @else
+                            Sem Resultados.
+                        @endif
+
+                    @else
+                        Sem Resultados.
+                    @endif
+
                 </div>
             </div>
-			
-			
-			<div class="ui-corner-all custom-corners">
+
+
+            <div class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a" style="border-radius:5px 5px 0px 0px;">
                     <h3>Novas Mensagens</h3>
                 </div>
                 <div class="ui-body ui-body-a">
-					@if(isset($message))
-						@if(!empty($message))
-							@foreach( $message as $m )
-									
-									<a href="app/viewmessage?id_person_from={{$m->id_person_from}}" data-rel="popup" data-position-to="window" data-transition="pop"><p>{{Str::limit(($m->name_first .$m->name_last), 20)}}</p></a>
-									
-							@endforeach
-							
-						@else
-							Sem Resultados.
-						@endif
-					@else
-						Sem Resultados.
-					@endif
+                    @if(isset($message))
+                        @if(!empty($message))
+                            @foreach( $message as $m )
+
+                                <a href="app/viewmessage?id_person_from={{$m->id_person_from}}" data-rel="popup" data-position-to="window" data-transition="pop"><p>{{Str::limit(($m->name_first .$m->name_last), 20)}}</p></a>
+
+                            @endforeach
+
+                        @else
+                            Sem Resultados.
+                        @endif
+                    @else
+                        Sem Resultados.
+                    @endif
                 </div>
             </div>
-			
-			
-			
-		</div> <!-- Fecha div REC -->
-		
-		
-		<div class="conteudo" id="Feed">
-		<!-- Div geral para os Feed da rede social do mobilehealth, é separada, pois dar maior foco as recomendações; -->
-			 
-			 
-			<div id="userpost" style="margin: 20px;">
-				<h4>Compartilhe suas esperiências</h4>
-				<form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
-					<textArea id="texto" name="texto"> </textArea>
+
+
+
+        </div> <!-- Fecha div REC -->
+
+
+        <div class="conteudo" id="Feed">
+            <!-- Div geral para os Feed da rede social do mobilehealth, é separada, pois dar maior foco as recomendações; -->
+
+
+            <div id="userpost" style="margin: 20px;">
+                <h4>Compartilhe suas esperiências</h4>
+                <form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
+                    <textArea id="texto" name="texto"> </textArea>
 					<input type="file" id="imagem" name="imagem">
 				</form>
 				
@@ -149,54 +149,54 @@
 			</div>
 		
 			@if(isset($c))
-				@if(!empty($c))
-					@foreach( $c as $v )
-						<div class="post" >
-							<div class="headPost">
-								<div class="imgPost" >
-									<img id="picture" src="{{Session::get('profilePicture')}}" />
-								</div>
+                            @if(!empty($c))
+				@foreach( $c as $v )
+					<div class="post" >
+						<div class="headPost">
+							<div class="imgPost" >
+								<img id="picture" src="{{Session::get('profilePicture')}}" />
+							</div>
+						</div>
+							
+						<div class="contentPost" style="background: rgb(220, 255, 200)"> 
+							<div class="namePost" >
+								Videos Recomendados para você
 							</div>
 							
-							<div class="contentPost" style="background: rgb(220, 255, 200)"> 
-								<div class="namePost" >
-									Videos Recomendados para você
-								</div>
-								
-								<div class="textPost">
-								
-									<div class="video">
-										<span class="thumbnail" >
-											<a href="{{url("/app/video/" . $v['vid']."/-1")}}" target="new">
-											<img src="{{$v['thumburl']}}" align="left" />
+							<div class="textPost">
+							
+                                				<div class="video">
+                                        				<span class="thumbnail" >
+                                                				<a href="{{url("/app/video/" . $v['vid']."/-1")}}" target="new">
+                                                        				<img src="{{$v['thumburl']}}" align="left" />
 											<p class="title">{{Str::limit($v['title'],40)}}</p>
 											<p class="desc">{{ Str::limit($v['description'], 120) }}</p>
 											</a>
-										</span>
-									</div>
+									</span>
 								</div>
-								
-								<div class="divBottom">
-									<ul class="bottom">
-									<!-- O -1 serve para identificar que o conteudo foi uma recomendação-->
-										<a id="alike" onclick="like('app/likec?id={{$v['id']}}&from=-1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}&from=-1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}&from=-1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
-									</ul>
-								</div>
-								
-								
-								
-								
-								
 							</div>
-						</div>
-					@endforeach
-				@else
-					Sem Resultados.
-				@endif
-			@else
+								
+							<div class="divBottom">
+								<ul class="bottom">
+								<!-- O -1 serve para identificar que o conteudo foi uma recomendação-->
+									<a id="alike" onclick="like('app/likec?id={{$v['id']}}& from = - 1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+									<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}& from = - 1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+									<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}& from = - 1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+								</ul>
+							</div>
+								
+								
+								
+								
+								
+                                    </div>
+                                    </div>
+				@endforeach
+                            @else
 				Sem Resultados.
+                            @endif
+			@else
+                            Sem Resultados.
 			@endif
 			
 			
@@ -230,9 +230,9 @@
 								<div class="divBottom">
 									<ul class="bottom">
 									<!-- O -1 serve para identificar que o conteudo foi uma recomendação-->
-										<a id="alike" onclick="like('app/likec?id={{$v['id']}}&from=-1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}&from=-1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}&from=-1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+										<a id="alike" onclick="like('app/likec?id={{$v['id']}}& from = - 1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}& from = - 1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}& from = - 1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 																	
@@ -293,9 +293,9 @@
 								
 								<div class="divBottom">
 									<ul class="bottom">
-										<a id="alike" onclick="like('app/likec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}&from={{$con->id_person}}');mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+										<a id="alike" onclick="like('app/likec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}& from={{$con->id_person}}'); mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 								
@@ -357,9 +357,9 @@
 								
 								<div class="divBottom">
 									<ul class="bottom">
-										<a id="alikep" onclick="like('{{url('app/likep?id='.$p->id.'&from='.$p->person)}}');mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a id="aulikep" onclick="unlike('{{url('app/unlikep?id='.$p->id.'&from='.$p->person)}}');mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a id="acomp" onclick="comp('{{url('app/compp?id_post='.$p->id.'&from='.$p->person)}}');mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+										<a id="alikep" onclick="like('{{url('app/likep?id='.$p->id.'&from='.$p->person)}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulikep" onclick="unlike('{{url('app/unlikep?id='.$p->id.'&from='.$p->person)}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('{{url('app/compp?id_post='.$p->id.'&from='.$p->person)}}'); mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 								

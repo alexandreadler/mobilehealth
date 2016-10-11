@@ -39,8 +39,8 @@
     	@yield('style')
 
 		#profile ul { 
-			margin: 0; /* retira o recuo para alguns browsers */ (*)
-			padding: 0; /* retira o recuo para outros browsers */ (*)
+			margin: 0; /* retira o recuo para alguns browsers */
+			padding: 0; /* retira o recuo para outros browsers */
 			
 		}
 		
@@ -66,7 +66,7 @@
 		#profile #menu li a:hover {
 			background-color: #FFE4B5; /* cor do fundo */
 			color: #DAA520; /* cor da fonte */
-			display:block; (*) 
+			display:block;
 		}
 		
 		#profile{

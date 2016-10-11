@@ -12,7 +12,7 @@
             {{-- Histórico --}}
             <div id="history_div" class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a">
-                    <h3><strong>Allergy Records</strong></h3>
+                    <h3><strong>Registro de alergias</strong></h3>
                 </div>
                 <div class="ui-body ui-body-a">
 
@@ -23,9 +23,13 @@
                                 <h3><strong>{{Str::limit($r['firstobserved'],10,'')}}</strong></h3>
                             </div>
                             <div class="ui-body ui-body-a">
-                                Allergy Name: <strong>{{$r['name']}}</strong>. Type: <strong>{{$r['type']['description']}}</strong>. Reaction: <strong>{{$r['reaction']['description']}}</strong>.<br>
-                                Observation:  <strong>{{$r['observation']}}</strong>.
+                               Alergia: <strong>{{$r['name']}}</strong>. Type: <strong>{{$r['type']['description']}}</strong>. Reaction: <strong>{{$r['reaction']['description']}}</strong>.<br>
+                               Observação:  <strong>{{$r['observation']}}</strong>.
                             </div>
+							
+							 <div class="ui-bar ui-bar-a" style="height: 44px;">
+								<a href="{{url('phr/deleteallergy/'.$r{'id'})}}" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;"></span> Excluir</a>
+							</div>
                         </div>
 
                     @endforeach
@@ -43,24 +47,24 @@
 
                     <form id="form" action="{{url('/phr/allergy')}}" method="post">
 
-                        <label for="name">Allergy Name:</label>
-                        <input type="text" name="name" id="name" value="">
+                        <label for="nameAlergy">Alergia:</label>
+                        <input type="text" name="nameAlergy" id="nameAlergy" value="">
 
-                        <label for="id_allergyreaction" class="select">Reaction:</label>
+                        <label for="id_allergyreaction" class="select">Reação:</label>
                         <select name="id_allergyreaction" id="select-choice-a">
                             @foreach($areactions as $key => $v)
                                 <option value="{{$key}}">{{$v}}</option>
                             @endforeach
                         </select>
 
-                        <label for="id_allergytype" class="select">Type:</label>
+                        <label for="id_allergytype" class="select">Tipo:</label>
                         <select name="id_allergytype" id="select-choice-a">
                             @foreach($atypes as $key => $v)
                                 <option value="{{$key}}">{{$v}}</option>
                             @endforeach
                         </select>
 
-                        <label for="firstobserved">First Observed:</label>
+                        <label for="firstobserved">Observado pela primeira vez em:</label>
                         <input type="date" name="firstobserved" id="firstobserved" value="">
 
                         <label for="observation">Observation:</label>

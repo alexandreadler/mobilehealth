@@ -73,7 +73,6 @@ class SupervisorController extends Controller
 		
 	}
 	
-	
 	public function getAprovarconteudo($id){
 		// atualiza uma conteudos
 		// EX: Caso a fonte abcsaude.com seja totalmente confiavel, atualiza um conteudo em especifico dessa fonte
@@ -102,7 +101,6 @@ class SupervisorController extends Controller
 		return View::make('supervisor/avaliarconteudo',compact('c', 'title'));
 		
 	}
-	
 	
 	public function getNovoconteudo(){
 		
@@ -151,7 +149,7 @@ class SupervisorController extends Controller
 					$c->p2					= 0;
 					$c->p3					= 0;
 					$c->ss1					= 0;
-					$c->ss1					= 0;
+					$c->ss2					= 0;
 					$c->acceptancerate		= 0;
 					$c->bytes_online		= 0;
 					$c->author				= Input::get('author');
@@ -164,7 +162,7 @@ class SupervisorController extends Controller
 					$c->rate_colab_ponder	= 0;
 					$c->rating				= 0;
 					$c->seconds_online  	= 0;
-					$content->subtype    	= 3;
+					$c->subtype    			= 3;
 					$c->title				= Input::get('title');
 					$c->type				= 0;
 					$c->url_online			= Input::get('url');
@@ -175,6 +173,13 @@ class SupervisorController extends Controller
 					$c->acceptancerate    	= 0;
 					$c->font 				= false;
 					$c->save();
+					
+		
+					
+					
+					
+					
+					
 
 				
 					$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
@@ -201,7 +206,7 @@ class SupervisorController extends Controller
 					$c->p2				= 0;
 					$c->p3				= 0;
 					$c->ss1				= 0;
-					$c->ss1				= 0;
+					$c->ss2				= 0;
 					$c->acceptancerate	= 0;
 					$c->bytes_online		= 0;
 					$c->author            = Input::get('author');
@@ -221,7 +226,6 @@ class SupervisorController extends Controller
 					$c->visibility_group 	= 0;
 					$c->local_views       = 1;
 					$c->local_likes       = 0;
-					$c->acceptancerate    = 0;
 					$c->thumburl          = $data["thumbnail_small"];
 					$c->vid               = $data["id"];
 					$c->font 			= false;
