@@ -55,8 +55,9 @@ class AppController extends Controller {
             //************************************ Recupera os conteudos do FEED **********************************************************
             //******************************************************************************************************************
 
-            //$contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, rpc.date_relation as create_at, u.photo from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =" . $pid . ") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id order by rpc.date_relation desc"));
+                     
             $contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, rpc.date_relation as create_at, u.photo, pt.id as idpost from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =" . $pid . ") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id inner join app.posts pt on pt.texto = cast(c.id as text) order by rpc.date_relation desc"));
+            
             //************************************ [FIM] Recupera os conteudos do FEED **********************************************************
             //******************************************************************************************************************
             
@@ -81,7 +82,7 @@ class AppController extends Controller {
             $teste2 = true;
             $c = 1;
 
-            //$fontes = DB::connection("public")->select(DB::raw("select c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
+            
 
             for ($i = 0; $i < count($fontes); $i++) {
 
@@ -211,39 +212,26 @@ class AppController extends Controller {
             }
 
 
-            //dd($aux);
             for ($i = 0; $i < $c; $i++) {
-                //$f = new Fonts;
-                //$fid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
 
                 $rest = substr($aux[$i][4], 0, 6);
                 if (strcmp('http:/', $rest) != 0) {
 
-                    /*
-                      $f->id = $fid[0]->nextval;
-                      $f->url_fonts = "https://".$aux[$i][0];
-                      $f->valued = false;
-                      $f->save();
-                     */
-
                     $aux[$i][0] = strtolower(urlencode("https://" . $aux[$i][0]));
+                    
                 } else {
 
-                    /*
-                      $f->id = $fid[0]->nextval;
-                      $f->url_fonts = "http://".$aux[$i][0];
-                      $f->valued = false;
-                      $f->save();
-                     */
                     $aux[$i][0] = strtolower(urlencode("http://" . $aux[$i][0]));
+                    
                 }
             }
 
 
-           $post = $this->mergeListPost($posts);
+           $posts = $this->mergeListPost($posts);
 
 
             return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c', 'contents', 'posts', 'pid'));
+            
         } else {
 
             // Quando usuario
@@ -274,11 +262,9 @@ class AppController extends Controller {
             //******************************************************************************************************************
             
 
-            $post = $this->mergeListPost($posts);
-            //echo "<br >".$posts[0]->id."<br >";
-            //dd($posts);
-            //dd($contents);
+            $posts = $this->mergeListPost($posts);
 
+            //dd($posts);
             $title = "Feed";
             return View::make('home', compact('c', 'c2', 'message', 'title', 'contents', 'posts', 'pid'));
         }
@@ -1197,9 +1183,6 @@ class AppController extends Controller {
 
     public function atualizaFreuqnciaPositiva($pid, $id_content) {
 
-
-
-
         // Modifica a zona de tempo a ser utilizada. Disnovível desde o PHP 5.1
         date_default_timezone_set('America/Sao_Paulo');
 
@@ -1500,10 +1483,10 @@ class AppController extends Controller {
 
                 $pos = strripos($posts[$i]->texto, "youtube.com");
 
-
-
                 if (!($pos === false)) {
 
+                 
+                    
                     // Encontrou
 
                     $pos = strripos($posts[$i]->texto, "?v=");
@@ -1540,6 +1523,7 @@ class AppController extends Controller {
                         }
                     }
 
+                    
                     // ************************* codigo para tentar mesclar array *************************************************
                     $data = VideoApi::setType('youtube')->getVideoDetail($vid);
 
@@ -1551,6 +1535,8 @@ class AppController extends Controller {
                         if ($j == $i) {
 
                             $posts[$i] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => $posts[$j]->imagem, "create_at" => $posts[$j]->create_at, "name_first" => $posts[$j]->name_first, "photo" => $posts[$j]->photo, "photo" => $posts[$j]->photo, "vid" => $data["id"], "title" => $data["title"], "description" => $data["description"], "thumburl" => $data["thumbnail_small"]];
+                        
+                            
                         }
                     }
 
@@ -1558,7 +1544,9 @@ class AppController extends Controller {
                     // **************************************************************************
                 }
             }
-        
+            
+           
+            //dd($posts);
             return $posts;
             
     }

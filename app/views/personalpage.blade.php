@@ -70,7 +70,7 @@
                         {{$p->name_first;}}
                     </div>
 
-                    <div class="textPost">
+                    <div class="textPost" stye="">
                         
                        
                         <p>
@@ -91,7 +91,7 @@
 											
 				@endif
 											
-                                    <p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
+                                   
 			</p>
 										
 			@if(strcmp($p->imagem, ' ') != 0)
@@ -338,6 +338,32 @@ clear:both;
 
 }
 
+.thumbnail {
+        display: block;
+        height: 120px;
+    }
+
+    .thumbnail img {
+        margin: 5px !important;
+    }
+    .thumbnail .title {
+        padding: 2px 5px 0;
+        margin: 0;
+        font-weight: bold;
+        font-size: 0.8em
+    }
+    .thumbnail .desc {
+        font-size: 0.7em;
+        font-weight: normal;
+        padding: 2px 0;
+        margin: 0;
+    }
+    .thumbnail a {
+        text-decoration: none;
+        color: #000 !important;
+        font-weight: normal;
+    }
+
 
 .post{
 border-top: solid 1px green;
@@ -402,14 +428,14 @@ margin: 15px;
 
 .contentPost{
 
-border-left: solid 2px gray;
-border-top: solid 2px gray;
-border-radius:5px 0 0 0;
-margin: 15px;
-float:left;
-display:block;
-width: 100%;
-height: auto;
+    border-left: solid 2px gray;
+    border-top: solid 2px gray;
+    border-radius:5px 0 0 0;
+    margin: 15px;
+    float:left;
+    display:block;
+    width: 100%;
+    height: auto;
 
 
 }

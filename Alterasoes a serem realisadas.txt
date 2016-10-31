@@ -1,0 +1,5 @@
+- Aparecer uma foto do link de um link postado nos comentários, algo semelhante ao link do youtube
+
+- Fazer a exibição na página de amigos e perfil pessoal
+
+- 

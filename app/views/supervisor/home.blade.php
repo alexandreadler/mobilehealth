@@ -2,150 +2,146 @@
 
 @section("content")
 
-
-
-
-
 <div data-role="page" data-title="Supervisor - Home">
 
-	<div class="TabControl">
-		<div id="header" style="overflow: auto;">
-			<ul class="abas" style="clear: both;">
-				<li onclick="aba(0)"> 
-					<div class="aba" id="recommandation">
-						<span ><b >Analisar Fontes</b></span>
-					</div>
-				</li>
-				
-				<li onclick="aba(1)">
-					<div class="aba" id="feed">
-						<span><b>Feed</b></span>
-					</div>
-				</li>			
-			</ul>
+    <div class="TabControl">
+        <div id="header" style="overflow: auto;">
+            <ul class="abas" style="clear: both;">
+                <li onclick="aba(0)"> 
+                    <div class="aba" id="recommandation">
+                        <span ><b >Analisar Fontes</b></span>
+                    </div>
+                </li>
 
-		</div>
-	
-	
-	
-		<div id="content">
-			<div class="conteudo"  id="Rec">
-				<div role="main" class="ui-content jqm-content jqm-fullwidth">
+                <li onclick="aba(1)">
+                    <div class="aba" id="feed">
+                        <span><b>Feed</b></span>
+                    </div>
+                </li>			
+            </ul>
 
-					<div class="ui-corner-all custom-corners">
-						<div class="ui-bar ui-bar-a"> 
-							<h3>Avaliar Conteúdo</h3>
-						</div>
-						
-						<div class="ui-body ui-body-a">
-							@if(!empty($aux))
-								@for($i =0; $i < ($c); $i++)
-									<div class="video" style="overflow: auto;">
-										<span class="thumbnail" style="height: auto;">
-										
-											@if(!empty($aux[$i][2]))
-												<!--Caso seja um video-->
-												<img style="float:left" src="{{$aux[$i][2]}}" />
-												<p>
-													<b><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{$aux[$i][1]}}</a></b> 
-												</p>
-												<p>
-												
-													@if($aux[$i][3] > 1)
-														<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
-													@endif
-												</p>
-											
-												<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-										    		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up" style="font-size:10px;"> Aprovar Fonte</a>
-										    		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
-												</div>
-											
-											@else
-												<!--Caso seja um lik de site/pdf/outros -->
-												<img style="float:left" width="100px" height="100px" src="http://s.wordpress.com/mshots/v1/{{$aux[$i][0]}}?w=100&h=100" />
-												<p>
-													<b style="font-color: blue"><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{($aux[$i][1])}}</a></b>
-												</p>
-												<p>
-													@if($aux[$i][3] > 1)
-														<a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
-													@endif
-												</p>
-											
-												<div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-										    		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up " style="font-size:10px;"> Aprovar Fonte</a>
-										    		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
-												</div>
-												
-				
-											@endif
-										
-										</span>
-									</div>
-								
-								@endfor
-							@else
-								Sem Resultados.
-							@endif
-						
-						</div>
-					</div>
-					<br>
-			
-			
-					<br>
-					<div class="ui-corner-all custom-corners">
-						<div class="ui-bar ui-bar-a">
-							<h3>Novas Mensagens</h3>
-						</div>
-						<div class="ui-body ui-body-a">
-								
-							@if(isset($message))
-								@if(!empty($message))
-									@foreach( $message as $m )
-											
-											<a href="app/viewmessage?id_person_from={{$m->id_person_from}}" data-rel="popup" data-position-to="window" data-transition="pop"><p>{{Str::limit(($m->name_first .$m->name_last), 20)}}</p></a>
-											
-									@endforeach
-									
-								@else
-									Sem Resultados.
-								@endif
-							@else
-								Sem Resultados.
-							@endif
+        </div>
 
-						</div>
-					</div>
-					<p align="right"><a href="{{url('supervisor/novoconteudo/')}}">Novo Contéudo</a> | <a href="{{url('supervisor/novosupervisor/')}}">Novo Supervisor</a></p>
-				</div><!-- /content -->
-			</div><!-- /Rec -->
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			<!-- *************************************** Feed **************************************************** -->
-			
-			
-			
-			
-			<div class="conteudo" id="Feed">
-			
-				<div id="userpost" style="margin: 20px;">
-					<h4>Compartilhe suas esperiências</h4>
-					<form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
-						<textArea id="texto" name="texto"> </textArea>
+
+
+        <div id="content">
+            <div class="conteudo"  id="Rec">
+                <div role="main" class="ui-content jqm-content jqm-fullwidth">
+
+                    <div class="ui-corner-all custom-corners">
+                        <div class="ui-bar ui-bar-a"> 
+                            <h3>Avaliar Conteúdo</h3>
+                        </div>
+
+                        <div class="ui-body ui-body-a">
+                            @if(!empty($aux))
+                            @for($i =0; $i < ($c); $i++)
+                            <div class="video" style="overflow: auto;">
+                                <span class="thumbnail" style="height: auto;">
+
+                                    @if(!empty($aux[$i][2]))
+                                    <!--Caso seja um video-->
+                                    <img style="float:left" src="{{$aux[$i][2]}}" />
+                                    <p>
+                                        <b><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{$aux[$i][1]}}</a></b> 
+                                    </p>
+                                    <p>
+
+                                        @if($aux[$i][3] > 1)
+                                        <a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
+                                        @endif
+                                    </p>
+
+                                    <div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up" style="font-size:10px;"> Aprovar Fonte</a>
+                                            		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
+                                    </div>
+
+                                    @else
+                                    <!--Caso seja um lik de site/pdf/outros -->
+                                    <img style="float:left" width="100px" height="100px" src="http://s.wordpress.com/mshots/v1/{{$aux[$i][0]}}?w=100&h=100" />
+                                    <p>
+                                        <b style="font-color: blue"><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{($aux[$i][1])}}</a></b>
+                                    </p>
+                                    <p>
+                                        @if($aux[$i][3] > 1)
+                                        <a href="supervisor/avaliarlink/{{$aux[$i][1]}}">Analisar links separadamente</a> ({{$aux[$i][3]}})
+                                        @endif
+                                    </p>
+
+                                    <div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            		<a id="like" href="supervisor/aprovarfonte/{{$aux[$i][1]}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up " style="font-size:10px;"> Aprovar Fonte</a>
+                                            		<a id="unlike" href="supervisor/reprovarfonte/{{$aux[$i][1]}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
+                                    </div>
+
+
+                                    @endif
+
+                                </span>
+                            </div>
+
+                            @endfor
+                            @else
+                            Sem Resultados.
+                            @endif
+
+                        </div>
+                    </div>
+                    <br>
+
+
+                    <br>
+                    <div class="ui-corner-all custom-corners">
+                        <div class="ui-bar ui-bar-a">
+                            <h3>Novas Mensagens</h3>
+                        </div>
+                        <div class="ui-body ui-body-a">
+
+                            @if(isset($message))
+                            @if(!empty($message))
+                            @foreach( $message as $m )
+
+                            <a href="app/viewmessage?id_person_from={{$m->id_person_from}}" data-rel="popup" data-position-to="window" data-transition="pop"><p>{{Str::limit(($m->name_first .$m->name_last), 20)}}</p></a>
+
+                            @endforeach
+
+                            @else
+                            Sem Resultados.
+                            @endif
+                            @else
+                            Sem Resultados.
+                            @endif
+
+                        </div>
+                    </div>
+                    <p align="right"><a href="{{url('supervisor/novoconteudo/')}}">Novo Contéudo</a> | <a href="{{url('supervisor/novosupervisor/')}}">Novo Supervisor</a></p>
+                </div><!-- /content -->
+            </div><!-- /Rec -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- *************************************** Feed **************************************************** -->
+
+
+
+
+            <div class="conteudo" id="Feed">
+
+                <div id="userpost" style="margin: 20px;">
+                    <h4>Compartilhe suas esperiências</h4>
+                    <form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
+                        <textArea id="texto" name="texto"> </textArea>
 						<input type="file" id="imagem" name="imagem">
 					</form>
 					
@@ -201,9 +197,9 @@
 									
 									<div class="divBottom">
 										<ul class="bottom">
-											<a id="alike" onclick="like('app/likec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-											<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}&from={{$con->id_person}}');mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-											<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}&from={{$con->id_person}}');mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+											<a id="alike" onclick="like('app/likec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+											<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+											<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}& from={{$con->id_person}}'); mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 										</ul>
 									</div>	
 									
@@ -262,9 +258,9 @@
 									
 									<div class="divBottom">
 										<ul class="bottom">
-											<a id="alikep" onclick="like('app/likep?id={{$p->id}}&from={{$p->person}}');mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-											<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}&from={{$p->person}}');mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-											<a id="acomp" onclick="comp('app/compp?id_post={{$p->id}}&from={{$p->person}}');mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+											<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+											<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+											<a id="acomp" onclick="comp('app/compp?id_post={{$p->id}}& from={{$p->person}}'); mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 										</ul>
 										
 													
@@ -465,29 +461,28 @@ function mudaFundoCompp(div){
 
 
 @section("style")
+	
+    #like {
+	background: #7B7;
+    }
 
+    #like:hover {
+	background: #BEB;
+    }
 
-			
-			
-			
-		#like {
-			background: #7B7;
-		}
-		#like:hover {
-			background: #BEB;
-		}
+    #unlike {
+	background: #E66;
+    }
 
-		#unlike {
-			background: #E66;
-		}
-		#unlike:hover {
-			background: #F88;
-		}
+    #unlike:hover {
+	background: #F88;
+    }
 
-		.thumbnail {
-			display: block;
-			height: 120px;
-		}
+    .thumbnail {
+	display: block;
+	height: 120px;
+    }
+    
 
 		.thumbnail img {
 			margin: 5px !important;
@@ -615,19 +610,7 @@ function mudaFundoCompp(div){
 			
 		}
 		
-		.contentPost{
-			
-			border-left: solid 2px gray;
-			border-top: solid 2px gray;
-			border-radius:5px 0 0 10px;
-			margin: 15px;
-			float:left;
-			display:block;
-			width: 100%;
-			height: auto;
-			
-			
-		}
+		
 		
 		
 		
@@ -656,12 +639,25 @@ function mudaFundoCompp(div){
 			height: 50px;
 			width: 50px;
 		}
-		
-		
+                
+                .contentPost{
+			
+			border-left: solid 2px gray;
+			border-top: solid 2px gray;
+			border-radius:5px 0 0 10px;
+			margin: 15px;
+			float:left;
+			display:block;
+			width: 100%;
+			height: auto;
+			
+			
+		}
 		
 		.textPost{
+                
 			margin: 5px;
-			clear: both;
+                        clear: both;
 			
 		}
 		
@@ -702,11 +698,5 @@ function mudaFundoCompp(div){
 		
 
 @stop
-
-
-
-
-
-
 
 

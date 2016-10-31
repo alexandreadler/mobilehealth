@@ -84,6 +84,13 @@ class ProfileController extends \BaseController {
         //************************************ [FIM] Recupera os post do FEED **********************************************************
         //******************************************************************************************************************
 
+		
+		
+		
+		
+		
+		
+		
         $person = $person[0];
         $title = "Página Pessoal: " . $person->name_first;
 
@@ -95,18 +102,21 @@ class ProfileController extends \BaseController {
 
     public function mergeListPost($posts) {
 
-        
-        
-        for ($j = 0; $j < count($posts); $j++) {
-                
+        for ($j = 0; $j < count($posts); $j++) { 
             
                 $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => $posts[$j]->imagem, "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => isset($posts[$j]->photo)?'imgs/'.$posts[$j]->photo:Session::get('profilePicture'), "vid" => "", "title" => "", "description" => "", "thumburl" => ""];
                 
         }
-        
-        
-        
+
         // verifica se encontra youtube no texto
+        $posts = $this->encontraLinkYouTube($posts);
+
+        return $posts;
+    } 
+    
+    
+    function encontraLinkYouTube($posts){
+        
         for ($i = 0; $i < count($posts); $i++) {
 
             $pos = strripos($posts[$i]->texto, "youtube.com");
@@ -117,6 +127,7 @@ class ProfileController extends \BaseController {
 
                 $pos = strripos($posts[$i]->texto, "?v=");
                 $temp = substr($posts[$i]->texto, $pos);
+                
                 // retorna ?v=IdVideo[...]
                 // Decobre se existe um espaço depois do IdVideo
                 $pos = strpos($temp, ' ');
@@ -139,6 +150,7 @@ class ProfileController extends \BaseController {
                             $vid .= $temp[$j];
                         }
                     }
+                    
                 } else {
 
                     // Link é a última coisa do texto.
@@ -151,9 +163,6 @@ class ProfileController extends \BaseController {
 
                 // ************************* codigo para tentar mesclar array *************************************************
                 $data = VideoApi::setType('youtube')->getVideoDetail($vid);
-
-                //dd($data);
-                //print_r($posts[0]);
 
                 for ($j = 0; $j < count($posts); $j++) {
 
@@ -171,11 +180,8 @@ class ProfileController extends \BaseController {
         }
   
         return $posts;
+        
     }
-
-    
-    
-    
     
     function selectionsort($A) {
         $n = count($A);
@@ -192,45 +198,7 @@ class ProfileController extends \BaseController {
       return $A;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Display a listing of the resource.
-     * GET /profile
-     *
-     * @return Response
 
-
-
-
-
-
-      public function postIndex()
-      {
-      $input = Input::all();
-
-      $pid = $input["pid"];
-
-      $p                  = Person::find($pid);
-      $p->name_last        = $input["lname"];
-      $p->name_first       = $input["fname"];
-      $p->date_birth       = $input["birthdate"];
-      $p->gender           = $input["gender"];
-
-      if (isset($input["disease"]))
-      $p->disease         = $input["disease"];
-
-      $p->save();
-
-      return Redirect::intended("/profile");
-      }
-     */
     public function postIndex() {
         $input = Input::all();
 
