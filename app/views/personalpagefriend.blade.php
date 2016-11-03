@@ -30,9 +30,11 @@
                     
                     <div class="post">
                             <div class="headPost">
-                                <div class="imgPost" >
-                                    {{ HTML::image(Session::get('profilePicture'), '') }}
-                                </div>
+                                <a href="{{url('profile/personalpagefriend/'.$p->person)}}">
+                                    <div class="imgPost" >
+                                        {{ HTML::image('imgs/'.$p->photo, '') }}
+                                    </div>
+                                </a>
                             </div>
 
                             <div class="contentPost"> 
@@ -43,6 +45,22 @@
                                 <div class="textPost">
 
                                     <p>{{$p->texto}}</p>
+                                    
+                                    <!-- Caso o texto tenha algum link do youtube -->
+					@if(!empty($p->thumburl))
+                                            <div class="video">
+						<span class="thumbnail" >
+                                                    <a href="{{url("/app/video/" . $p->vid."/".$p->person)}}" target="new">
+							<img src="{{$p->thumburl}}" align="left" />
+							<p class="title">{{Str::limit($p->title,40)}}</p>
+                                                        <p class="desc">{{ Str::limit($p->description, 120) }}</p>
+                                                    </a>
+						</span>
+                                            </div>
+										
+											
+					@endif
+                                    
                                     @if(strcmp($p->imagem, ' ') != 0)
                                     {{ HTML::image('imgs/'.$p->imagem, '') }}
                                     @endif
@@ -67,63 +85,6 @@
 
             @endif
 
-
-
-            @if(isset($contents))
-            @if(!empty($contents))
-            @foreach($contents as $con)
-            <div class="post" >
-                <div class="headPost">
-                    <div class="imgPost" >
-                        {{ HTML::image(Session::get('profilePicture'), '') }}
-                    </div>
-                </div>
-
-                <div class="contentPost"> 
-                    <div class="namePost">
-                        {{Session::get('fullName');}}
-                    </div>
-
-                    <div class="textPost">
-                        @if(!empty($con->thumburl))
-                        <div class="video">
-                            <span class="thumbnail" >
-                                <a href="{{url("/app/video/" . $con->vid)}}" target="new">
-                                    <img src="{{$con->thumburl}}" align="left" />
-                                    <p class="title">{{Str::limit($con->title,40)}}</p>
-                                    <p class="desc">{{ Str::limit($con->description, 120) }}</p>
-                                </a>
-                            </span>
-                        </div>
-
-                        @else
-
-                        <p>{{$con->title}}</p>
-                        <img src="{{$con->thumburl}}" align="left" />
-                        <p>
-                            <a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
-
-                        </p>
-
-                        @endif
-                    </div>
-
-                    <div class="divBottom">
-                        <ul class="bottom">
-                            <a id="alike" onclick="like('{{url('app/likec?id='.$con->id.'&from='.Confide::user()->person->id)}}'); mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-                            <a id="aulike" onclick="unlike('{{url('app/unlikec?id='.$con->id.'&from='.Confide::user()->person->id)}}'); mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-            @else
-            {{$person->name_first}} não compoartilhou nada ainda
-            @endif
-            @else
-
-            @endif
 
 
             <br style="clear:both" /> 
@@ -267,6 +228,32 @@ $('#form').submit();
 
 
 @section("style")
+
+.thumbnail {
+        display: block;
+        height: 120px;
+    }
+.thumbnail img {
+        margin: 5px !important;
+    }
+    .thumbnail .title {
+        padding: 2px 5px 0;
+        margin: 0;
+        font-weight: bold;
+        font-size: 0.8em
+    }
+    .thumbnail .desc {
+        font-size: 0.7em;
+        font-weight: normal;
+        padding: 2px 0;
+        margin: 0;
+    }
+    .thumbnail a {
+        text-decoration: none;
+        color: #000 !important;
+        font-weight: normal;
+    }
+
 
 #like {
 background: #7B7;

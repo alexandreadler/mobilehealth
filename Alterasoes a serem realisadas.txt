@@ -2,4 +2,4 @@
 
 - Fazer a exibição na página de amigos e perfil pessoal
 
-- 
+- (Supervisor) Fazer uma area para excluir conteudos 

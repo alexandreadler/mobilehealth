@@ -237,7 +237,7 @@
 						<div class="divisions_profile"> 
 							<a href="{{url('profile/personalpage')}}">
 								<div id="profile_picture">	
-									{{ HTML::image(Session::get('profilePicture'), '') }}
+									{{ HTML::image('imgs/'.Session::get('profilePicture'), '') }}
 									
 								</div>
 								

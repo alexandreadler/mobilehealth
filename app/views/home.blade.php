@@ -140,13 +140,13 @@
                 <h4>Compartilhe suas esperiências</h4>
                 <form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
                     <textArea id="texto" name="texto"> </textArea>
-					<input type="file" id="imagem" name="imagem">
-				</form>
+                    <input type="file" id="imagem" name="imagem">
+		</form>
 				
-				<div class="ui-bar ui-bar-a" style="height: 44px;">
+		<div class="ui-bar ui-bar-a" style="height: 44px;">
                     <a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;">Publicar</a>
                 </div>
-			</div>
+            </div>
 		
 			@if(isset($c))
                             @if(!empty($c))
@@ -154,7 +154,7 @@
 					<div class="post" >
 						<div class="headPost">
 							<div class="imgPost" >
-								<img id="picture" src="{{Session::get('profilePicture')}}" />
+								<img id="picture" src="imgs/{{Session::get('profilePicture')}}" />
 							</div>
 						</div>
 							
@@ -249,76 +249,18 @@
 			
 		<!-- Videos compartilhados no feed;
 			É separado para facilitar a inplemnetação;-->
-		@if(isset($contents))
-			@if(!empty($contents))
-				@foreach($contents as $con)
-						<div class="post" >
-							<div class="headPost">
-								<div class="imgPost" >
-									<img id="picture" src="imgs/{{$con->photo}}" />
-								</div>
-							</div>
-							
-							<div class="contentPost"> 
-								<div class="namePost">
-								{{$con->name_first}}
-								
-								</div>
-								
-								<div class="textPost">
-									
-									@if(!empty($con->thumburl))
-										<div class="video">
-											<span class="thumbnail" >
-												<a href="{{url("/app/video/" . $con->vid."/".$con->id_person)}}" target="new">
-												<img src="{{$con->thumburl}}" align="left" />
-												<p class="title">{{Str::limit($con->title,40)}}</p>
-												<p class="desc">{{ Str::limit($con->description, 120) }}</p>
-												</a>
-											</span>
-										</div>
-								
-									@else
-								
-								
-										<p>{{$con->title}}</p>
-											<img src="{{$con->thumburl}}" align="left" />
-										<p>
-											<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
-												
-										</p>
-									
-									@endif
-								</div>
-								
-								<div class="divBottom">
-									<ul class="bottom">
-										<a id="alike" onclick="like('app/likec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}& from={{$con->id_person}}'); mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
-									</ul>
-								</div>
-								
-								
-								<!-- Comentários para um post-->
-								<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$con->id)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso</a></p></div>
-								
-								
-							</div>
-						</div>
-					@endforeach	
-				@endif
-			@endif
 			
-			<!-- Compartilhamento de post (Texto e Imagens) -->
+			<!-- Compartilhamento de post  -->
 			@if(isset($posts))
 				@if(!empty($posts))
 					@foreach($posts as $p)
 						<div class="post" >
 							<div class="headPost">
+                                                            <a href="{{url('profile/personalpagefriend/'.$p->person)}}">
 								<div class="imgPost" >
 									<img id="picture" src="imgs/{{$p->photo}}" />
 								</div>
+                                                            </a>
 							</div>
 							
 							<div class="contentPost"> 
@@ -365,6 +307,7 @@
 								
 								
 								<!-- Comentários para um post -->
+                                                                
 								<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$p->id)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso</a></p></div>
 								
 								

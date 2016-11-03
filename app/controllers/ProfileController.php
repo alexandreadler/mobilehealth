@@ -69,50 +69,51 @@ class ProfileController extends \BaseController {
 
         $person = DB::connection("public")->select(DB::raw("select * from app.users as u inner join public.person as p on u.person_id = p.id and p.id = " . $pid));
 
-        //********************************* REUPERA os posts do usuario **************************************************
-        //*****************************************************************************************************************
-
-        $posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = " . $pid . " order by create_at desc"));
-
-        //********************************* [FIM] REUPERA os posts do usuario **************************************************
-        //*****************************************************************************************************************
-        //************************************ Recupera os post do FEED **********************************************************
-        //******************************************************************************************************************
-
-        $contents = DB::connection("public")->select(DB::raw("select c.* from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and (" . $pid . " = rpc.id_person) and (rpc.liked = 2)"));
-        //$contents = DB::connection("public")->select(DB::raw("select p.id as id_person, p.name_first, u.photo, c.*  from public.person as p inner join app.users as u on p.id = u.person_id and p.id in (select rpc.person_from from public.relatepersoncontent as rpc where liked = 2 and id_person = ".$pid.") or p.id inner join public.content as c on c.id in (select rpc.id_content from public.relatepersoncontent as rpc where liked = 2 and person_from = p.id)"));	
-        //************************************ [FIM] Recupera os post do FEED **********************************************************
-        //******************************************************************************************************************
-
-		
-		
-		
-		
-		
-		
-		
+        $posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on (pt.person  = ". $pid ." or pt.id in (select id_post from public.relatepersonpost where id_person = ". $pid ." and liked = 2)) and p.id=pt.person inner join app.users as u on u.person_id = pt.person order by create_at desc"));
+	
         $person = $person[0];
         $title = "Página Pessoal: " . $person->name_first;
+              
+        $posts = $this->mergeListPost($posts);  
 
+        //dd($posts);
 
-
-
-        return View::make('personalpagefriend', compact('person', 'title', 'contents', 'posts'));
+        return View::make('personalpagefriend', compact('person', 'title', 'posts'));
     }
+
+    
+    
+    
+     
+    /**
+     * 
+     * @param type $posts
+     * @return type
+     * 
+     * Faz com que os conteúdos com links de videos do youtube e 
+     * que tem apenas texto sejam deixados no mesmo formato 
+     * 
+     * 
+     */
+     
 
     public function mergeListPost($posts) {
 
-        for ($j = 0; $j < count($posts); $j++) { 
+        
+            for ($j = 0; $j < count($posts); $j++) { 
+
+                $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => isset($posts[$j]->imagem)?$posts[$j]->imagem:' ', "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => $posts[$j]->photo, "vid" => "", "title" => "", "description" => "", "thumburl" => ""];
+               
+            }
+
+            // verifica se encontra youtube no texto
+            $posts = $this->encontraLinkYouTube($posts);
             
-                $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => $posts[$j]->imagem, "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => isset($posts[$j]->photo)?'imgs/'.$posts[$j]->photo:Session::get('profilePicture'), "vid" => "", "title" => "", "description" => "", "thumburl" => ""];
-                
-        }
-
-        // verifica se encontra youtube no texto
-        $posts = $this->encontraLinkYouTube($posts);
-
-        return $posts;
-    } 
+            //dd($posts);
+            
+            
+            return $posts;
+        } 
     
     
     function encontraLinkYouTube($posts){
@@ -167,18 +168,25 @@ class ProfileController extends \BaseController {
                 for ($j = 0; $j < count($posts); $j++) {
 
                     if ($j == $i) {
+                      
                         
-                        $posts[$i] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => $posts[$j]->imagem, "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?'imgs/'.$posts[$j]->name_first:Session::get('fullName'), "photo" => isset($posts[$j]->photo)?$posts[$j]->photo:Session::get('profilePicture'), "vid" => $data["id"], "title" => $data["title"], "description" => $data["description"], "thumburl" => $data["thumbnail_small"]];
-      
+                        $posts[$i]->vid = $data["id"];
+                        $posts[$i]->title = $data["title"];
+                        $posts[$i]->description = $data["description"];
+                        $posts[$i]->thumburl = $data["thumbnail_small"];
+                        
+                        
+                        
                     }
                 }
 
-                $posts = $this->selectionsort($posts);
+                
                 
                 // **************************************************************************
             }
         }
-  
+        
+        $posts = $this->selectionsort($posts);
         return $posts;
         
     }
