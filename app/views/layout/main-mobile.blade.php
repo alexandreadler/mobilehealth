@@ -211,22 +211,42 @@
         <h1 style="color: white;"><strong>@if(isset($title)){{$title}} @else Home @endif</strong></h1>
         <a href="{{url("/users/logout")}}" data-rel="logout" class="btn btn-default btn-lg ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-icon-home" style="margin: 0;"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
 		
+        
+                <!-- São tratados como um requisção get(), Verificar os metódos videoSearch() e contentSearch() -->
 		@if(isset($show_search) and $show_search)
 
-            <div id="search_bar" data-theme="a" class="ui-bar ui-bar-a">
-                <form id="search-form" action="{{url("app/search-video")}}" method="get">
-                    <div class="left">
-                        <label for="search" class="ui-hidden-accessible">Search Input:</label>
-                        <input type="search" name="search" id="search" value="@if(isset($q)){{$q}}@endif" placeholder="Search...">
-                    </div>
-                    <div class="right">
-                        <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="videoSearch()">Video</button>
-                        <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="webSearch()">Web</button>
-                    </div>
-                </form>
-            </div>
+                    <div id="search_bar" data-theme="a" class="ui-bar ui-bar-a">
+                        <form id="search-form" action="{{url("app/search-video")}}" method="get">
+                            <div class="left">
+                                <label for="search" class="ui-hidden-accessible">Search Input:</label>
+                                <input type="search" name="search" id="search" value="@if(isset($q)){{$q}}@endif" placeholder="Search...">
+                            </div>
+                            <div class="right">
+                                <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="videoSearch()">Pesquisar</button>
 
-        @endif
+                            </div>
+                        </form>
+                    </div>
+
+                @endif
+                
+                
+                @if(isset($show_search_content) and $show_search_content)
+
+                    <div id="search_bar" data-theme="a" class="ui-bar ui-bar-a">
+                        <form id="content-search" action="{{url("supervisor/showsearchcontent")}}" method="get">
+                            <div class="left">
+                                <label for="search" class="ui-hidden-accessible">Search Input:</label>
+                                <input type="search" name="search" id="search">
+                            </div>
+                            <div class="right">
+                                <button type="button" class="ui-btn ui-btn-a ui-corner-all ui-mini" onclick="contentSearch()">Pesquisar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                @endif
+                
 		
 	</div>
 	
@@ -286,9 +306,9 @@
 	<div data-role="footer" data-position="fixed" data-theme="b">
 		<div data-role="navbar">
 			<ul>
-				<li><a @if(isset($title) && $title == "Profile") class="ui-btn-active" @endif href="{{url("/profile")}}" data-icon="user" data-prefetch="true" data-transition="slide">Profile</a></li>
-				<li><a @if(isset($title) && $title == "Search") class="ui-btn-active" @endif href="{{url("app/search")}}" data-icon="search" data-prefetch="true" data-transition="slide">Search</a></li>
-				<li><a @if(isset($title) && $title == "My Health") class="ui-btn-active" @endif href="{{url("/phr")}}" data-icon="gear" data-prefetch="true" data-transition="slide">My Health</a></li>
+				<li><a @if(isset($title) && $title == "Profile") class="ui-btn-active" @endif href="{{url("/profile")}}" data-icon="user" data-prefetch="true" data-transition="slide">Perfil</a></li>
+				<li><a @if(isset($title) && $title == "Search") class="ui-btn-active" @endif href="{{url("app/search")}}" data-icon="search" data-prefetch="true" data-transition="slide">Pesquisar</a></li>
+				<li><a @if(isset($title) && $title == "My Health") class="ui-btn-active" @endif href="{{url("/phr")}}" data-icon="gear" data-prefetch="true" data-transition="slide">Minha Saúde</a></li>
 				<li><a @if(isset($title) && $title == "Social") class="ui-btn-active" @endif href="{{url("app/social")}}" data-icon="refresh" data-prefetch="true" data-transition="slide">Social</a></li>
 			</ul>
 		</div><!-- /navbar -->
@@ -329,7 +349,10 @@
         $('#search-form').submit();
     }
 
-	
+    function contentSearch() {
+        $('#content-search').attr('action','{{url("supervisor/showsearchcontent")}}');
+        $('#content-search').submit();
+    }
 	
 
     @yield("script");

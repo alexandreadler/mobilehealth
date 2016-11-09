@@ -35,7 +35,7 @@
 
 
 
-        <div class="conteudo"  id="Rec">
+        <div class="conteudo"  id="Rec" >
             <!-- Div geral para os contúedos recomendados pelo mobilehealth, é separada da rede social para dar maior foco as recomendações; 
                      É a página inical do mobilehealth -->
 
@@ -133,7 +133,7 @@
 
 
         <div class="conteudo" id="Feed">
-            <!-- Div geral para os Feed da rede social do mobilehealth, é separada, pois dar maior foco as recomendações; -->
+            <!-- Div geral para os Feed da rede social do mobilehealth, é separada, pois da maior foco as recomendações; -->
 
 
             <div id="userpost" style="margin: 20px;">
@@ -288,12 +288,14 @@
 											
 											@endif
 											
-											<p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
+											
 										</p>
 										
 										@if(strcmp($p->imagem, ' ') != 0)
 											<img id="imageFromPost" src="imgs/{{$p->imagem}}" />			
 										@endif
+                                                                                
+                                                                                <p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
 
 								</div>
 								
@@ -540,9 +542,9 @@ $('#save').click(function(){
 
 	
 	.TabControl{
+
 		width:100%; 
 		overflow-y:scroll; 
-		height:400px;
 		
 	} 
 	

@@ -21,13 +21,14 @@
 
                         <div data-role="collapsibleset" style="clear: left" data-filter="true" data-children="> div, > div div ul li" data-inset="true" id="collapsiblesetForFilterChildren" data-input="#searchForCollapsibleSetChildren">
 
-							<div class="box">
-							 <a href="{{url('profile/personalpagefriend/'.$p->id)}}">
-									<div id="profile_picture">	
-										{{ HTML::image('imgs/'.$p->photo, '') }}					
-									</div>
-							</a>
-							</div>
+                            <div class="box">
+                                <a href="{{url('profile/personalpagefriend/'.$p->id)}}">
+                                    <div id="profile_picture">	
+                                        {{ HTML::image('imgs/'.$p->photo, '') }}					
+                                    </div>
+                                </a>
+                            </div>
+                            
                             <div data-role="collapsible" data-collapsed-icon="carat-d" and data-expanded-icon="carat-u">
 								
 								
@@ -36,6 +37,7 @@
                                 Gender: @if ($p->gender == '1') Male @else Female @endif
 								
                                 <br>
+                                
                                 <a href="#popupLogin{{$p->id}}" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-btn-inline ui-icon-mail ui-btn-icon-top">Message</a>
 
                                 <div data-role="popup" id="popupLogin{{$p->id}}" data-theme="a" class="ui-corner-all">
@@ -49,7 +51,7 @@
                                     </form>
                                 </div>
 								
-								<a href="{{url('app/follow/'.$p->id)}}" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-btn-inline ui-icon-mail ui-btn-icon-top">Fazer Amizade</a>
+				<a href="{{url('app/follow/'.$p->id)}}" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-btn-inline ui-icon-mail ui-btn-icon-top">Fazer Amizade</a>
 	
 								
 

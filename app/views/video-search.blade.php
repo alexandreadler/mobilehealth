@@ -11,7 +11,7 @@
 	Tive que criar essas nova página, pois os vídeos pesquisados estavão indo para a tabela de conteúdos.
 	Isso é errado porque conteúdos devem ser cadastrados pelos supervisores.
 	
-	Os vídeos visualizados e dado like será armazenado como um nvo post para esse usuário
+	Os vídeos visualizados e dado like será armazenado como um novo post para esse usuário
 
 
 -->
@@ -21,7 +21,6 @@
 
 	    <div role="main" class="ui-content jqm-content jqm-fullwidth">
 
-		
             <div id="video_player">
                 <span class="thumbnail">
                     <iframe width="320" height="240" src="//www.youtube.com/embed/{{$id}}" frameborder="0" allowfullscreen></iframe>

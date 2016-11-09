@@ -39,202 +39,34 @@ class AppController extends Controller {
         Session::put('fullName', $name);
         Session::put('profilePicture',Confide::user()->photo);
 
-        
-            
-        //************************************ Recupera os contéudos recomendados ******************************************
-        //******************************************************************************************************************
+        $pid = Confide::user()->person->id;
 
+         //************************************ Recupera os post do FEED **********************************************************
+         //******************************************************************************************************************
+
+            $posts = DB::connection("public")->select(DB::raw("select pt.*, p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =" . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));
+            $posts2 = DB::connection("public")->select(DB::raw("select pt.* from app.posts as pt where pt.person =".$pid));
+            
+            $posts = array_merge($posts, $posts2);
+
+            $posts = $this->mergeListPost($posts);
+            
+         //************************************ [FIM] Recupera os post do FEED **********************************************************
+         //******************************************************************************************************************
+
+            
         // Verifica se é um supervisor ou um usuário normal
-        
         if (Confide::user()->type) {
 
             // Quando supervisor - type = 1
 
-            $pid = Confide::user()->person->id;
-
-            /** 
-             * Recupera os conteúdos do FEED
-             * 
-             * São os conteúdos compartilhados pelos aminos do usuário
-             * 
-            */
-            $contents = DB::connection("public")->select(DB::raw("select c.*, rpc.id_person, p.name_first, rpc.date_relation as create_at, u.photo, pt.id as idpost from public.relatepersoncontent as rpc inner join public.content as c on (rpc.id_content = c.id) and rpc.id_person in (select id_following from app.follow where id_follower =" . $pid . ") inner join public.person as p on p.id = rpc.id_person inner join app.users as u on u.person_id = p.id inner join app.posts pt on pt.texto = cast(c.id as text) order by rpc.date_relation desc"));
+            $aux = $this->extrairFontes();
             
-      
-          
-            //************************************ Recupera os post do FEED **********************************************************
-            $posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =" . $pid . ")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));
-
-
-
-            $f = new Fonts;
-            $f = Fonts::where('valued', '=', false)->get();
-
-            //dd($f);
-
-            $fontes = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
-
-            $sid = Confide::user()->person->id;
-            $aux = array();
-            $teste = false;
-            $teste2 = true;
-            $c = 1;
-
-            
-
-            for ($i = 0; $i < count($fontes); $i++) {
-
-                $teste = false;
-                $teste2 = true;
-
-                $rest = substr($fontes[$i]->url_online, 0, 6);
-
-
-                if (strcmp('http:/', $rest) != 0) {
-
-                    $temp = substr($fontes[$i]->url_online, 8 - strlen($fontes[$i]->url_online));
-                    $fonte = strstr($temp, '/', true);
-
-
-                    for ($h = 0; $h < count($f); $h++) {
-                        $t = "https://" . $fonte;
-
-                        if (strcmp($t, $f[$h]->url_fonts) == 0) {
-
-                            $teste2 = false;
-                            //
-                        }
-                    }
-
-                    if ($teste2) {
-
-                        // Caso a fonte ja tenha sido aprovada anteiromente 
-                        DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
-                        unset($fontes[$i]);
-                    } else {
-
-                        //Caso comece com https
-                        if (count($aux) == 0) {
-
-                            $aux[0][0] = $fonte;
-                            $aux[0][1] = $fonte;
-                            $aux[0][2] = $fontes[$i]->thumburl;
-                            $aux[0][3] = 1;
-                            $aux[0][4] = $fontes[$i]->url_online;
-                        } else {
-
-
-                            for ($j = 0; $j < $c; $j++) {
-
-                                if (strcmp($fonte, $aux[$j][0]) == 0) {
-                                    $teste = true;
-                                    $aux[$j][3] ++;
-                                }
-                            }
-
-
-                            if (!$teste) {
-
-                                $aux[$c][0] = $fonte;
-                                $aux[$c][1] = $fonte;
-                                $aux[$c][2] = $fontes[$i]->thumburl;
-                                $aux[$c][3] = 1;
-                                $aux[$c][4] = $fontes[$i]->url_online;
-                                $c++;
-                            }
-                        }
-                    }
-                } else {
-
-                    $temp = substr($fontes[$i]->url_online, 7 - strlen($fontes[$i]->url_online));
-                    $fonte = strstr($temp, '/', true);
-
-
-
-                    for ($h = 0; $h < count($f); $h++) {
-                        $t = "http://" . $fonte;
-
-                        if (strcmp($t, $f[$h]->url_fonts) == 0) {
-
-                            $teste2 = false;
-                        }
-                    }
-
-
-
-
-                    if ($teste2) {
-                        //
-                        // Caso a fonte ja tenha sido aprovada anteiromente 
-
-                        DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
-                        unset($fontes[$i]);
-                    } else {
-
-
-                        //Caso comece com http
-
-                        if (count($aux) == 0) {
-
-
-                            $aux[0][0] = $fonte;
-                            $aux[0][1] = $fonte;
-                            $aux[0][2] = $fontes[$i]->thumburl;
-                            $aux[0][3] = 1;
-                            $aux[0][4] = $fontes[$i]->url_online;
-                        } else {
-
-
-                            for ($j = 0; $j < $c; $j++) {
-
-                                if (strcmp($fonte, $aux[$j][0]) == 0) {
-                                    $teste = true;
-                                    $aux[$j][3] ++;
-                                }
-                            }
-
-
-                            if (!$teste) {
-
-
-                                $aux[$c][0] = $fonte;
-                                $aux[$c][1] = $fonte;
-                                $aux[$c][2] = $fontes[$i]->thumburl;
-                                $aux[$c][3] = 1;
-                                $aux[$c][4] = $fontes[$i]->url_online;
-                                $c++;
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            for ($i = 0; $i < $c; $i++) {
-
-                $rest = substr($aux[$i][4], 0, 6);
-                if (strcmp('http:/', $rest) != 0) {
-
-                    $aux[$i][0] = strtolower(urlencode("https://" . $aux[$i][0]));
-                    
-                } else {
-
-                    $aux[$i][0] = strtolower(urlencode("http://" . $aux[$i][0]));
-                    
-                }
-            }
-            
-           //$posts = array_merge($posts, $contents);
-           $posts = $this->mergeListPost($posts);
-
-
-            return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c', 'contents', 'posts', 'pid'));
+            return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c', 'posts', 'pid'));
             
         } else {
 
             // Quando usuario
-
-            $pid = Confide::user()->person->id;
             $rcs = Recommendation::where('id_person', '=', $pid)->where('visited', '=', false)->lists('id_content');
 
 
@@ -244,23 +76,7 @@ class AppController extends Controller {
                 $c2 = Content::whereIn('id', $rcs)->where('subtype', '=', '3')->take(3)->get();
             }
 
-            //************************************ Recupera os post do FEED **********************************************************
-            //******************************************************************************************************************
 
-            $posts = DB::connection("public")->select(DB::raw("select pt.*, p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =" . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));
-            $posts2 = DB::connection("public")->select(DB::raw("select pt.* from app.posts as pt where pt.person =".$pid));
-
-            //************************************ [FIM] Recupera os post do FEED **********************************************************
-            //******************************************************************************************************************
-            
-          
-            
-            $posts = array_merge($posts, $posts2);
-
-            $posts = $this->mergeListPost($posts);   
-            
-            //dd($posts);
-            
             $title = "Feed";
             return View::make('home', compact('c', 'c2', 'message', 'title', 'contents', 'posts', 'pid'));
         }
@@ -1519,7 +1335,6 @@ class AppController extends Controller {
             return $posts;
         } 
     
-    
     function encontraLinkYouTube($posts){
         
         for ($i = 0; $i < count($posts); $i++) {
@@ -1611,6 +1426,175 @@ class AppController extends Controller {
     }
     
 
+    /**
+     * @return type array
+     * 
+     * extrai todas as fontes dos contéudos
+     *  
+     */
     
+    public function extrairFontes(){
+        
+        $f = new Fonts;
+            $f = Fonts::where('valued', '=', false)->get();
+
+            //dd($f);
+
+            $fontes = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
+
+            $sid = Confide::user()->person->id;
+            $aux = array();
+            $teste = false;
+            $teste2 = true;
+            $c = 1;
+
+            
+
+            for ($i = 0; $i < count($fontes); $i++) {
+
+                $teste = false;
+                $teste2 = true;
+
+                $rest = substr($fontes[$i]->url_online, 0, 6);
+
+
+                if (strcmp('http:/', $rest) != 0) {
+
+                    $temp = substr($fontes[$i]->url_online, 8 - strlen($fontes[$i]->url_online));
+                    $fonte = strstr($temp, '/', true);
+
+
+                    for ($h = 0; $h < count($f); $h++) {
+                        $t = "https://" . $fonte;
+
+                        if (strcmp($t, $f[$h]->url_fonts) == 0) {
+
+                            $teste2 = false;
+                            //
+                        }
+                    }
+
+                    if ($teste2) {
+
+                        // Caso a fonte ja tenha sido aprovada anteiromente 
+                        DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
+                        unset($fontes[$i]);
+                    } else {
+
+                        //Caso comece com https
+                        if (count($aux) == 0) {
+
+                            $aux[0][0] = $fonte;
+                            $aux[0][1] = $fonte;
+                            $aux[0][2] = $fontes[$i]->thumburl;
+                            $aux[0][3] = 1;
+                            $aux[0][4] = $fontes[$i]->url_online;
+                        } else {
+
+
+                            for ($j = 0; $j < $c; $j++) {
+
+                                if (strcmp($fonte, $aux[$j][0]) == 0) {
+                                    $teste = true;
+                                    $aux[$j][3] ++;
+                                }
+                            }
+
+
+                            if (!$teste) {
+
+                                $aux[$c][0] = $fonte;
+                                $aux[$c][1] = $fonte;
+                                $aux[$c][2] = $fontes[$i]->thumburl;
+                                $aux[$c][3] = 1;
+                                $aux[$c][4] = $fontes[$i]->url_online;
+                                $c++;
+                            }
+                        }
+                    }
+                } else {
+
+                    $temp = substr($fontes[$i]->url_online, 7 - strlen($fontes[$i]->url_online));
+                    $fonte = strstr($temp, '/', true);
+
+
+
+                    for ($h = 0; $h < count($f); $h++) {
+                        $t = "http://" . $fonte;
+
+                        if (strcmp($t, $f[$h]->url_fonts) == 0) {
+
+                            $teste2 = false;
+                        }
+                    }
+
+
+
+
+                    if ($teste2) {
+                        //
+                        // Caso a fonte ja tenha sido aprovada anteiromente 
+
+                        DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
+                        unset($fontes[$i]);
+                    } else {
+
+
+                        //Caso comece com http
+
+                        if (count($aux) == 0) {
+
+
+                            $aux[0][0] = $fonte;
+                            $aux[0][1] = $fonte;
+                            $aux[0][2] = $fontes[$i]->thumburl;
+                            $aux[0][3] = 1;
+                            $aux[0][4] = $fontes[$i]->url_online;
+                        } else {
+
+
+                            for ($j = 0; $j < $c; $j++) {
+
+                                if (strcmp($fonte, $aux[$j][0]) == 0) {
+                                    $teste = true;
+                                    $aux[$j][3] ++;
+                                }
+                            }
+
+
+                            if (!$teste) {
+
+
+                                $aux[$c][0] = $fonte;
+                                $aux[$c][1] = $fonte;
+                                $aux[$c][2] = $fontes[$i]->thumburl;
+                                $aux[$c][3] = 1;
+                                $aux[$c][4] = $fontes[$i]->url_online;
+                                $c++;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            for ($i = 0; $i < $c; $i++) {
+
+                $rest = substr($aux[$i][4], 0, 6);
+                if (strcmp('http:/', $rest) != 0) {
+
+                    $aux[$i][0] = strtolower(urlencode("https://" . $aux[$i][0]));
+                    
+                } else {
+
+                    $aux[$i][0] = strtolower(urlencode("http://" . $aux[$i][0]));
+                    
+                }
+            }
+        
+        return $aux;
+        
+    }
+
     
 }

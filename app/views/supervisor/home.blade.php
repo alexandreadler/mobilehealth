@@ -4,7 +4,8 @@
 
 <div data-role="page" data-title="Supervisor - Home">
 
-    <div class="TabControl">
+    <div class="TabControl" style="border: solid 1px red;">
+
         <div id="header" style="overflow: auto;">
             <ul class="abas" style="clear: both;">
                 <li onclick="aba(0)"> 
@@ -23,7 +24,7 @@
         </div>
 
 
-
+        
         <div id="content">
             <div class="conteudo"  id="Rec">
                 <div role="main" class="ui-content jqm-content jqm-fullwidth">
@@ -35,7 +36,7 @@
 
                         <div class="ui-body ui-body-a">
                             @if(!empty($aux))
-                            @for($i =0; $i < ($c); $i++)
+                            @for($i =0; $i < count($aux); $i++)
                             <div class="video" style="overflow: auto;">
                                 <span class="thumbnail" style="height: auto;">
 
@@ -114,7 +115,7 @@
 
                         </div>
                     </div>
-                    <p align="right"><a href="{{url('supervisor/novoconteudo/')}}">Novo Contéudo</a> | <a href="{{url('supervisor/novosupervisor/')}}">Novo Supervisor</a></p>
+                    <p align="right"><a href="{{url('supervisor/novoconteudo/')}}">Novo Contéudo</a> | <a href="{{url('supervisor/novosupervisor/')}}">Novo Supervisor</a> | <a href="{{url('supervisor/editarconteudo/')}}">Editar Contéudo</a></p>
                 </div><!-- /content -->
             </div><!-- /Rec -->
 
@@ -149,95 +150,28 @@
 						<a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;">Publicar</a>
 					</div>
 				</div>
-			
-
-				@if(isset($contents))
-					@if(!empty($contents))
-						@foreach($contents as $con)
-							<div class="post" >
-								<div class="headPost">
-									<div class="imgPost" >
-										<img id="picture" src="imgs/{{$con->photo}}" />
-									</div>
-								</div>
-								
-								<div class="contentPost"> 
-									<div class="namePost">
-										{{$con->name_first}}
-									</div>
-									
-									<div class="textPost">
-										
-										@if(!empty($con->thumburl))
-											<div class="video">
-												<span class="thumbnail" >
-													<a href="{{url("/app/video/" . $con->vid)}}" target="new">
-													<img src="{{$con->thumburl}}" align="left" />
-													<p class="title">{{Str::limit($con->title,40)}}</p>
-													<p class="desc">{{ Str::limit($con->description, 120) }}</p>
-													</a>
-												</span>
-											</div>
-									
-										@else
-									
-									
-											<p>{{$con->title}}</p>
-											<img src="{{$con->thumburl}}" align="left" />
-											<p>
-												<a href="app/url?a={{$con->url_online}}" target="new">{{$con->description}}</a>
-													
-											</p>
-										
-										@endif
-										
-										<p style="font-size: 10px; color: gray;">{{$con->create_at}}</p>
-										
-									</div>
-									
-									<div class="divBottom">
-										<ul class="bottom">
-											<a id="alike" onclick="like('app/likec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoLike('{{$con->id}}');" href="#"><li id="like{{$con->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-											<a id="aulike" onclick="unlike('app/unlikec?id={{$con->id}}& from={{$con->id_person}}'); mudaFundoUnLike('{{$con->id}}');" href="#"><li id="unlike{{$con->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-											<a id="acomp" onclick="comp('app/comp?id_content={{$con->id}}& from={{$con->id_person}}'); mudaFundoComp('{{$con->id}}');" href="#" ><li id="comp{{$con->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
-										</ul>
-									</div>	
-									
-										
-									<!-- Comentários para um post-->
-									<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$con->idpost)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso 22</a></p></div>
-									
-										
-								</div>
-								
-
-							</div>
-						@endforeach	
-					@endif
-				@endif
-				
-				
+                
 				@if(isset($posts))
 					@if(!empty($posts))
 						@foreach($posts as $p)
 							<div class="post" >
 								<div class="headPost">
-									<div class="imgPost" >
-										<img id="picture" src="imgs/{{$p->photo}}" />
-									</div>
+                                                                    <a href="{{url('profile/personalpagefriend/'.$p->person)}}">
+                                                                        <div class="imgPost" >
+                                                                                <img id="picture" src="imgs/{{$p->photo}}" />
+                                                                        </div>
+                                                                    </a>
 								</div>
 								
 								<div class="contentPost"> 
 									<div class="namePost">
-									{{$p->name_first}}
+                                                                            {{$p->name_first}}
 									</div>
 									
 									<div class="textPost">
 
-											<p>{{$p->texto}}</p>
-											@if(strcmp($p->imagem, ' ') != 0)
-												{{ HTML::image('imgs/'.$p->imagem, '') }}
-											@endif
+											<p>
+											{{$p->texto}}
 											
 											<!-- Caso o texto tenha algum link do youtube -->
 											@if(!empty($p->thumburl))
@@ -253,7 +187,15 @@
 										
 											
 											@endif
-											<p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
+											
+											
+										</p>
+										
+										@if(strcmp($p->imagem, ' ') != 0)
+											<img id="imageFromPost" src="imgs/{{$p->imagem}}" />			
+										@endif
+                                                                                
+                                                                                <p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
 									</div>
 									
 									<div class="divBottom">
@@ -285,6 +227,7 @@
 			
 			
 		</div><!-- /content -->
+
 	</div><!-- /TabControl -->
 </div><!-- /page -->
 
@@ -507,9 +450,12 @@ function mudaFundoCompp(div){
 		
 		
 		.TabControl{
-			width:100%; 
-			overflow-y:scroll; 
-			height:400px;
+
+			clear:both;
+
+			//width:100%; 
+			//overflow-y:scroll; 
+			//overflow: auto;
 			
 		} 
 		

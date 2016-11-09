@@ -40,13 +40,7 @@ class Youtube implements ServicesInterface {
      * @param  string   $id
      * @return mixed
      */
-	 
-	 
-	
-	 
-	 
-	 
-	 
+
 	
     public function getVideoDetail($id)
     {

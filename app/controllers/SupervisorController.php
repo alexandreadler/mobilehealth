@@ -7,8 +7,7 @@
  *
  * Implements actions regarding user management
  */
-class SupervisorController extends Controller
-{
+class SupervisorController extends Controller {
 	
 	
 	// ************************ Redireciona para a página de visualizaçãpo do video **************************
@@ -247,5 +246,30 @@ class SupervisorController extends Controller
 		}
 	}
 	
+        public function getEditarconteudo(){
+
+            $show_search_content = true;
+            $title = "Pesquisar Conteúdos";
+            // redireciona para a pagina onde o video é exibido
+            return View::make('supervisor.search-content', compact('show_search_content', 'title'));
+            
+            
+        }
+        
+        public function getShowsearchcontent(){
+            $input = Input::all();
+            
+            $aux = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false and ((title like '%".$input["search"]."%') or (description like '%".$input["search"]."%'))"));
+
+            $show_search_content = true;
+            $title = "Pesquisar Conteúdos";
+            
+            //dd($aux);
+            
+            return View::make('supervisor/search-content', compact('aux', 'show_search_content', 'title'));
+            
+        }
+        
+        
 
 }
