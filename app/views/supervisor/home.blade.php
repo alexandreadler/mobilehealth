@@ -4,7 +4,7 @@
 
 <div data-role="page" data-title="Supervisor - Home">
 
-    <div class="TabControl" style="border: solid 1px red;">
+    <div class="TabControl">
 
         <div id="header" style="overflow: auto;">
             <ul class="abas" style="clear: both;">
@@ -115,7 +115,7 @@
 
                         </div>
                     </div>
-                    <p align="right"><a href="{{url('supervisor/novoconteudo/')}}">Novo Contéudo</a> | <a href="{{url('supervisor/novosupervisor/')}}">Novo Supervisor</a> | <a href="{{url('supervisor/editarconteudo/')}}">Editar Contéudo</a></p>
+                    <p align="right"><a href="{{url('supervisor/novoconteudo/')}}">Novo Contéudo</a> | <a href="{{url('supervisor/novosupervisor/')}}">Novo Supervisor</a> | <a href="{{url('supervisor/pesquisarconteudo/')}}">Editar Contéudo</a></p>
                 </div><!-- /content -->
             </div><!-- /Rec -->
 
@@ -180,7 +180,7 @@
 														<a href="{{url("/app/video/" . $p->vid."/".$p->person)}}" target="new">
 														<img src="{{$p->thumburl}}" align="left" />
 														<p class="title">{{Str::limit($p->title,40)}}</p>
-														<p class="desc">{{ Str::limit($p->description, 120) }}</p>
+														<p class="desc">{{Str::limit($p->description, 120) }}</p>
 														</a>
 													</span>
 												</div>

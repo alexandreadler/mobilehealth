@@ -61,7 +61,7 @@
             <div class="post" >
                 <div class="headPost">
                     <div class="imgPost" >
-                        {{ HTML::image($p->photo, '') }}
+                         <a href="{{url('profile/personalpagefriend/'.$p->person)}}">{{ HTML::image($p->photo, '') }}</a>
                     </div>
                 </div>
 

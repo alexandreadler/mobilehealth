@@ -14,24 +14,24 @@
 				@endif
 			
                 <div class="panel-heading">
-                    <span class="glyphicon glyphicon-plus"></span> Novo Conteúdo
+                    <span class="glyphicon glyphicon-pencil"></span> Editar
 				</div>
                 <div>
 
-                    {{ Form::open(['method' => 'POST','url' => '/supervisor/cadastraconteudo', 'class' => 'form-horizontal panel-body','role' => 'form','id' => 'form'] ) }}
+                    {{ Form::open(['method' => 'POST','url' => '/supervisor/editarconteudo', 'class' => 'form-horizontal panel-body','role' => 'form','id' => 'form'] ) }}
 
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
                                 Autor: </label>
                             <div class="col-sm-9">
-                                <input id="author" name="author" type="text" class="form-control input-md" required="">
+                                <input id="author" name="author" type="text" class="form-control input-md" required="" value="{{$content->author}}">
                             </div>
                         </div>
 						<div class="form-group">
                             <label class="col-sm-3 control-label">
                                 Data de criação: </label>
                             <div class="col-sm-9">
-                                <input id="dataCretion" onkeypress="mascara(this, '####-##-##')" name="dataCretion" type="text" maxlength="10"  required=""><br>
+                                <input id="dataCretion" onkeypress="mascara(this, '####-##-##')" name="dataCretion" type="text" maxlength="10"  required="" value="{{$content->date_creation}}"><br>
 								<span style="font-size: 10px; color: gray;">AAAA-MM-DD</span>
                             </div>
                         </div>
@@ -39,14 +39,14 @@
                             <label class="col-sm-3 control-label">
                                 Titulo: </label>
                             <div class="col-sm-9">
-                                <input id="title" name="title" type="text" class="form-control input-md" required="">
+                                <input id="title" name="title" type="text" class="form-control input-md" required="" value="{{$content->title}}">
                             </div>
                         </div>
 						<div class="form-group">
                             <label class="col-sm-3 control-label">
                                 Descrição: </label>
                             <div class="col-sm-9">
-                                <textArea id="description" name="description" type="text" class="form-control input-md" required="">
+                                <textArea id="description" name="description" type="text" class="form-control input-md" cols="5" rows="10" required="" >{{$content->description}}
 								</textArea>
                             </div>
                         </div>
@@ -55,14 +55,14 @@
                             <label class="col-sm-3 control-label">
                                 URL: </label>
                             <div class="col-sm-9">
-                                <input id="url" name="url" type="text" class="form-control input-md" required="">
+                                <input id="url" name="url" type="text" class="form-control input-md" required="" value="{{$content->url_online}}">
                             </div>
                         </div>
 						
                         <div class="form-group last" style="padding: 0 15px;">
 
                             <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                                  <a id="submit" class="btn btn-success btn-sm" role="button">Cadastrar</a>
+                                  <a id="submit" class="btn btn-success btn-sm" role="button">Finalizar</a>
                                   
                             </div>
 

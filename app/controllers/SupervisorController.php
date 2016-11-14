@@ -34,8 +34,7 @@ class SupervisorController extends Controller {
 	public function getUrl(){
 		
 		$a = $_GET['a'];
-		return Redirect::to($a);
-		
+		return Redirect::to($a);		
 		
 	}
 	
@@ -104,7 +103,6 @@ class SupervisorController extends Controller {
 	public function getNovoconteudo(){
 		
 		return View::make('supervisor/novoConteudo');
-		
 		
 	}
 	
@@ -244,32 +242,139 @@ class SupervisorController extends Controller {
 			
 		
 		}
+	
 	}
 	
-        public function getEditarconteudo(){
+    public function getPesquisarconteudo(){
+
+    	$show_search_content = true;
+        $title = "Pesquisar Conteúdos";
+
+        // redireciona para a pagina onde o video é exibido
+        return View::make('supervisor.search-content', compact('show_search_content', 'title'));
+                     
+    }
+        
+    public function getShowsearchcontent(){
+       
+    	
+
+    	// Caso seja a primeira pesquisa
+       if(empty(Session::get('search'))){
+       		
+       } else {
+
+       		if(isset($input["search"])){
+       			$input = Input::all();
+       			Session::put('search',$input["search"]);
+       			
+       		} 
+
+       }
+       
+       
+        $aux = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false and ((title ilike '%".Session::get('search')."%') or (description ilike '%".Session::get('search')."%'))"));
+
+        $show_search_content = true;
+        $title = "Pesquisar Conteúdos";
+        
+  		
+       return View::make('supervisor.search-content', compact('aux', 'show_search_content', 'title'));
+        
+    }
+    
+
+    public function postDeletarconteudo($id_content){
+
+    		
+    		DB::table('public.context')->where('id_content', '=', $id_content)->delete();
+
+    		
+
+    		DB::connection("public")->select(DB::raw("delete from public.recommendation where id_content = ".$id_content));
+
+    		DB::connection("public")->select(DB::raw("delete from public.relatepersoncontent where id_content = ".$id_content));
+
+    		$id_frequency = DB::connection("public")->select(DB::raw("select id_frequency from content where id =".$id_content));
+
+			DB::table('public.content')->where('id', '=', $id_content)->delete();
+
+    		DB::connection("public")->select(DB::raw("delete from public.frequency where id = ".$id_frequency[0]->id_frequency));
+
+    		
+
+
+    		$aux = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false and ((title ilike '%".Session::get('search')."%') or (description ilike '%".Session::get('search')."%'))"));
+
+
+
+        	return Redirect::to('supervisor/showsearchcontent');
+        	//return View::make('supervisor/showsearchcontent', compact('show_search_content', 'title'));
+
+    }
+
+
+    public function getEditarconteudo($id_content){
+
+
+    	$content = DB::table('public.content')->select(DB::raw('id, author, date_creation, title, description, url_online'))->where('id', '=', $id_content)->get();
+    	$content = $content[0];
+
+    	//dd($content);
+
+    	// Passa a string, pois após editar o conteúdo os mesmos item devem ser listados
+    	return View::make('supervisor/editarConteudo', compact('content'));
+
+    	
+
+    }
+
+
+    public function postEditarconteudo(){
+
+
+		$c = new Content;
+	
+		$author = Input::get('author');
+		$dataCretion = Input::get('dataCretion');
+		$title = Input::get('title');
+		$description = Input::get('description');
+		$url = Input::get('url');
+	
+	
+		if(empty($author) or empty($dataCretion) or empty($title) or empty($description) or empty($url)){
+			
+			return View::make('supervisor/editarConteudo', compact('content', 'string'));
+			$megERRO = "Por favor, preencha todos os campos";
+
+		} else {
+			
+			$c = DB::table('public.content')->where('url_online', Input::get('url'))->get();;
+	
+			$c->id					= $cid[0]->nextval;
+			$c->author				= Input::get('author');
+			$c->date_creation		= Input::get('dataCretion');
+			$c->description			= Input::get('description');
+			$c->title				= Input::get('title');
+			$c->url_online			= Input::get('url');
+
+			$c->save();
+
+	
+
+
+			DB::table('public.content')->where('id', '=', $id_content)->delete();
+
+    		$aux = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false and ((title ilike '%".$string."%') or (description ilike '%".$string."%'))"));
 
             $show_search_content = true;
             $title = "Pesquisar Conteúdos";
-            // redireciona para a pagina onde o video é exibido
-            return View::make('supervisor.search-content', compact('show_search_content', 'title'));
-            
-            
-        }
-        
-        public function getShowsearchcontent(){
-            $input = Input::all();
-            
-            $aux = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false and ((title like '%".$input["search"]."%') or (description like '%".$input["search"]."%'))"));
 
-            $show_search_content = true;
-            $title = "Pesquisar Conteúdos";
-            
-            //dd($aux);
-            
-            return View::make('supervisor/search-content', compact('aux', 'show_search_content', 'title'));
-            
-        }
-        
-        
+        	// Passa a string, pois apó deletar o conteúdo os mesmos item devem ser listados
+        	return View::make('supervisor/search-content', compact('aux', 'show_search_content', 'title', 'string'));
+				
+		}
+	
+	}
 
 }

@@ -16,19 +16,35 @@
                             <div class="ui-body ui-body-a">
 
                                 @foreach($aux as $a)
-                                    <div class="video" style="overflow: auto;">
-                                        <span class="thumbnail" style="height: auto;">
+                                    <div class="video" >
+                                        <span class="thumbnail">
 
                                             @if(!empty($a->thumburl))
                                                 <!--Caso seja um video-->
-                                                <img style="float:left" width="100px" height="100px" src="http://s.wordpress.com/mshots/v1/{{strtolower(urlencode($a->url_online))}}?w=100&h=100" />
+                                                <img style="float:left" width="100px" height="100px" src="{{url($a->thumburl)}}" />
                                                 <p>
-                                                    <b><a href="{{url($a->url_online)}}" target="new">Fonte: {{$a->title}}</a></b> 
+                                                    <b><a href="{{url($a->url_online)}}" target="new">Fonte: {{$a->title}}<br ><br ></a></b> 
+                                                    {{Str::limit($a->description, 120)}}
                                                 </p>
 
+
                                                 <div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                        		<a id="like" href="supervisor/aprovarfonte/{{$a->url_online}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up" style="font-size:10px;"> Aprovar Fonte</a>
-                                                        		<a id="unlike" href="supervisor/reprovarfonte/{{$a->url_online}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
+                                                        		<a id="like" href="{{url('supervisor/editarconteudo/'.$a->id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-pencil" style="font-size:10px;"> Editar</a>
+                                                        		<a id="unlike" data-rel="popup"  href="#popupLogin{{$a->id}}" href="" class="ui-btn ui-corner-all ui-icon-delete fa fa-times" style="font-size:10px;"> Excluir</a>
+                                                
+
+                                                    <div data-role="popup" id="popupLogin{{$a->id}}" data-theme="a" class="ui-corner-all">
+                                                        <form action="{{url('supervisor/deletarconteudo/'.$a->id)}}" method="post">
+                                                            <div style="padding:10px 20px;">
+                                                                <h3>Deseja apagar este conteúdo da base de dados?</h3>
+                                                            
+                                                                <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-right ui-icon-arrow-r">Sim</button>
+
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+
                                                 </div>
 
                                             @else
@@ -40,9 +56,25 @@
 
 
                                                 <div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                    <a id="like" href="supervisor/aprovarfonte/{{$a->url_online}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up " style="font-size:10px;"> Aprovar Fonte</a>
-                                                    <a id="unlike" href="supervisor/reprovarfonte/{{$a->url_online}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down" style="font-size:10px;"> Reprovar Fonte</a>
+                                                    <a id="like" href="{{url('supervisor/editarconteudo/'.$a->id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-pencil" style="font-size:10px;"> Editar</a>
+                                                    <a id="unlike" data-rel="popup"  href="#popupLogin{{$a->id}}" href="" class="ui-btn ui-corner-all ui-icon-delete fa fa-times" style="font-size:10px;"> Excluir</a>
+
+
+                                                    <div data-role="popup" id="popupLogin{{$a->id}}" data-theme="a" class="ui-corner-all">
+                                                        <form action="{{url('supervisor/deletarconteudo/'.$a->id)}}" method="post">
+                                                            <div style="padding:10px 20px;">
+                                                                <h3>Deseja apagar este conteúdo da base de dados?</h3>
+                                                            
+                                                                <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-right ui-icon-arrow-r">Sim</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
                                                 </div>
+
+
+                                               
+
 
 
                                             @endif
@@ -449,8 +481,10 @@ width: 15px;
 
 
 .thumbnail {
-display: block;
-height: 120px;
+    display: block;
+    height: auto;
+    overflow: auto;
+
 }
 
 .thumbnail img {

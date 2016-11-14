@@ -32,7 +32,7 @@
                             <div class="headPost">
                                 <a href="{{url('profile/personalpagefriend/'.$p->person)}}">
                                     <div class="imgPost" >
-                                        {{ HTML::image('imgs/'.$p->photo, '') }}
+                                        {{ HTML::image($p->photo, '') }}
                                     </div>
                                 </a>
                             </div>

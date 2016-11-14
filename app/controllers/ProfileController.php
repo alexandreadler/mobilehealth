@@ -45,7 +45,7 @@ class ProfileController extends \BaseController {
         //********************************* REUPERA os posts do usuario **************************************************
         //*****************************************************************************************************************
 
-        $posts = DB::connection("public")->select(DB::raw("select * from app.posts where person = " . $pid . " order by create_at desc"));
+        $posts = DB::connection("public")->select(DB::raw("select pt.*, u.photo from app.posts as pt inner join app.users as u on pt.person = ".$pid." and u.person_id = pt.person order by create_at desc"));
 
         //********************************* [FIM] REUPERA os posts do usuario **************************************************
         //*****************************************************************************************************************
@@ -65,13 +65,16 @@ class ProfileController extends \BaseController {
         return View::make('personalpage', compact('possiblefriends', 'title', 'contents', 'posts', 'pid'));
     }
 
+
+
     public function getPersonalpagefriend($pid) {
 
-        $person = DB::connection("public")->select(DB::raw("select * from app.users as u inner join public.person as p on u.person_id = p.id and p.id = " . $pid));
+        $person = DB::connection("public")->select(DB::raw("select u.*, p.* from app.users as u inner join public.person as p on u.person_id = p.id and p.id = " . $pid));
 
         $posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on (pt.person  = ". $pid ." or pt.id in (select id_post from public.relatepersonpost where id_person = ". $pid ." and liked = 2)) and p.id=pt.person inner join app.users as u on u.person_id = pt.person order by create_at desc"));
 	
         $person = $person[0];
+
         $title = "Página Pessoal: " . $person->name_first;
               
         $posts = $this->mergeListPost($posts);  
@@ -99,21 +102,21 @@ class ProfileController extends \BaseController {
 
     public function mergeListPost($posts) {
 
+        //dd($posts);
+        for ($j = 0; $j < count($posts); $j++) { 
+
+            $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => isset($posts[$j]->imagem)?$posts[$j]->imagem:' ', "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => '/imgs/'.$posts[$j]->photo, "vid" => "", "title" => "", "description" => "", "thumburl" => ""];
+           
+        }
+
+        // verifica se encontra youtube no texto
+        $posts = $this->encontraLinkYouTube($posts);
         
-            for ($j = 0; $j < count($posts); $j++) { 
-
-                $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => isset($posts[$j]->imagem)?$posts[$j]->imagem:' ', "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => $posts[$j]->photo, "vid" => "", "title" => "", "description" => "", "thumburl" => ""];
-               
-            }
-
-            // verifica se encontra youtube no texto
-            $posts = $this->encontraLinkYouTube($posts);
-            
-            //dd($posts);
-            
-            
-            return $posts;
-        } 
+        //dd($posts);
+        
+        
+        return $posts;
+    } 
     
     
     function encontraLinkYouTube($posts){

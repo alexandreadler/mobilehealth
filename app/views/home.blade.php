@@ -543,8 +543,7 @@ $('#save').click(function(){
 	
 	.TabControl{
 
-		width:100%; 
-		overflow-y:scroll; 
+		clear:both;
 		
 	} 
 	
