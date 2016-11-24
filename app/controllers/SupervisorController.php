@@ -289,21 +289,19 @@ class SupervisorController extends Controller {
     		
     		DB::table('public.context')->where('id_content', '=', $id_content)->delete();
 
-    		
-
     		DB::connection("public")->select(DB::raw("delete from public.recommendation where id_content = ".$id_content));
 
     		DB::connection("public")->select(DB::raw("delete from public.relatepersoncontent where id_content = ".$id_content));
 
     		$id_frequency = DB::connection("public")->select(DB::raw("select id_frequency from content where id =".$id_content));
 
+			
+
 			DB::table('public.content')->where('id', '=', $id_content)->delete();
 
     		DB::connection("public")->select(DB::raw("delete from public.frequency where id = ".$id_frequency[0]->id_frequency));
 
     		
-
-
     		$aux = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false and ((title ilike '%".Session::get('search')."%') or (description ilike '%".Session::get('search')."%'))"));
 
 
@@ -349,9 +347,13 @@ class SupervisorController extends Controller {
 
 		} else {
 			
-			$c = DB::table('public.content')->where('url_online', Input::get('url'))->get();;
-	
-			$c->id					= $cid[0]->nextval;
+			$c = DB::table('public.content')->where('url_online', Input::get('url'))->get();
+
+			$c = $c[0];
+
+			$c = Content::find($c->id);
+
+			
 			$c->author				= Input::get('author');
 			$c->date_creation		= Input::get('dataCretion');
 			$c->description			= Input::get('description');
@@ -360,18 +362,7 @@ class SupervisorController extends Controller {
 
 			$c->save();
 
-	
-
-
-			DB::table('public.content')->where('id', '=', $id_content)->delete();
-
-    		$aux = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false and ((title ilike '%".$string."%') or (description ilike '%".$string."%'))"));
-
-            $show_search_content = true;
-            $title = "Pesquisar Conteúdos";
-
-        	// Passa a string, pois apó deletar o conteúdo os mesmos item devem ser listados
-        	return View::make('supervisor/search-content', compact('aux', 'show_search_content', 'title', 'string'));
+			return Redirect::to('supervisor/showsearchcontent');
 				
 		}
 	

@@ -174,6 +174,7 @@ class AppController extends Controller {
         if ($from == -2) {
             return View::make('video-search', compact("id", "data"));
         }
+        
         // Criar o conteúdo, caso não exista
         $c = Content::where('url_online', '=', AppController::BASE_YOUTUBE_URL . $data["id"])->count();
 

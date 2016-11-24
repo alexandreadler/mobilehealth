@@ -27,8 +27,8 @@
             @if(isset($posts))
                 @if(!empty($posts))
                     @foreach($posts as $p)
-                    
-                    <div class="post">
+                        
+                        <div class="post">
                             <div class="headPost">
                                 <a href="{{url('profile/personalpagefriend/'.$p->person)}}">
                                     <div class="imgPost" >
@@ -47,22 +47,22 @@
                                     <p>{{$p->texto}}</p>
                                     
                                     <!-- Caso o texto tenha algum link do youtube -->
-					@if(!empty($p->thumburl))
-                                            <div class="video">
-						<span class="thumbnail" >
-                                                    <a href="{{url("/app/video/" . $p->vid."/".$p->person)}}" target="new">
-							<img src="{{$p->thumburl}}" align="left" />
-							<p class="title">{{Str::limit($p->title,40)}}</p>
-                                                        <p class="desc">{{ Str::limit($p->description, 120) }}</p>
-                                                    </a>
-						</span>
-                                            </div>
-										
-											
-					@endif
-                                    
+                					@if(!empty($p->thumburl))
+                                        <div class="video">
+                    						<span class="thumbnail" >
+                                                <a href="{{url("/app/video/" . $p->vid."/".$p->person)}}" target="new">
+                        							<img src="{{$p->thumburl}}" align="left" />
+                        							<p class="title">{{Str::limit($p->title,40)}}</p>
+                                                    <p class="desc">{{ Str::limit($p->description, 120) }}</p>
+                                                </a>
+                    						</span>
+                                        </div>
+                										
+                											
+                					@endif
+                                                    
                                     @if(strcmp($p->imagem, ' ') != 0)
-                                    {{ HTML::image('imgs/'.$p->imagem, '') }}
+                                        {{ HTML::image('imgs/'.$p->imagem, '') }}
                                     @endif
 
 
@@ -75,6 +75,13 @@
 
                                     </ul>
                                 </div>
+
+
+                                <!-- Comentários para um post -->
+                                                                
+                                <div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$p->id)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso</a></p></div>
+
+
                             </div>
                         </div>
                     @endforeach

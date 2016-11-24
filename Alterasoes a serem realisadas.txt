@@ -1,5 +1,2 @@
-- Aparecer uma foto do link de um link postado nos comentários, algo semelhante ao link do youtube
-
+- Aplicar função de comentários na pagina pessoal de amigos
 - Fazer a exibição na página de amigos e perfil pessoal
-
-- (Supervisor) Fazer uma area para excluir conteudos 

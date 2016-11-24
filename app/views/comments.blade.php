@@ -89,18 +89,18 @@
 				@endif
 
 				
-				<form id="form" style="margin: 10px;" action="{{url('/app/comments')}}" method="post" enctype="multipart/form-data">
+				<form id="form" style="margin: 10px;" action="{{url('/app/comments')}}" method="post">
 						 
-									<label for="name">Escreva sobre isso: </label>
-									<input type="textAread" name="comment" id="comment" style="width: 100%">
-									<input type="textAread" name="idPost" id="idPost" style="width: 100%" value="{{$p->id}}" hidden>
+					<label for="name">Escreva sobre isso: </label>
+					<input type="textAread" name="comment" id="comment" style="width: 100%">
+					<input type="textAread" name="idPost" id="idPost" style="width: 100%" value="{{$p->id}}" hidden>
 									
 
-								</form>
-								
-								 <div class="ui-bar ui-bar-a" style="height: 44px;">
-									<a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;">Publicar</a>
-								</div>
+				</form>
+						
+				<div class="ui-bar ui-bar-a" style="height: 44px;">
+					<a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;">Publicar</a>
+				</div>
 
 
 
@@ -132,9 +132,8 @@
 
 @section('script')
 
-
 	$('#save').click(function(){
-		$('#form').submit()
+		$('#form').submit();
 	});
 
 
