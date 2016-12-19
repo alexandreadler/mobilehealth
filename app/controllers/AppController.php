@@ -959,6 +959,7 @@ class AppController extends Controller {
             if ($extensao != 'image/jpeg' && $extensao != 'image/png') {
 
                 $megERRO = "Extensões de imgens validos: .jpeg e .png";
+
             } else {
 
 
@@ -968,8 +969,13 @@ class AppController extends Controller {
                 DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $me . ", '" . $input['texto'] . "', '" . $img . "', '" . $create_at . "')"));
             }
 
+                return Redirect::to('/')->with('megERRO');
 
-            return View::make('home', compact("megERRO"));
+
+
+                //return View::make('home', compact("megERRO"));
+
+        
         } else {
 
             DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $me . ", '" . $input['texto'] . "', '" . $img . "', '" . $create_at . "')"));

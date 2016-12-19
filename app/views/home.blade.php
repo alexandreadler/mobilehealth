@@ -84,8 +84,8 @@
                                     <p class="title">
                                         {{Str::limit($v->title,40)}}
                                     <div id="likes" data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <a id="like" href="app/likec?id={{$v->id}}&from=-1" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Like</a>
-                                            <a id="unlike" href="app/unlikec?id={{$v->id}}&from=-1" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Unlike</a>
+                                            <a id="like" href="{{url('app/likec?id='.$v->id.'&from=-1')}}" class="active ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-up "> Like</a>
+                                            <a id="unlike" href="{{url('app/unlikec?id='.$v->id.'&from=-1')}}" class="ui-btn ui-corner-all ui-icon-delete fa fa-thumbs-down"> Unlike</a>
                                     </div>
 
                                     </p>
@@ -141,9 +141,9 @@
                 <form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
                     <textArea id="texto" name="texto"> </textArea>
                     <input type="file" id="imagem" name="imagem">
-		</form>
+				</form>
 				
-		<div class="ui-bar ui-bar-a" style="height: 44px;">
+				<div class="ui-bar ui-bar-a" style="height: 44px;">
                     <a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;">Publicar</a>
                 </div>
             </div>
@@ -179,9 +179,9 @@
 							<div class="divBottom">
 								<ul class="bottom">
 								<!-- O -1 serve para identificar que o conteudo foi uma recomendação-->
-									<a id="alike" onclick="like('app/likec?id={{$v['id']}}& from = - 1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-									<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}& from = - 1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-									<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}& from = - 1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+									<a id="alike" onclick="like('app/likec?id={{$v['id']}}&from=-1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+									<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}&from=-1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+									<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}& from=-1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 								</ul>
 							</div>
 								
@@ -230,9 +230,9 @@
 								<div class="divBottom">
 									<ul class="bottom">
 									<!-- O -1 serve para identificar que o conteudo foi uma recomendação-->
-										<a id="alike" onclick="like('app/likec?id={{$v['id']}}& from = - 1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-										<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}& from = - 1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
-										<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}& from = - 1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+										<a id="alike" onclick="like('app/likec?id={{$v['id']}}&from=-1');mudaFundoLike('{{$v['id']}}');"  href="#"><li id="like{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+										<a id="aulike" onclick="unlike('app/unlikec?id={{$v['id']}}& from=-1');mudaFundoUnLike('{{$v['id']}}');" href="#"><li id="unlike{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+										<a id="acomp" onclick="comp('app/comp?id_content={{$v['id']}}&from=-1');mudaFundoComp('{{$v['id']}}');" href="#" ><li id="comp{{$v['id']}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 																	
@@ -288,11 +288,10 @@
 											
 											@endif
 											
-											
 										</p>
 										
 										@if(strcmp($p->imagem, ' ') != 0)
-											<img id="imageFromPost" src="imgs/{{$p->imagem}}" />			
+											<img width="60%" id="imageFromPost" src="imgs/{{$p->imagem}}" />			
 										@endif
                                                                                 
                                                                                 <p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>

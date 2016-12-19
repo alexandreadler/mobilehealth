@@ -25,100 +25,128 @@ class UsersController extends Controller
      * @return  Illuminate\Http\Response
      */
     public function postIndex(){
-        $repo = App::make('UserRepository');
-        $user = $repo->signup(Input::all());
-		
-        if ($user->id) {
-            if (Config::get('confide::signup_email')) {
 
-	            Mailgun::send(
-		            Config::get('confide::email_account_confirmation'),
-		            compact('user'),
-		            function($message) use ($user) {
-		                $message
-			                ->to($user->email, $user->username)
-			                ->subject(Lang::get('confide::confide.email.account_confirmation.subject'));
-	                });
-            }
+    	try {
+	        $repo = App::make('UserRepository');
+	        $user = $repo->signup(Input::all());
+			
+	        if ($user->id) {
+	            if (Config::get('confide::signup_email')) {
 
-	        $pid = DB::connection("public")->select(DB::raw("SELECT nextval('person_seq')"));
-			
-			
-	        $p = new Person;
-	        $p->id = $pid[0]->nextval;
-			$p->name_first = Input::get('firstname');
-			$p->name_last = Input::get('lastname');
-			$p->date_birth = Carbon\Carbon::now();
-			$p->gender = $user->gender;
-			$p->date_birth = Input::get('datebirth');
-			$p->disease = Input::get('disease');
-	        
-			
-			$p->save();
+		            Mailgun::send(
+			            Config::get('confide::email_account_confirmation'),
+			            compact('user'),
+			            function($message) use ($user) {
+			                $message
+				                ->to($user->email, $user->username)
+				                ->subject(Lang::get('confide::confide.email.account_confirmation.subject'));
+		                });
+	            }
 
-			$frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
-			$frequenci_id = DB::connection("public")->select(DB::raw("update person set id_frequency=(currval('frequency_id_seq')) where id=".$p->id));
-			
-	        $id = $p->id;
-	        $user->person_id = $id;
-			
-	        $user->save();
-			
-			
-			$rc = DB::connection("public")->select(DB::raw("select id, max(local_likes) as t from content where title like '%diabetes%' group by id order by (t) desc limit 1"));
-			$recommendation = new Recommendation;
-			$recommendation->datecreation = \Carbon\Carbon::now();
-			$recommendation->id_person = $user->person_id;
-			$recommendation->id_content = $rc[0]->id;
-			$recommendation->visited = false;
-			$recommendation->evaluation = false;
-			
-			$recommendation->save();
-			
-			
-			$rc = DB::connection("public")->select(DB::raw("select id, max(local_likes) as t from content where title like '%Esclerose%' or title like '%ELA%' group by id order by t desc limit 1"));
-			$recommendation = new Recommendation;			
-			$recommendation->datecreation = \Carbon\Carbon::now();
-			$recommendation->id_person = $user->person_id;
-			$recommendation->id_content = $rc[0]->id;
-			$recommendation->visited = false;
-			$recommendation->evaluation = false;
-			
-			$recommendation->save();
-			
-			
-			$rc = DB::connection("public")->select(DB::raw("select id, max(local_likes) as t from content group by id order by (t) desc limit 1"));
-			$recommendation = new Recommendation;		
-			$recommendation->datecreation = \Carbon\Carbon::now();
-			$recommendation->id_person = $user->person_id;
-			$recommendation->id_content = $rc[0]->id;
-			$recommendation->visited = false;
-			$recommendation->evaluation = false;
-			
-			$recommendation->save();
-
-            return Redirect::action('UsersController@postLogin')
-							->with('notice', Lang::get('confide::confide.alerts.account_created'));
-        } else {
-            $error = $user->errors()->all(':message');
-
-			$a = strcmp($user->type,"true");
-			
-			if($a >= 0) {
+		        $pid = DB::connection("public")->select(DB::raw("SELECT nextval('person_seq')"));
 				
-				return Redirect::action('SupervisorController@getNovosupervisor')
-							->withInput(Input::except('password'))
-							->with('error', $error);
 				
-			} else {
+		        $p = new Person;
+		        $p->id = $pid[0]->nextval;
+				$p->name_first = Input::get('firstname');
+				$p->name_last = Input::get('lastname');
+				$p->date_birth = Carbon\Carbon::now();
+				$p->gender = $user->gender;
+				$p->date_birth = Input::get('datebirth');
+				$p->disease = Input::get('disease');
+		        
+				$p->save();
+
+				$frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
+				$frequenci_id = DB::connection("public")->select(DB::raw("update person set id_frequency=(currval('frequency_id_seq')) where id=".$p->id));
 				
-				return Redirect::action('UsersController@getCreate')
-							->withInput(Input::except('password'))
-							->with('error', $error);
-			}
-			
-            
-        }
+		        $id = $p->id;
+		        $user->person_id = $id;
+				
+		        $user->save();
+				
+				
+				$rc = DB::connection("public")->select(DB::raw("select id, max(local_likes) as t from content where title like '%diabetes%' group by id order by (t) desc limit 1"));
+				$recommendation = new Recommendation;
+				$recommendation->datecreation = \Carbon\Carbon::now();
+				$recommendation->id_person = $user->person_id;
+				$recommendation->id_content = $rc[0]->id;
+				$recommendation->visited = false;
+				$recommendation->evaluation = false;
+				
+				$recommendation->save();
+				
+				
+				$rc = DB::connection("public")->select(DB::raw("select id, max(local_likes) as t from content where title like '%Esclerose%' or title like '%ELA%' group by id order by t desc limit 1"));
+				$recommendation = new Recommendation;			
+				$recommendation->datecreation = \Carbon\Carbon::now();
+				$recommendation->id_person = $user->person_id;
+				$recommendation->id_content = $rc[0]->id;
+				$recommendation->visited = false;
+				$recommendation->evaluation = false;
+				
+				$recommendation->save();
+				
+				
+				$rc = DB::connection("public")->select(DB::raw("select id, max(local_likes) as t from content group by id order by (t) desc limit 1"));
+				$recommendation = new Recommendation;		
+				$recommendation->datecreation = \Carbon\Carbon::now();
+				$recommendation->id_person = $user->person_id;
+				$recommendation->id_content = $rc[0]->id;
+				$recommendation->visited = false;
+				$recommendation->evaluation = false;
+				
+				$recommendation->save();
+
+	            return Redirect::action('UsersController@postLogin')
+								->with('notice', Lang::get('confide::confide.alerts.account_created'));
+	       
+
+	        } else {
+
+
+	        	//DB::connection("public")->select(DB::raw("delete public.person where id(currval('frequency_id_seq'))"));
+	        	DB::connection("public")->select(DB::raw("delete from app.users where id= ". $user->id));
+
+	            $error = $user->errors()->all(':message');
+
+				$a = strcmp($user->type,"true");
+				
+				if($a >= 0) {
+					
+					return Redirect::action('SupervisorController@getNovosupervisor')
+								->withInput(Input::except('password'))
+								->with('error', $error);
+					
+				} else {
+					
+					return Redirect::action('UsersController@getCreate')
+								->withInput(Input::except('password'))
+								->with('error', $error);
+				}
+				
+	            
+	        }
+	    } catch(Exception $e){
+
+	    	DB::connection("public")->select(DB::raw("delete from app.users where id= ". $user->id));
+	    	$error = $user->errors()->all(':message');
+
+				$a = strcmp($user->type,"true");
+				
+				if($a >= 0) {
+					
+					return Redirect::action('SupervisorController@getNovosupervisor')
+								->withInput(Input::except('password'))
+								->with('error', $error);
+					
+				} else {
+					
+					return Redirect::action('UsersController@getCreate')
+								->withInput(Input::except('password'))
+								->with('error', $error);
+				}
+	    }
     }
 
     /**

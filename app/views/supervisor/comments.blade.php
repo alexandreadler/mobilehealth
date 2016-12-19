@@ -89,7 +89,7 @@
 				@endif
 
 				
-				<form id="form" style="margin: 10px;" action="{{url('/app/comments')}}" method="post" enctype="multipart/form-data">
+							<form id="form" style="margin: 10px;" action="{{url('/app/comments')}}" method="post" enctype="multipart/form-data">
 						 
 									<label for="name">Escreva sobre isso: </label>
 									<input type="textAread" name="comment" id="comment" style="width: 100%">
@@ -137,20 +137,6 @@
 		$('#form').submit()
 	});
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-@section('script')
 	
 	
 	function like(link){
@@ -308,29 +294,6 @@ function mudaFundoCompp(div){
 	
 
 @stop
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-@stop
-
-
-
 
 
 

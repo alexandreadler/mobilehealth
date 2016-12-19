@@ -192,7 +192,7 @@
 										</p>
 										
 										@if(strcmp($p->imagem, ' ') != 0)
-											<img id="imageFromPost" src="imgs/{{$p->imagem}}" />			
+											<img width="60%" id="imageFromPost" src="imgs/{{$p->imagem}}" />			
 										@endif
                                                                                 
                                                                                 <p style="font-size: 10px; color: gray;">{{$p->create_at}}</p>
