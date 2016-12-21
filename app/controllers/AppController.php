@@ -44,16 +44,28 @@ class AppController extends Controller {
          //************************************ Recupera os post do FEED **********************************************************
          //******************************************************************************************************************
 
-            $posts = DB::connection("public")->select(DB::raw("select pt.*, p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower =" . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));
-            $posts2 = DB::connection("public")->select(DB::raw("select pt.* from app.posts as pt where pt.person =".$pid));
+            $posts = DB::connection("public")->select(DB::raw("select pt.*, p.id as person, p.name_first, u.photo, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1) ) as liked from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower = " . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));
+            $posts2 = DB::connection("public")->select(DB::raw("select pt.*, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1)) as liked from app.posts as pt where pt.person =" . $pid));
             
             $posts = array_merge($posts, $posts2);
 
             $posts = $this->mergeListPost($posts);
-            
+
+
+            /*
+
+                select pt.*, p.id as person, p.name_first, u.photo, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id ) as liked from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower = " . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc
+
+                select pt.*, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id ) as liked from app.posts as pt where pt.person =" . $pid . "
+
+
+            */
+
+
+
          //************************************ [FIM] Recupera os post do FEED **********************************************************
          //******************************************************************************************************************
-
+        
             
         // Verifica se é um supervisor ou um usuário normal
         if (Confide::user()->type) {
@@ -78,6 +90,8 @@ class AppController extends Controller {
 
 
             $title = "Feed";
+
+
             return View::make('home', compact('c', 'c2', 'message', 'title', 'contents', 'posts', 'pid'));
         }
     }
@@ -1329,7 +1343,7 @@ class AppController extends Controller {
 
             for ($j = 0; $j < count($posts); $j++) { 
 
-                $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => isset($posts[$j]->person)?$posts[$j]->person:$posts[$j]->id_person, "texto" => isset($posts[$j]->texto)?$posts[$j]->texto:$posts[$j]->url_online, "imagem" => isset($posts[$j]->imagem)?$posts[$j]->imagem:' ', "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => isset($posts[$j]->photo)?$posts[$j]->photo:Session::get('profilePicture'), "vid" => "", "title" => "", "description" => "", "thumburl" => ""];
+                $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => isset($posts[$j]->person)?$posts[$j]->person:$posts[$j]->id_person, "texto" => isset($posts[$j]->texto)?$posts[$j]->texto:$posts[$j]->url_online, "imagem" => isset($posts[$j]->imagem)?$posts[$j]->imagem:' ', "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => isset($posts[$j]->photo)?$posts[$j]->photo:Session::get('profilePicture'), "vid" => "", "title" => "", "description" => "", "thumburl" => "", "liked" => $posts[$j]->liked];
                 //print_r($posts[$j], false);
                 //echo "<br ><br >";
             }

@@ -172,7 +172,7 @@
 
 											<p>
 											{{$p->texto}}
-											
+
 											<!-- Caso o texto tenha algum link do youtube -->
 											@if(!empty($p->thumburl))
 												<div class="video">
@@ -200,9 +200,33 @@
 									
 									<div class="divBottom">
 										<ul class="bottom">
-											<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
-											<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+
+										
+											@if($p->liked == 1)
+												<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li style="border: solid 2px blue" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+											
+												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border:solid 1px gray" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+												
+												
+											
+											@elseif($p->liked == -1)
+
+												<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li style="border: solid 1px gray" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+											
+												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border:solid 2px blue" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+												
+												
+											@else 
+
+												<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+											
+												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li  id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+
+
+											@endif
+
 											<a id="acomp" onclick="comp('app/compp?id_post={{$p->id}}& from={{$p->person}}'); mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+											
 										</ul>
 										
 													
@@ -318,50 +342,7 @@ function comp(link){
 
 }
 
-function mudaFundoLike(div){
-	
-	$("#like"+div).css('border', 'solid 2px blue');
-	$("#unlike"+div).css('border', 'solid 1px gray');
-	
-}
 
-
-function mudaFundoUnLike(div){
-	
-	$("#unlike"+div).css('border', 'solid 2px blue');
-	$("#like"+div).css('border', 'solid 1px gray');
-	
-}
-
-function mudaFundoComp(div){
-	
-	$("#comp"+div).css('border', 'solid 2px blue');
-
-	
-}
-
-
-function mudaFundoLikep(div){
-	
-	$("#likep"+div).css('border', 'solid 2px blue');
-	$("#unlikep"+div).css('border', 'solid 1px gray');
-	
-}
-
-
-function mudaFundoUnLikep(div){
-	
-	$("#unlikep"+div).css('border', 'solid 2px blue');
-	$("#likep"+div).css('border', 'solid 1px gray');
-	
-}
-
-function mudaFundoCompp(div){
-	
-	$("#compp"+div).css('border', 'solid 2px blue');
-
-	
-}
 	
 
 
@@ -390,11 +371,65 @@ function mudaFundoCompp(div){
 	
 	}
 	
+
+	function mudaFundoLike(div){
+	
+		$("#like"+div).css('border', 'solid 2px blue');
+		$("#unlike"+div).css('border', 'solid 1px gray');
+	
+	}
+
+
+	function mudaFundoUnLike(div){
+		
+		$("#unlike"+div).css('border', 'solid 2px blue');
+		$("#like"+div).css('border', 'solid 1px gray');
+		
+	}
+
+	function mudaFundoComp(div){
+		
+		$("#comp"+div).css('border', 'solid 2px blue');
+
+		
+	}
+
+
+	function mudaFundoLikep(div){
+		
+		$("#likep"+div).css('border', 'solid 2px blue');
+		$("#unlikep"+div).css('border', 'solid 1px gray');
+		
+	}
+
+
+	function mudaFundoUnLikep(div){
+		
+		$("#unlikep"+div).css('border', 'solid 2px blue');
+		$("#likep"+div).css('border', 'solid 1px gray');
+		
+	}
+
+	function mudaFundoCompp(div){
+		
+		$("#compp"+div).css('border', 'solid 2px blue');
+
+		
+	}
+
+	function testando(){
+		
+		alert("testando");
+
+		
+	}
 	
 	
 	$('#save').click(function(){
 		$('#form').submit()
 	});
+
+	
 	
 
 @stop
