@@ -45,13 +45,13 @@ class ProfileController extends \BaseController {
         //********************************* REUPERA os posts do usuario **************************************************
         //*****************************************************************************************************************
 
-        $posts = DB::connection("public")->select(DB::raw("select pt.*, u.photo from app.posts as pt inner join app.users as u on pt.person = ".$pid." and u.person_id = pt.person order by create_at desc"));
+        $posts = DB::connection("public")->select(DB::raw("select pt.*, u.photo, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1) ) as liked from app.posts as pt inner join app.users as u on pt.person = " . $pid . " and u.person_id = pt.person order by create_at desc limit 10"));
 
         //********************************* [FIM] REUPERA os posts do usuario **************************************************
         //*****************************************************************************************************************
        
         
-        $compartilhamentos = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select person_from from public.relatepersonpost where id_person =" . $pid . ")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));
+        $compartilhamentos = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on pt.person in (select person_from from public.relatepersonpost where id_person =" . $pid . ")  and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc limit 10"));
         
         
         $posts = array_merge($posts, $compartilhamentos);
@@ -60,7 +60,7 @@ class ProfileController extends \BaseController {
         
         
         
-        
+        //dd($posts);
         $title = "Página Pessoal";
         return View::make('personalpage', compact('possiblefriends', 'title', 'contents', 'posts', 'pid'));
     }
@@ -105,7 +105,7 @@ class ProfileController extends \BaseController {
         //dd($posts);
         for ($j = 0; $j < count($posts); $j++) { 
 
-            $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => isset($posts[$j]->imagem)?$posts[$j]->imagem:' ', "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => '/imgs/'.$posts[$j]->photo, "vid" => "", "title" => "", "description" => "", "thumburl" => ""];
+            $posts[$j] = (object) ["id" => $posts[$j]->id, "person" => $posts[$j]->person, "texto" => $posts[$j]->texto, "imagem" => isset($posts[$j]->imagem)?$posts[$j]->imagem:' ', "create_at" => $posts[$j]->create_at, "name_first" => isset($posts[$j]->name_first)?$posts[$j]->name_first:Session::get('fullName'), "photo" => '/imgs/'.$posts[$j]->photo, "vid" => "", "title" => "", "description" => "", "thumburl" => "", "liked" => isset($posts[$j]->liked)?$posts[$j]->liked:""];
            
         }
 

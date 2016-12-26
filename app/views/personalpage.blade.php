@@ -104,8 +104,26 @@
 
                     <div class="divBottom">
                         <ul class="bottom">
+
+                        @if($p->liked == 1)
+
+                            <a id="alikep" onclick="like('{{url('app/likep?id='.$p->id.'&from='.Confide::user()->person->id)}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li  style="border: solid 2px blue" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+
+                            <a id="aulikep" onclick="unlike('{{url('app/unlikep?id='.$p->id.'&from='.Confide::user()->person->id)}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border:solid 1px gray" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+
+                        @elseif($p->liked == -1)
+
+                           <a id="alikep" onclick="like('{{url('app/likep?id='.$p->id.'&from='.Confide::user()->person->id)}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li style="border:solid 1px gray" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+
+                            <a id="aulikep" onclick="unlike('{{url('app/unlikep?id='.$p->id.'&from='.Confide::user()->person->id)}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border: solid 2px blue" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+                        @else 
+
                             <a id="alikep" onclick="like('{{url('app/likep?id='.$p->id.'&from='.Confide::user()->person->id)}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+
                             <a id="aulikep" onclick="unlike('{{url('app/unlikep?id='.$p->id.'&from='.Confide::user()->person->id)}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+
+
+                        @endif
 
                         </ul>
                     </div>
@@ -191,8 +209,6 @@
 </div><!-- /page -->
 
 @stop
-
-
 
 
 
@@ -284,7 +300,7 @@ return false;
 
 }
 
-function mudaFundoLike(div){
+function mudaFundoLikep(div){
 
 $("#like"+div).css('border', 'solid 2px blue');
 $("#unlike"+div).css('border', 'solid 1px gray');
@@ -292,20 +308,12 @@ $("#unlike"+div).css('border', 'solid 1px gray');
 }
 
 
-function mudaFundoUnLike(div){
+function mudaFundoUnLikep(div){
 
 $("#unlike"+div).css('border', 'solid 2px blue');
 $("#like"+div).css('border', 'solid 1px gray');
 
 }
-
-function mudaFundoComp(div){
-
-$("#comp"+div).css('border', 'solid 2px blue');
-
-
-}	
-
 
 $('#save').click(function(){
 $('#form').submit();

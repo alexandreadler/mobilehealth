@@ -44,22 +44,12 @@ class AppController extends Controller {
          //************************************ Recupera os post do FEED **********************************************************
          //******************************************************************************************************************
 
-            $posts = DB::connection("public")->select(DB::raw("select pt.*, p.id as person, p.name_first, u.photo, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1) ) as liked from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower = " . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc"));
-            $posts2 = DB::connection("public")->select(DB::raw("select pt.*, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1)) as liked from app.posts as pt where pt.person =" . $pid));
+            $posts = DB::connection("public")->select(DB::raw("select pt.*, p.id as person, p.name_first, u.photo, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1) ) as liked from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower = " . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc limit 10"));
+            $posts2 = DB::connection("public")->select(DB::raw("select pt.*, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1)) as liked from app.posts as pt where pt.person =" . $pid . " limit 10"));
             
             $posts = array_merge($posts, $posts2);
 
             $posts = $this->mergeListPost($posts);
-
-
-            /*
-
-                select pt.*, p.id as person, p.name_first, u.photo, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id ) as liked from app.posts as pt inner join public.person as p on pt.person in (select id_following from app.follow where id_follower = " . $pid . ") and p.id = pt.person inner join app.users as u on u.person_id = pt.person order by pt.create_at desc
-
-                select pt.*, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id ) as liked from app.posts as pt where pt.person =" . $pid . "
-
-
-            */
 
 
 

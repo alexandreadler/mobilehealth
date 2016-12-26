@@ -46,26 +46,10 @@ trait ServiceTrait {
      */
     public function getData($url) 
     {
-        $json = null;
+        $json = null;  
+		$json = @file_get_contents(str_replace('{id}', $this->id, $url));
 		
-        //if (extension_loaded('curl')) {
-			
-           // $ch = curl_init(str_replace('{id}', $this->id, $url));
-            //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            //$json = curl_exec($ch);
-			
-        //} else {
-			  
-			$json = @file_get_contents(str_replace('{id}', $this->id, $url));
-		
-			//$json = @file_get_contents(str_replace('{id}', $this->id, $url));
-			//$json = @file_get_contents(str_replace('{id}', $this->id, 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={id}&key=AIzaSyDkQhl_qAJt8WHDOJpbMLumgCbxdlnVVPE'));
-        //}
-		
-        if (empty($json)) {            
-            //throw new \Exception("Video or channel id is not found");
-        }
-		
+	
 		return $json;
         //return $this->parseData($json);
     }
