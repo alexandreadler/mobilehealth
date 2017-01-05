@@ -379,6 +379,60 @@ class UsersController extends Controller
 //		});
 
 	}
+
+	public function getReporterror(){
+
+			$title = "Reportar Erro";
+			return View::make('reporterror', compact('title'));
+
+
+	}
+	
+
+	public function postReporterror(){
+
+			$input = Input::all();
+			$title = "Reportar Erro";
+			$pid = DB::connection("public")->select(DB::raw("SELECT nextval('app.erro_id_seq')"));
+			$error = new Error;
+
+			if(empty($input['descricao'])){
+
+				$megERRO = "O campo de descrição é obrigatorio";
+	              
+				return View::make('reporterror', compact('title', 'megERRO'));
+
+			}
+
+
+
+			if (Input::hasFile('imagem')) {
+
+	            $imagem = Input::file('imagem');
+	            $extensao = $imagem->getClientMimeType();
+
+	            if ($extensao != 'image/jpeg' && $extensao != 'image/png') {
+
+	                $megERRO = "Estensão errada";
+					return View::make('reporterror', compact('title', 'megERRO'));
+
+	            } else {
+
+	                Input::file('imagem')->move(public_path() . "/imgs/error", $imagem);
+	               	$error->image = $imagem->getFilename();
+	            }
+
+	        } 
+
+	        	
+
+		        $error->id = $pid[0]->nextval;
+		        $error->descricao = $input['descricao'];
+		        $error->corrigido = false;
+		        $error->save();
+
+			return View::make('reporterror', compact('title'));
+	}
 	
 	
 

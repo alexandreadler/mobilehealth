@@ -41,7 +41,13 @@
 					
 					 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
                                   <!-- Rota original /users/forgot_password, mas o laravel não reconhece esse nome, então reduzi para /users/forgot-->
-								  <a href="{{url("/users/forgot")}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-arrow-right"></span> Recuperar senha</a>
+								  <a href="{{url("/users/forgot")}}" class="btn btn-info btn-sm" role="button"><span class="glyphicon glyphicon-arrow-right"></span> Recuperar senha</a>
+                     </div>
+                     <br >
+
+                     <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                                  <!-- Rota original /users/forgot_password, mas o laravel não reconhece esse nome, então reduzi para /users/forgot-->
+                                  <a href="{{url("/users/reporterror")}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-eye-close"></span> Reportar Erro</a>
                      </div>
 
                 </div>

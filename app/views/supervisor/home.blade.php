@@ -44,7 +44,7 @@
                                     <!--Caso seja um video-->
                                     <img style="float:left" src="{{$aux[$i][2]}}" />
                                     <p>
-                                        <b><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{$aux[$i][1]}}</a></b> 
+                                        <b><a href="{{url("http://".$aux[$i][4])}}" target="new">Fonte: {{$aux[$i][1]}}</a></b> 
                                     </p>
                                     <p>
 

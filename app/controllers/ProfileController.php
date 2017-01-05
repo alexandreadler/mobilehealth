@@ -71,7 +71,7 @@ class ProfileController extends \BaseController {
 
         $person = DB::connection("public")->select(DB::raw("select u.*, p.* from app.users as u inner join public.person as p on u.person_id = p.id and p.id = " . $pid));
 
-        $posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo from app.posts as pt inner join public.person as p on (pt.person  = ". $pid ." or pt.id in (select id_post from public.relatepersonpost where id_person = ". $pid ." and liked = 2)) and p.id=pt.person inner join app.users as u on u.person_id = pt.person order by create_at desc"));
+        $posts = DB::connection("public")->select(DB::raw("select pt.*,p.id as person, p.name_first, u.photo, (select liked from public.relatepersonpost where id_person = " . $pid . " and id_post = pt.id and (liked = 1 or liked = -1) ) as liked from app.posts as pt inner join public.person as p on (pt.person  = ". $pid ." or pt.id in (select id_post from public.relatepersonpost where id_person = ". $pid ." and (liked = 2 or liked = 1))) and p.id=pt.person inner join app.users as u on u.person_id = pt.person order by create_at desc"));
 	
         $person = $person[0];
 

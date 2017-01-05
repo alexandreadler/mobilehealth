@@ -150,7 +150,7 @@ class SupervisorController extends Controller {
 					$c->acceptancerate		= 0;
 					$c->bytes_online		= 0;
 					$c->author				= Input::get('author');
-					$c->averagerating   	= $data["like_count"];
+					$c->averagerating   	= 0;
 					$c->date_add			= Carbon\Carbon::now();
 					$c->date_creation		= Input::get('dataCretion');
 					$c->description			= Input::get('description');
@@ -163,26 +163,38 @@ class SupervisorController extends Controller {
 					$c->title				= Input::get('title');
 					$c->type				= 0;
 					$c->url_online			= Input::get('url');
-					$content->visibility    = 0;
+					$c->visibility    = 0;
 					$c->visibility_group 	= 0;
 					$c->local_views       	= 1;
 					$c->local_likes       	= 0;
 					$c->acceptancerate    	= 0;
 					$c->font 				= false;
 					$c->save();
-					
-		
-					
-					
-					
-					
-					
-
 				
 					$frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
 					$file_id = DB::connection("public")->select(DB::raw("update content set id_file=(currval('file_id_seq')) where id=currval('content_seq')"));
 					
+					$f = new Fonts;
+					$rest = substr($c->url_online, 0, 6);
+
+					if (strcmp('http:/', $rest) != 0) {
+
+						$temp = substr($c->url_online, 8 - strlen($c->url_online));
+                    	$fonte = "https://" . strstr($temp, '/', true);
+
+					} else {
+
+						$temp = substr($c->url_online, 7 - strlen($c->url_online));
+                    	$fonte = "http://" . strstr($temp, '/', true);
+					}
+
 					
+					$cid = DB::connection("public")->select(DB::raw("SELECT nextval('fonts_seq')"));
+					$f->id = $cid[0]->nextval;
+					$f->url_fonts = $fonte;
+					$f->valued = false;
+					$f->save();
+
 				} else {
 					
 					// link do youtbe

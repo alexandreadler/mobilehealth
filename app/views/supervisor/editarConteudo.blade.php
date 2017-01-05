@@ -63,6 +63,7 @@
 
                             <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
                                   <a id="submit" class="btn btn-success btn-sm" role="button">Finalizar</a>
+                                 <button  class="btn btn-primary"><a style="color: white;" href="{{url('/')}}">Cancelar</a></button>
                                   
                             </div>
 

@@ -50,6 +50,7 @@
 
         <div class="form-actions form-group">
           <button type="submit" class="btn btn-primary">{{{ Lang::get('confide::confide.signup.submit') }}}</button>
+          <button  class="btn btn-primary"><a style="color: white;" href="{{url('/')}}">Cancelar</a></button>
         </div>
 
     </fieldset>

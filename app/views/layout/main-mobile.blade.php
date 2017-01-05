@@ -208,6 +208,7 @@
 		background: linear-gradient(to bottom,  #92c413 0%,#9ee88b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#92c413', endColorstr='#9ee88b',GradientType=0 ); /* IE6-9 */ ">
         <a href="#" onclick="perfil()" data-rel="home" class="btn btn-default btn-lg ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-icon-carat-l" style="background: green; padding:0; width:30px ; height: 30px; "><span style="color: white;font-size: 25px; font-famil: aharoni; display:block;">=</span></a>
+        
         <h1 style="color: white;"><strong>@if(isset($title)){{$title}} @else Home @endif</strong></h1>
         <a href="{{url("/users/logout")}}" data-rel="logout" class="btn btn-default btn-lg ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-icon-home" style="margin: 0;"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
 		

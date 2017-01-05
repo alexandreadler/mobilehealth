@@ -63,7 +63,7 @@ class AppController extends Controller {
             // Quando supervisor - type = 1
 
             $aux = $this->extrairFontes();
-            
+            //dd($aux);
             return View::make('/supervisor/home', compact('relates', 'message', 'aux', 'c', 'posts', 'pid'));
             
         } else {
@@ -292,6 +292,7 @@ class AppController extends Controller {
     }
 
     public function getFriendship() {
+
         $pid = Confide::user()->person_id;
         $title = "Friendship";
         $f_ids = Follow::where('id_follower', '=', Confide::user()->person_id)->lists('id_following');
@@ -369,6 +370,7 @@ class AppController extends Controller {
     }
 
     public function getInbox() {
+
         $title = "Inbox";
 
         $pid = Confide::user()->person->id;
@@ -408,6 +410,21 @@ class AppController extends Controller {
         }
 
         return View::make('inbox', compact('title', 'm', 'i', 'pid', 'ids'));
+    }
+
+
+    public function postDeletetalk($idfriend){
+
+
+        try {
+
+            $pid = Confide::user()->person->id;
+            $msgs = DB::connection("public")->select(DB::raw("delete from app.message where id_person_from = ".$pid. " and id_person_to = ".$idfriend));
+
+            return Redirect::to('app/inbox/');
+        } catch(Exception $e){
+
+        }
     }
 
     public function getPhr() {
@@ -553,9 +570,10 @@ class AppController extends Controller {
                     //Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
                     $id = "https://www.youtube.com/watch?v=" . $content->vid;
                     $create_at = \Carbon\Carbon::now();
-                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $id . "',' ', '" . $create_at . "')"));
+                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $id . "',' ', '" . $create_at . "','true','" . $content->id . "')"));
                 }
             }
+
         } else {
 
 
@@ -585,7 +603,7 @@ class AppController extends Controller {
                     //Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
                     $id = "https://www.youtube.com/watch?v=" . $c->vid;
                     $create_at = \Carbon\Carbon::now();
-                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $id . "',' ', '" . $create_at . "')"));
+                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $id . "',' ', '" . $create_at . "','true','" . $c->id . "')"));
                 }
             }
         }
@@ -682,8 +700,9 @@ class AppController extends Controller {
                 if (!($this->existePost($id_content))) {
                     //Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
                     $create_at = \Carbon\Carbon::now();
-                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $c->url_online . "',' ', '" . $create_at . "')"));
+                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $c->url_online . "',' ', '" . $create_at . "','true','" . $c->id . "')"));
                 }
+
             } else {
 
                 $id = "https://www.youtube.com/watch?v=" . $c->vid;
@@ -695,7 +714,7 @@ class AppController extends Controller {
                     //Será tratado como um post (necessario para a função de comentarios, pois comentarios so funcionam para posts)
 
                     $create_at = \Carbon\Carbon::now();
-                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $id . "',' ', '" . $create_at . "')"));
+                    DB::connection("app")->select(DB::raw("insert into app.posts values (nextval('app.posts_id_seq')," . $pid . ", '" . $id . "',' ', '" . $create_at . "','true','" . $c->id . "')"));
                 }
             }
         } else {
@@ -792,10 +811,13 @@ class AppController extends Controller {
         $pid = Confide::user()->person->id;
         $id_post = $_GET['id'];
 
+
         $v = DB::connection("public")->select(DB::raw("SELECT * from relatepersonpost where id_person = " . $pid . " and id_post = " . $id_post . " and liked <> 2 and person_from=" . $_GET['from']));
 
+        // Verifica se a relação entre, usuário - con´teúdo - usuário, ja existe
         if (empty($v)) {
 
+            // se for vazia cria uma nova
             $rpcid = DB::connection("public")->select(DB::raw("SELECT nextval('relatepersonpost_id_seq')"));
 
             $c = new Relatepersonpost;
@@ -806,14 +828,58 @@ class AppController extends Controller {
             $c->liked = 1;
             $c->person_from = $_GET['from'];
             $c->save();
+
         } else {
 
+            // Se não altera para 1 
             $v = $v[0]->liked;
         }
+
+
 
         if ($v == 0 || $v == -1) {
             $v = 1;
             $u = DB::connection("public")->select(DB::raw("update relatepersonpost set liked =" . $v . " where id_person = " . $pid . " and id_post = " . $id_post . " and liked <> 2 and person_from=" . $_GET['from']));
+        }
+
+
+
+        // Vericia se o post vem de um conteúdo
+        $v = DB::connection("public")->select(DB::raw("SELECT * from app.posts where id = " . $id_post));
+        $v = $v[0];
+
+        if($v->from_content){
+
+             // Se sim, gera uma nova relação entre, pessoa-conteudo-pessoa
+            $v = DB::connection("public")->select(DB::raw("SELECT * from relatepersoncontent where id_person = " . $pid . " and id_content = " . $v->id_content . " and liked <> 2 and person_from=" . $_GET['from']));
+            
+            // Verifica se a relação entre, pessoa-conteúdo-pessoa, ja existe
+            if (empty($v)) {
+
+                $vid = DB::connection("public")->select(DB::raw("SELECT nextval('relate_person_content_seq')"));
+                $vid = $vid[0]->nextval;
+
+                $v = new Relatepersoncontent;
+                $v->id = $vid;
+                $v->date_relation = \Carbon\Carbon::now();
+                $v->id_content = $v->id_content;
+                $v->id_person = Confide::user()->person->id;
+                $v->liked = 1;
+                $v->person_from = $_GET['from'];
+                $v->save();
+                
+            } else {
+
+                if ($v->liked == 0 || $v->liked == -1) {
+                   
+                    $u = DB::connection("public")->select(DB::raw("update relatepersoncontent set liked = 1 where id_person = " . $pid . " and id_content = " . $v->id_content . " and liked <> 2 and person_from=" . $_GET['from']));
+                }
+
+            }
+
+
+            
+
         }
 
         return Redirect::to('/');
@@ -1453,12 +1519,13 @@ class AppController extends Controller {
 
             $fontes = DB::connection("public")->select(DB::raw("select c.id, c.thumburl, c.url_online, c.title, c.description from public.content as c where c.font = false"));
 
+            //dd($fontes);
+
             $sid = Confide::user()->person->id;
             $aux = array();
             $teste = false;
             $teste2 = true;
             $c = 1;
-
             
 
             for ($i = 0; $i < count($fontes); $i++) {
@@ -1467,7 +1534,8 @@ class AppController extends Controller {
                 $teste2 = true;
 
                 $rest = substr($fontes[$i]->url_online, 0, 6);
-
+                //echo $i." ".$fontes[$i]->url_online . "<br >";
+                //dd(strcmp('http:/', $rest));
 
                 if (strcmp('http:/', $rest) != 0) {
 
@@ -1481,15 +1549,17 @@ class AppController extends Controller {
                         if (strcmp($t, $f[$h]->url_fonts) == 0) {
 
                             $teste2 = false;
-                            //
+                            
                         }
                     }
 
                     if ($teste2) {
 
+                      
                         // Caso a fonte ja tenha sido aprovada anteiromente 
                         DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
                         unset($fontes[$i]);
+
                     } else {
 
                         //Caso comece com https
@@ -1532,18 +1602,19 @@ class AppController extends Controller {
 
                     for ($h = 0; $h < count($f); $h++) {
                         $t = "http://" . $fonte;
-
+                        //echo $t . " = ". $f[$h]->url_fonts . "? " . strcmp($t, $f[$h]->url_fonts) ;
                         if (strcmp($t, $f[$h]->url_fonts) == 0) {
 
                             $teste2 = false;
                         }
+                        //echo "#teste2 = " . $teste2 . " <br >"; 
                     }
 
-
+                    //dd($teste2);
 
 
                     if ($teste2) {
-                        //
+                        
                         // Caso a fonte ja tenha sido aprovada anteiromente 
 
                         DB::connection("public")->table('content')->where('id', '=', $fontes[$i]->id)->update(['font' => true]);
@@ -1602,9 +1673,113 @@ class AppController extends Controller {
                     
                 }
             }
+
         
         return $aux;
         
+    }
+
+
+    public function getPostrecomendar($id_post){
+
+        $pid = Confide::user()->person->id;
+
+        $indicado = DB::connection("app")->select(DB::raw("select * from public.posts_indicated where id_post =" . $id_post));
+        
+        if(empty($indicado)){
+
+            $post = DB::connection("app")->select(DB::raw("select * from app.posts where id =" . $id_post));
+            $post  = $post[0];
+            
+
+            $cid = DB::connection("public")->select(DB::raw("SELECT nextval('content_seq')"));
+
+            $frequenci_id = DB::connection("public")->select(DB::raw("insert into frequency values(nextval('frequency_id_seq'), '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', '0,0,0,0,0,0,0', '0,0,0,0,0,0,0')"));
+            $file_id = DB::connection("public")->select(DB::raw("insert into file values (nextval('file_id_seq'), 0, null, null, 0,0,0,0,0)"));
+
+
+
+            $content = new Content;
+            $content->id = $cid[0]->nextval;
+            $content->p1 = 0;
+            $content->p2 = 0;
+            $content->p3 = 0;
+            $content->ss1 = 0;
+            $content->ss2 = 0;
+            $content->acceptancerate = 0;
+            $content->bytes_online = 0;
+            $content->author = Confide::user()->person->name_first . " ". Confide::user()->person->name_last;
+            $content->averagerating = 0;
+            $content->date_add = Carbon\Carbon::now();
+            $content->date_creation = substr($post->create_at, 0, 10);
+            //$content->description = "";
+            $content->rate_acceptance = 0;
+            $content->rate_colab_ponder = 0;
+            $content->rating = 0;
+            $content->seconds_online = 0;
+            $content->subtype = 4;
+            $content->title = Str::limit($post->texto,40);
+            $content->type = 0;
+            $content->url_online = "http://les.ufersa.edu.br/mobilehealth/public/app/comments/".$post->id;
+            $content->visibility = 0;
+            $content->visibility_group = 0;
+            $content->local_views = 1;
+            $content->local_likes = 0;
+
+            if(!empty($post->imagem)){
+
+                $content->thumburl = $post->imagem;
+
+            }
+            //
+            //$content->vid = "";
+            $content->font = false;
+
+            $content->save();
+
+
+
+            $frequenci_id = DB::connection("public")->select(DB::raw("update content set id_frequency=(currval('frequency_id_seq')) where id=currval('content_seq')"));
+            $file_id = DB::connection("public")->select(DB::raw("update content set id_file=(currval('file_id_seq')) where id=currval('content_seq')"));
+
+            $f = new Fonts;
+            $rest = substr($content->url_online, 0, 6);
+
+            if (strcmp('http:/', $rest) != 0) {
+
+                $temp = substr($content->url_online, 8 - strlen($content->url_online));
+                $fonte = "https://" . strstr($temp, '/', true);
+
+            } else {
+
+                $temp = substr($content->url_online, 7 - strlen($content->url_online));
+                $fonte = "http://" . strstr($temp, '/', true);
+            }
+
+                    
+            $cid = DB::connection("public")->select(DB::raw("SELECT nextval('fonts_seq')"));
+            $f->id = $cid[0]->nextval;
+            $f->url_fonts = $fonte;
+            $f->valued = false;
+            $f->save();
+
+           //dd($post);
+
+        } else {
+
+            
+
+        }
+
+ 
+
+
+
+
+
+
+
+
     }
 
     

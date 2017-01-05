@@ -1,4 +1,4 @@
-@extends("layout.main")
+@extends("layout.main-mobile")
 
 
 @section("content")
@@ -62,7 +62,7 @@
                         <div class="form-group last" style="padding: 0 15px;">
 
                             <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                                  <a id="submit" class="btn btn-success btn-sm" role="button">Cadastrar</a>
+                                  <a style="color: white;" id="submit" class="btn btn-success btn-sm" role="button">Cadastrar</a>
                                   
                             </div>
 

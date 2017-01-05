@@ -265,7 +265,10 @@
 							
 							<div class="contentPost"> 
 								<div class="namePost">
-									{{$p->name_first}}
+									<div>{{$p->name_first}}</div>
+								</div>
+								<div class="btnRecomendar">
+									<a target="_blank"  onclick="postrecomendar('app/postrecomendar/{{$p->id}}')" href="#""><span class="glyphicon glyphicon-bookmark"><br />Indicar</span></a>
 								</div>
 								
 								<div class="textPost">
@@ -301,29 +304,29 @@
 								<div class="divBottom">
 									<ul class="bottom">
 										@if($p->liked == 1)
-												<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li style="border: solid 2px blue" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+												<a id="alikep" onclick="like('app/likep?id={{$p->id}}&from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li style="border: solid 2px blue" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
 											
-												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border:solid 1px gray" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}&from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border:solid 1px gray" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
 												
 												
 											
 											@elseif($p->liked == -1)
 
-												<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li style="border: solid 1px gray" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+												<a id="alikep" onclick="like('app/likep?id={{$p->id}}&from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li style="border: solid 1px gray" id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
 											
-												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border:solid 2px blue" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}&from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li style="border:solid 2px blue" id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
 												
 												
 											@else 
 
-												<a id="alikep" onclick="like('app/likep?id={{$p->id}}& from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
+												<a id="alikep" onclick="like('app/likep?id={{$p->id}}&from={{$p->person}}'); mudaFundoLikep('{{$p->id}}');" href="#"><li id="likep{{$p->id}}" class="bottomli"><img src="{{url('/imgs/ok.png')}}" /></li></a>
 											
-												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}& from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li  id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
+												<a id="aulikep" onclick="unlike('app/unlikep?id={{$p->id}}&from={{$p->person}}'); mudaFundoUnLikep('{{$p->id}}');" href="#"><li  id="unlikep{{$p->id}}" class="bottomli" ><img src="{{url('/imgs/naoOK.png')}}" /></li></a>
 
 
 											@endif
 
-											<a id="acomp" onclick="comp('app/compp?id_post={{$p->id}}& from={{$p->person}}'); mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
+											<a id="acomp" onclick="comp('app/compp?id_post={{$p->id}}&from={{$p->person}}'); mudaFundoCompp('{{$p->id}}');" href="#" ><li id="compp{{$p->id}}" class="bottomli"><img src="{{url('/imgs/compartilhar.png')}}" /></li></a>
 									</ul>
 								</div>
 								
@@ -417,6 +420,32 @@ function comp(link){
 				dataType: "html",
 				success: function(sucesso){
 					alert("Você compartilhou esse conteúdo");
+					
+				},
+				beforeSend: function () {
+					$('#carregando').css({display: "block"});
+				},
+				complete: function () {
+					$('#carregando').css({display: "none"});
+				},
+				error: function(){
+					$('#retornodoresultado').html('Desculpe pelo transtorno, houve um erro, tente novamente.');
+				}
+		});
+		return false;
+			
+
+}
+
+function postrecomendar(link){
+	
+	$.ajax({
+				url: link,
+				type: "GET",
+				data: { sim: link},
+				dataType: "html",
+				success: function(sucesso){
+					alert("Indicação realizada");
 					
 				},
 				beforeSend: function () {
@@ -650,6 +679,14 @@ $('#save').click(function(){
 		
 		font-weight:bold;
 		float:left;
+		margin: 15px;
+		
+	}
+
+	.btnRecomendar {
+		
+		font-weight:bold;
+		float:right;
 		margin: 15px;
 		
 	}
