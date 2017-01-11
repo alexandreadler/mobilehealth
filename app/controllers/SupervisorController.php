@@ -269,12 +269,14 @@ class SupervisorController extends Controller {
         
     public function getShowsearchcontent(){
        
-    	
+    	$search = Session::get('search');
 
     	// Caso seja a primeira pesquisa
-       if(empty(Session::get('search'))){
+       if($search){
        		
        } else {
+
+       		
 
        		if(isset($input["search"])){
        			$input = Input::all();

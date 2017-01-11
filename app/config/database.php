@@ -48,7 +48,7 @@ return array(
 
 		'app' => array(
 			'driver'   => 'pgsql',
-			'host'     => 'localhost',
+			'host'     => '10.119.60.120',
 			'port'     => 5432,
 //			'host'     => 'mobilehealthapp.mobi',
 			'database' => 'mobilehealth2',
@@ -60,7 +60,7 @@ return array(
 		),
 		'phr' => array(
 			'driver'   => 'pgsql',
-			'host'     => 'localhost',
+			'host'     => '10.119.60.120',
 			'port'     => 5432,
 //			'host'     => 'mobilehealthapp.mobi',
 			'database' => 'mobilehealth2',
@@ -72,7 +72,7 @@ return array(
 		),
 		'public' => array(
 			'driver'   => 'pgsql',
-			'host'     => 'localhost',
+			'host'     => '10.119.60.120',
 			'port'     => 5432,
 //			'host'     => 'mobilehealthapp.mobi',
 			'database' => 'mobilehealth2',
@@ -85,7 +85,7 @@ return array(
 		
 		'pgsql' => array(
 			'driver'   => 'pgsql',
-			'host'     => 'localhost',
+			'host'     => '10.119.60.120',
 //			'host'     => 'mobilehealthapp.mobi',
 			'database' => 'mobilehealth2',
 			'username' => 'postgres',
