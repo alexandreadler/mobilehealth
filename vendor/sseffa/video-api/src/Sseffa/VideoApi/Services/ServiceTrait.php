@@ -46,12 +46,16 @@ trait ServiceTrait {
      */
     public function getData($url) 
     {
+        /*
         $json = null;  
 		$json = @file_get_contents(str_replace('{id}', $this->id, $url));
 		
 	
 		return $json;
-        //return $this->parseData($json);
+        */
+
+        dd(file_get_contents(str_replace('{id}', $this->id, $url)));
+
     }
     
 }
