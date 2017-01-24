@@ -64,8 +64,8 @@ class SupervisorController extends Controller {
 	
 	public function getReprovarfonte($f){
 		
-		DB::table('content')->where('url_online', 'like', '%'.$f.'%')->delete();
-		DB::table('fonts')->where('url_fonts', 'like', '%'.$f.'%')->delete();
+		DB::connection("public")->table('content')->where('url_online', 'like', '%'.$f.'%')->delete();
+		DB::connection("public")->table('fonts')->where('url_fonts', 'like', '%'.$f.'%')->delete();
 		
 		return Redirect::to('/');
 		

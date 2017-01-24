@@ -6,38 +6,40 @@
 
     <div role="main" class="ui-content jqm-content jqm-fullwidth" >
 
-        <div id="possiblefriends" >
+       
 
             @if(isset($possiblefriends))
-            @if(!empty($possiblefriends))
-            @foreach($possiblefriends as $friends)
-            <div class="box"  >
+                @if(!empty($possiblefriends))
+                    @foreach($possiblefriends as $friends)
+                     <div id="possiblefriends" >
+                        <div class="box"  >
 
-                <div id="profile_picture">	
-                    {{ HTML::image('imgs/'.$friends->photo, '') }}							
-                </div>
+                            <div id="profile_picture">	
+                                {{ HTML::image('imgs/'.$friends->photo, '') }}							
+                            </div>
 
-                <div class="boxName">
+                            <div class="boxName">
 
-                    {{Str::limit($friends->name_first . " ". $friends->name_last, 15)}}
+                                {{Str::limit($friends->name_first . " ". $friends->name_last, 15)}}
 
-                </div>
+                            </div>
 
-                <a id="like" href="{{url("app/follow/" . $friends->id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Adicionar</a>
+                            <a id="like" href="{{url("app/follow/" . $friends->id)}}" class="active ui-btn ui-corner-all ui-icon-delete fa"> Adicionar</a>
 
 
 
-            </div>
-            @endforeach
+                        </div>
+                    </div><!--  /possiblefriends-->
+                    @endforeach
+                @else
+                   
+                @endif
             @else
-            Sem Resultados.
-            @endif
-            @else
-            Sem Resultados.
+                
             @endif	
 
 
-        </div><!--  /possiblefriends-->
+        
 
 
         <div style="text-align:center">

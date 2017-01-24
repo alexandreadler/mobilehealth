@@ -1512,7 +1512,7 @@ class AppController extends Controller {
     
     public function extrairFontes(){
         
-        $f = new Fonts;
+            $f = new Fonts;
             $f = Fonts::where('valued', '=', false)->get();
 
             //dd($f);
@@ -1666,10 +1666,12 @@ class AppController extends Controller {
                 if (strcmp('http:/', $rest) != 0) {
 
                     $aux[$i][0] = strtolower(urlencode("https://" . $aux[$i][0]));
+                    //echo  $aux[$i][0] . "<br >"; 
                     
                 } else {
 
                     $aux[$i][0] = strtolower(urlencode("http://" . $aux[$i][0]));
+                    //echo  $aux[$i][0] . "<br >"; 
                     
                 }
             }
@@ -1687,6 +1689,8 @@ class AppController extends Controller {
         $indicado = DB::connection("app")->select(DB::raw("select * from public.posts_indicated where id_post =" . $id_post));
         
         if(empty($indicado)){
+
+            $posts_indicated = DB::connection("public")->select(DB::raw("insert into public.posts_indicated values (nextval('posts_indicated_id_seq'), ". $id_post .", ". $pid .")"));
 
             $post = DB::connection("app")->select(DB::raw("select * from app.posts where id =" . $id_post));
             $post  = $post[0];
@@ -1720,17 +1724,12 @@ class AppController extends Controller {
             $content->subtype = 4;
             $content->title = Str::limit($post->texto,40);
             $content->type = 0;
-            $content->url_online = "http://les.ufersa.edu.br/mobilehealth/public/app/comments/".$post->id;
+            $content->url_online = "https://les.ufersa.edu.br/mobilehealth/public/app/comments/".$post->id;
             $content->visibility = 0;
             $content->visibility_group = 0;
             $content->local_views = 1;
             $content->local_likes = 0;
 
-            if(!empty($post->imagem)){
-
-                $content->thumburl = $post->imagem;
-
-            }
             //
             //$content->vid = "";
             $content->font = false;
@@ -1767,18 +1766,10 @@ class AppController extends Controller {
 
         } else {
 
-            
+            // Caso , futuramente, se deeje visualizar quantas e quais pessoas indicaram esse post
+            $posts_indicated = DB::connection("public")->select(DB::raw("insert into public.posts_indicated values (nextval('posts_indicated_id_seq'), ". $id_post .", ". $pid .")"));
 
         }
-
- 
-
-
-
-
-
-
-
 
     }
 

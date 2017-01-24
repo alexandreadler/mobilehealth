@@ -62,7 +62,8 @@
                                     <!--Caso seja um lik de site/pdf/outros -->
                                     <img style="float:left" width="100px" height="100px" src="http://s.wordpress.com/mshots/v1/{{$aux[$i][0]}}?w=100&h=100" />
                                     <p>
-                                        <b style="font-color: blue"><a href="{{url("http://".$aux[$i][1])}}" target="new">Fonte: {{($aux[$i][1])}}</a></b>
+                                        <b style="font-color: blue">
+                                        	<a href="{{url($aux[$i][4])}}" target="new">Fonte: {{($aux[$i][1])}}</a></b>
                                     </p>
                                     <p>
                                         @if($aux[$i][3] > 1)
@@ -165,8 +166,9 @@
 								
 								<div class="contentPost"> 
 									<div class="namePost">
-                                                                            {{$p->name_first}}
+                                        {{$p->name_first}}
 									</div>
+									
 									
 									<div class="textPost">
 
@@ -590,10 +592,6 @@ function comp(link){
 			margin: 15px;
 			
 		}
-		
-		
-		
-		
 		
 		
 		.imgPostComments {
