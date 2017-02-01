@@ -137,7 +137,7 @@
 
 
             <div id="userpost" style="margin: 20px;">
-                <h4>Compartilhe suas esperiências</h4>
+                <h4>Compartilhe suas experiências</h4>
                 <form id="form" action="{{url('app/publicacao')}}" method="post" enctype="multipart/form-data">
                     <textArea id="texto" name="texto"> </textArea>
                     <input type="file" id="imagem" name="imagem">
