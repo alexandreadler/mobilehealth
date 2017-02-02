@@ -84,6 +84,7 @@ class SupervisorController extends Controller {
 
 		// atualiza uma conteudos
 		// EX: Caso a fonte abcsaude.com seja totalmente confiavel, atualiza um conteudo em especifico dessa fonte
+		DB::connection("public")->table('relatepersoncontent')->where('id_content', '=', $id)->delete();
 		DB::connection("public")->table('recommendation')->where('id_content', '=', $id)->delete();
 		DB::connection("public")->table('content')->where('id', '=', $id)->delete();
 		
