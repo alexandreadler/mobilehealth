@@ -255,15 +255,20 @@
 				@if(!empty($posts))
 					@foreach($posts as $p)
 						<div class="post" >
-							<div class="headPost">
-                                                            <a href="{{url('profile/personalpagefriend/'.$p->person)}}">
-								<div class="imgPost" >
-									<img id="picture" src="imgs/{{$p->photo}}" />
-								</div>
-                                                            </a>
-							</div>
 							
-							<div class="contentPost"> 
+							
+							<div class="contentPost">
+
+								<div class="headPost">
+                                   	<a href="{{url('profile/personalpagefriend/'.$p->person)}}">
+										<div class="imgPost" >
+											<img id="picture" src="imgs/{{$p->photo}}" />
+										</div>
+                                    </a>
+								</div>
+
+
+
 								<div class="namePost">
 									<div>{{$p->name_first}}</div>
 								</div>
@@ -331,9 +336,10 @@
 								</div>
 								
 								
-								<!-- Comentários para um post -->
-                                                                
-								<div style="width: 75%; height: 50px; text-align: center; "><p style="margin-top: 15px;"><a href="{{url('app/comments/'.$p->id)}}" onclick="comments()" style="text-decoration: none;">Comente sobre isso</a></p></div>
+	                             
+								
+								<!-- Comentários para um post-->
+								<div style="width: 75%; height: 20px; margin: 10px;"><p><a href="{{url('app/comments/'.$p->id)}}" onclick="comments()" style="text-decoration: none; color: gray;">Comente sobre isso....</a></p></div>
 								
 								
 							</div>
@@ -663,16 +669,16 @@ $('#save').click(function(){
 	.imgPost {
 		float: left;
 		display:block;
-		height: 80px;
-		width: 80px;
+		height: 50px;
+		width: 50px;
 		margin: 10px;
 		
 	}
 		
 	#picture {
 		
-		height: 80px;
-		width: 80px;
+		height: 50px;
+		width: 50px;
 	}
 	
 	.namePost {
@@ -704,9 +710,9 @@ $('#save').click(function(){
 	
 	.contentPost{
 		
-		border-left: solid 2px gray;
-		border-top: solid 2px gray;
-		border-radius:5px 0 0 0;
+		border: solid 2px gray;
+		//border-top: solid 2px gray;
+		border-radius:5px 5px 5px 5px;
 		margin: 15px;
 		float:left;
 		display:block;
