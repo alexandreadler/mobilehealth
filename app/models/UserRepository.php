@@ -37,8 +37,14 @@ class UserRepository
 		$user->afinidade = array_get($input, 'afinidade');
 		$user->type = array_get($input, 'supervisor');
 		$user->photo = "padrao.png";
+
+
+
+
         // Save if valid. Password field will be hashed before save
 		$this->save($user);
+
+        
 		return $user;
     }
 
