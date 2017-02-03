@@ -12,7 +12,7 @@
             {{-- Histórico --}}
             <div id="history_div" class="ui-corner-all custom-corners">
                 <div class="ui-bar ui-bar-a">
-                    <h3><strong>Height Records</strong></h3>
+                    <h3><strong>Registro de altura</strong></h3>
                 </div>
                 <div class="ui-body ui-body-a">
 
@@ -40,20 +40,20 @@
             {{-- Novo registro --}}
             <div id="newrecord_div" class="ui-corner-all custom-corners" style="display: none;">
                 <div class="ui-bar ui-bar-a">
-                    <h3><strong>New record</strong></h3>
+                    <h3><strong>Novo registro</strong></h3>
                 </div>
                 <div class="ui-body ui-body-a">
 
                     <form id="form" action="{{url('/phr/height')}}" method="post">
 
-                        <label for="height">Height (cm):</label>
+                        <label for="height">Altura (cm):</label>
                         <input type="text" name="height" id="height" value="">
 
                     </form>
 
                 </div>
                 <div class="ui-bar ui-bar-a" style="height: 44px;">
-                    <a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;"><span class="glyphicon glyphicon-save"></span> Save</a>
+                    <a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;"><span class="glyphicon glyphicon-save"></span> Salvar</a>
                 </div>
 
             </div>

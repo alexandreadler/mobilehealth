@@ -7,7 +7,6 @@ $plot = new PHPlot();
 $m = 0;
 
 
-
 // Aqui nos definimos o título do gráfico
 if($_GET['t'] == 0){
 	
@@ -19,7 +18,7 @@ if($_GET['t'] == 0){
 	
 } else if($_GET['t'] == 1){
 	
-	$plot->SetTitle("Pressão Sanguínia");
+	$plot->SetTitle("Pressao Sangunia");
 	$records = Bloodpressure::select(DB::raw('pulse as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(2);
@@ -32,7 +31,6 @@ if($_GET['t'] == 0){
 	$m = 40;
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(10);
-	$m = 40;
 	
 } else if($_GET['t'] == 3){
 	
@@ -44,8 +42,8 @@ if($_GET['t'] == 0){
 	
 }
 
-
 for($i = count($records)-1; $i >=0; $i--){
+
 	$d = date('d/M ', strtotime($records[$i]['datetime']));
 	$data[] = array($d, $records[$i]['data']);
 			

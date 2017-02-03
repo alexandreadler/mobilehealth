@@ -9,6 +9,7 @@
  */
 class UsersController extends Controller
 {
+	
 
     /**
      * Displays the form for account creation
@@ -28,7 +29,9 @@ class UsersController extends Controller
 
     	try {
 	        $repo = App::make('UserRepository');
+
 	        $user = $repo->signup(Input::all());
+
 			
 	        if ($user->id) {
 	            if (Config::get('confide::signup_email')) {
@@ -106,7 +109,14 @@ class UsersController extends Controller
 
 
 	        	//DB::connection("public")->select(DB::raw("delete public.person where id(currval('frequency_id_seq'))"));
-	        	DB::connection("public")->select(DB::raw("delete from app.users where id= ". $user->id));
+	        	//DB::connection("public")->select(DB::raw("delete from app.users where id= ". $user->id));
+
+
+	        	$megERRO = "Por favor verifique os dados informados: <br>Data: AAAA-MM-DD<br> Email: xxxxxx@xxxx.com (não deixe espaços em branco neste campo)";
+	        	return Redirect::to('/')->compact();
+
+	        	//$cadastro = User::where('person_id', '=', )->get();
+
 
 	            $error = $user->errors()->all(':message');
 
@@ -129,7 +139,7 @@ class UsersController extends Controller
 	        }
 	    } catch(Exception $e){
 
-	    	DB::connection("public")->select(DB::raw("delete from app.users where id= ". $user->id));
+	    	//DB::connection("public")->select(DB::raw("delete from app.users where id= ". $user->id));
 	    	$error = $user->errors()->all(':message');
 
 				$a = strcmp($user->type,"true");

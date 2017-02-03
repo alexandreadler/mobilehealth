@@ -41,7 +41,7 @@
             {{-- Novo registro --}}
             <div id="newrecord_div" class="ui-corner-all custom-corners" style="display: none;">
                 <div class="ui-bar ui-bar-a">
-                    <h3><strong>New record</strong></h3>
+                    <h3><strong>Novo registro</strong></h3>
                 </div>
                 <div class="ui-body ui-body-a">
 
