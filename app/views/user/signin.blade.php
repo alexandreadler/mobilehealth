@@ -52,7 +52,7 @@
 
 
                     <div class="panel-heading">
-                    	<a>Já terminou os testes e ainda não respondeu o questionário? Clique aqui e responda.</a>
+                    	<a href="https://goo.gl/forms/QseYcqqJGweFxo1p1">Já terminou os testes e ainda não respondeu o questionário? Clique aqui e responda.</a>
 					</div>
 
 					
