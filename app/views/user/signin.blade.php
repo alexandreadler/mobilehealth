@@ -50,6 +50,14 @@
                                   <a href="{{url("/users/reporterror")}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-eye-close"></span> Reportar Erro</a>
                      </div>
 
+
+                    <div class="panel-heading">
+                    	<a>Já terminou os testes e ainda não respondeu o questionário? Clique aqui e responda.</a>
+					</div>
+
+					
+
+
                      @if(!isset($megERRO))
                 
                     @else
