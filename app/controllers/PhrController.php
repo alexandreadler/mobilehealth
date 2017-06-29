@@ -185,12 +185,7 @@ class PhrController extends \BaseController {
 	}
 
 	public function postImc(){
-
-		if(empty($_POST['weight']) || empty($_POST['height'])){
-               Session::flash('fail', '');
-                	return Redirect::intended("/phr/imc");
-
-        } else{
+		
 
 		$input = Input::all();
 
@@ -212,7 +207,7 @@ class PhrController extends \BaseController {
 		$g->save();
 		 Session::flash('sucess', '');
 		return Redirect::intended("/phr/imc");
-	}
+	
 
 		
 

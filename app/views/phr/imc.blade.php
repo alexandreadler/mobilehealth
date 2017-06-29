@@ -13,13 +13,7 @@
 
 
 
-              @if(Session::has('fail'))
-                        <?php   echo  "<script>alert('Preencha todos os dados!');</script>"; ?> 
-               @endif
-
-                @if(Session::has('sucess'))
-                      <?php   echo  "<script>alert('Dados cadastrados com sucesso!');</script>"; ?> 
-            @endif
+             
               
 
             {{-- Histórico --}}
@@ -67,11 +61,15 @@
 
                     @if(count($records) > 0)
                         <img src={{URL::to('/grafico?t=4&p='.$pid)}} alt="Imc" height="600" width="100%" />
+                        <br>
+
+                        <center>  <h1> IMC ATUAL: {{$records[0]["imc"]}} </h1> </center> 
+
                     @endif
                 
                     <br >
 
-                  <center>  <h1> IMC ATUAL: {{$records[0]["imc"]}} </h1> </center> 
+
                 
                     @foreach($records as $r)
 
@@ -94,36 +92,34 @@
 
             {{-- Novo registro --}}
             <div id="newrecord_div" class="ui-corner-all custom-corners" style="display: none;">
+                
                 <div class="ui-bar ui-bar-a">
                     <h3><strong>Novo registro</strong></h3>
                 </div>
+
                 <div class="ui-body ui-body-a">
 
                     <form id="form" action="" method="post">
 
                         
-                    <div class="form-group">
+                         <div class="form-group">
                    
-                         <label for="height">Altura (cm): </label>   
-                        <input  type="number" name="height" id="height" value="" placeholder="exemplo: 180"  required="required">  
+                            <label for="height">Altura (cm): </label>   
+                            <input  type="number" name="height" id="height" value="" placeholder="exemplo: 180"  required="required">  
 
-                        <label for="weight">Peso (kg):</label>   
-                        <input type="number" name="weight" id="weight" value="" placeholder="exemplo:80" required="required">
+                            <label for="weight">Peso (kg):</label>   
+                            <input type="number" name="weight" id="weight" value="" placeholder="exemplo:80" required="required">
 
-                        <br>
+                             <br>
 
-                         
-                    </div>
+                        </div>
 
-                             <div class="form-actions form-group">
-                         <div class="ui-bar ui-bar-a" style="height: 44px;">
+                         <div class="form-actions form-group">
+                             <div class="ui-bar ui-bar-a" style="height: 44px;">
 
-                    <button type="submit" id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home"><span class="glyphicon glyphicon-save"></span> Salvar</button>
-                    </div>
-                </div>
-
-
-
+                                <button type="submit" id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home"><span class="glyphicon glyphicon-save"></span> Salvar</button>
+                            </div>
+                        </div>
 
                     </form>
 
