@@ -18,6 +18,9 @@
 
 					@if(count($records) > 0)
 						<img src={{URL::to('/grafico?t=1&p='.$pid)}} alt="Glicose" height="600" width="100%" />
+                        <br> <br>
+                        <img src={{URL::to('/grafico?t=5&p='.$pid)}} alt="Glicose" height="600" width="100%" />
+
 					@endif
 				
 					<br >
@@ -29,7 +32,8 @@
                                 <h3><strong>{{$r['datetime']}}</strong></h3>
                             </div>
                             <div class="ui-body ui-body-a">
-                                Pulso <strong>{{$r['pulse']}}</strong> com <strong> Batimento @if ($r["irregularheartbeat"]) Irregular @else Regular @endif</strong>.
+                                Pressão Sistólica: &nbsp; <strong>{{$r['sistolic']}} </strong>  <br>
+                                Pressão Diastólica: <strong>{{$r['diastolic']}} </strong>
                             </div>
                         </div>
 
@@ -48,23 +52,36 @@
 
                     <form id="form" action="{{url('/phr/pressure')}}" method="post">
 
-                        <label for="pulse">Pulso (batimentos por minuto):</label>
-                        <input type="text" name="pulse" id="pulse" value="">
+                        <div class="form-group">
 
+                        <label for="pulse">Pressão Sistólica</label>
+                        <input type="number" name="sistolic" id="sistolic" value="" required="required">
+
+                        <label for="pulse">Pressão Diastólica</label>
+                        <input type="number" name="diastolic" id="diastolic" value="" required="required">
+
+                        </div>
+
+                        <!--
                         <label for="irregularheartbeat">Batimentos cardíacos irregulares:</label>
                         <fieldset data-role="controlgroup" data-theme="b" data-type="horizontal" data-mini="true">
                             <input type="radio" name="irregularheartbeat" id="radio-choice-c" value="0" checked="checked">
                             <label for="radio-choice-c">Não</label>
                             <input type="radio" name="irregularheartbeat" id="radio-choice-d" value="1">
                             <label for="radio-choice-d">Sim</label>
-                        </fieldset>
+                        </fieldset> -->
+
+                         <div class="form-actions form-group">
+                             <div class="ui-bar ui-bar-a" style="height: 44px;">
+
+                                <button type="submit" id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home"><span class="glyphicon glyphicon-save"></span> Salvar</button>
+                            </div>
+                        </div>
 
                     </form>
 
                 </div>
-                <div class="ui-bar ui-bar-a" style="height: 44px;">
-                    <a id="save" data-rel="save" class="btn btn-default btn-sm ui-mini ui-btn-right ui-btn ui-btn-inline ui-alt-icon ui-nodisc-icon ui-icon-home" style="margin: 0;"><span class="glyphicon glyphicon-save"></span> Salvar</a>
-                </div>
+                
 
             </div>
 
@@ -88,7 +105,14 @@
 
 
     $('#save').click(function(){
+       if($('#diastolic').val()=="" || $('#sistolic').val()==""){
+        
+        }
+        else{
+
+         
         $('#form').submit();
+        }
     });
 
 @stop

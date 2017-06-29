@@ -23,6 +23,9 @@ Route::get("grafico",
 );
 
 
+
+
+
 Route::group(array('before' => 'auth'), function()
 {
 	Route::get( '/','AppController@getHome');
@@ -31,7 +34,8 @@ Route::group(array('before' => 'auth'), function()
 	
 	Route::controller( 'profile', 'ProfileController');
 	Route::controller( 'phr', 'PhrController');
-	
+
+
 	
 	Route::get('{resource}/{method}/{param1?}/{param2?}/{param3?}/{param4?}', function($resource, $method)
 	{

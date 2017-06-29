@@ -18,28 +18,52 @@ if($_GET['t'] == 0){
 	
 } else if($_GET['t'] == 1){
 	
-	$plot->SetTitle("Pressao Sangunia");
-	$records = Bloodpressure::select(DB::raw('pulse as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$plot->SetTitle("Pressao Sanguinea Sistolica");
+	$records = Bloodpressure::select(DB::raw('sistolic as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
-	$plot->SetYTickIncrement(2);
+	$m = 20;
+	$plot->SetYTickIncrement(20);
 	
 	
 } else if($_GET['t'] == 2){
 	
 	$plot->SetTitle("Peso (Kg)");
-	$records = Weight::select(DB::raw('weight as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
-	$m = 40;
+	$records = Imc::select(DB::raw('weigth as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$m = 10;
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(10);
 	
 } else if($_GET['t'] == 3){
 	
 	$plot->SetTitle("Altura (cm)");
-	$records = Height::select(DB::raw('height as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$records = Imc::select(DB::raw('height as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$plot->SetYTickIncrement(10);
 	$m = 100;
 	
+} elseif($_GET['t'] == 4){
+	$plot->SetTitle("IMC");
+	$records = Imc::select(DB::raw('imc as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
+	$plot->SetYTickIncrement(3);
+	$m = 1;
+	
+}else if($_GET['t'] == 5){
+	
+	$plot->SetTitle("Pressao Sanguinea Diastolica");
+	$records = Bloodpressure::select(DB::raw('diastolic as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
+	$m = 20;
+	$plot->SetYTickIncrement(20);
+	
+	
+}else if($_GET['t'] == 6){
+	
+	$plot->SetTitle("Hemoglobina Glicada(%)");
+	$records = Hemoglobin::select(DB::raw('hemoglobin as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
+	$plot->SetYTickIncrement(1);
+	$m = 1;
 }
 
 for($i = count($records)-1; $i >=0; $i--){

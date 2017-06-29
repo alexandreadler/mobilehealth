@@ -14,11 +14,13 @@
                 <div class="ui-body ui-body-a">
                     <a href="{{url('/phr/glucose')}}" class="ui-shadow ui-btn ui-corner-all">Glicose</a>
                     <br>
+                    <a href="{{url('/phr/hemoglobin')}}" class="ui-shadow ui-btn ui-corner-all">Hemoglobina Glicada</a>
+                    <br>
                     <a href="{{url('/phr/pressure')}}" class="ui-shadow ui-btn ui-corner-all">Pressão Sanguínea</a>
                     <br>
-                    <a href="{{url('/phr/weight')}}" class="ui-shadow ui-btn ui-corner-all">Peso</a>
-                    <br>
-                    <a href="{{url('/phr/height')}}" class="ui-shadow ui-btn ui-corner-all">Altura</a>
+                   <!-- <a href="{{url('/phr/weight')}}" class="ui-shadow ui-btn ui-corner-all">Peso</a> -->
+                    
+                    <a href="{{url('/phr/imc')}}" class="ui-shadow ui-btn ui-corner-all">IMC</a>
                     <br>
                     <a href="{{url('/phr/allergy')}}" class="ui-shadow ui-btn ui-corner-all">Alergia</a>
                     <br>

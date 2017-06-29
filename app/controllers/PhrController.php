@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 class PhrController extends \BaseController {
 
 	/**
@@ -69,8 +69,9 @@ class PhrController extends \BaseController {
 
 		$g                          = new Bloodpressure;
 		$g->id                      = $id;
-		$g->pulse                   = str_replace(',','.',$input["pulse"]);
-		$g->irregularheartbeat      = $input["irregularheartbeat"];
+		$g->sistolic                = str_replace(',','.',$input["sistolic"]);
+		$g->diastolic				= str_replace(',', '.', $input["diastolic"]);
+		//$g->irregularheartbeat      = $input["irregularheartbeat"];
 		$g->id_person               = $pid;
 		$g->datetime                = \Carbon\Carbon::now();
 		$g->save();
@@ -116,17 +117,80 @@ class PhrController extends \BaseController {
 
 	}
 
-	public function getHeight(){
 
-		$title = "Height";
+	public function postHemoglobin(){
+
+		$input = Input::all();
+
 		$pid = Confide::user()->person->id;
-		$records = Height::where("id_person",'=',$pid)->orderBy('datetime','desc')->get();
-		
-		return View::make('phr.height',compact('title','records', 'pid'));
+
+		$id = DB::connection("public")->select(DB::raw("SELECT nextval('hemoglobin_seq')"))[0]->nextval;
+
+		$g                          = new Hemoglobin;
+		$g->id                      = $id;
+		$g->id_person               = $pid;
+		$g->hemoglobin      		= str_replace(',','.',$input["hemoglobin"]);
+		$g->datetime                = \Carbon\Carbon::now();
+		$g->save();
+
+		return Redirect::intended("/phr/hemoglobin");
 
 	}
 
-	public function postHeight(){
+
+	public function getHemoglobin(){
+
+		$title = "Hemoglobin";
+		$pid = Confide::user()->person->id;
+		$records = Hemoglobin::where("id_person",'=',$pid)->orderBy('datetime','desc')->get();
+		
+		return View::make('phr.hemoglobin',compact('title','records', 'pid'));
+
+	}
+
+
+
+	public function getImc(){
+
+		$title = "IMC";
+		$pid = Confide::user()->person->id;
+		$records = Imc::where("id_person",'=',$pid)->orderBy('datetime','desc')->get();
+		
+		return View::make('phr.imc',compact('title','records', 'pid'));
+
+	}
+
+
+	public function getSituacion($imc){
+
+		if($imc <17 )
+			return "Muito abaixo do peso";
+		 elseif($imc >=17 && $imc <= 18.49 )
+			return "Abaixo do peso";
+
+		elseif ($imc >=18.5 && $imc <= 24.99) 
+			return "Peso normal";
+
+		elseif ($imc >= 25 && $imc <= 29.99)
+				return "Acima do peso";
+
+		elseif ($imc >= 30 && $imc <= 34.99)
+				return "Obesidade I";
+
+		elseif ($imc >= 35 && $imc <= 39.99)
+				return "Obesidade II (severa)";
+		elseif ($imc >= 40 )
+				return "Obesidade III (mórbida)";
+		
+	}
+
+	public function postImc(){
+
+		if(empty($_POST['weight']) || empty($_POST['height'])){
+               Session::flash('fail', '');
+                	return Redirect::intended("/phr/imc");
+
+        } else{
 
 		$input = Input::all();
 
@@ -134,16 +198,29 @@ class PhrController extends \BaseController {
 
 		$id = DB::connection("public")->select(DB::raw("SELECT nextval('height_seq')"))[0]->nextval;
 
-		$g                          = new Height;
+		$g                          = new Imc;
 		$g->id                      = $id;
 		$g->height                  = str_replace(',','.',$input["height"]);
 		$g->id_person               = $pid;
 		$g->datetime                = \Carbon\Carbon::now();
-		$g->save();
+		$g->weigth 					= str_replace(',', '.', $input["weight"]);
+		$imc = str_replace(',', '.', ($input["weight"] / ( ($input["height"]/100) * ($input["height"]/100) ) ));
+		$g->imc					= $imc;
+		
+		$g->situacion = $this->getSituacion($imc);
 
-		return Redirect::intended("/phr/height");
+		$g->save();
+		 Session::flash('sucess', '');
+		return Redirect::intended("/phr/imc");
+	}
+
+		
+
+
 
 	}
+
+	
 
 
 	public function getAllergy(){

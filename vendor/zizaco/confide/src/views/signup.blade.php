@@ -19,7 +19,7 @@
             <input required="" class="form-control" placeholder="{{{ Lang::get('confide::confide.username') }}}" type="text" name="username" id="username" value="{{{ Input::old('username') }}}">
         </div>
         <div class="form-group">
-            <label for="email">E-mail<small>{{ Lang::get('confide::confide.signup.confirmation_required') }}</small></label>
+            <label for="email">E-mail <small>{{ Lang::get('confide::confide.signup.confirmation_required') }}</small></label>
             <input required="" class="form-control" placeholder="{{{ Lang::get('confide::confide.e_mail') }}}" type="text" name="email" id="email" value="{{{ Input::old('email') }}}">
         </div>
         
@@ -34,8 +34,8 @@
 	
 		<div class="form-group">
             <label for="datebirth">Data de Nascimento</label>
-            <input required="" class="form-control" onkeypress="mascara(this, '####-##-##')" maxlength="10"   type="text" name="datebirth" id="datebirth">
-			<span style="font-size: 10px; color: gray;">AAAA-MM-DD</span>
+            <input required="" class="form-control" onkeypress="mascara(this, '##-##-####')" maxlength="10"   type="text" name="datebirth" id="datebirth">
+			<span style="font-size: 10px; color: gray;">DD-MM-AAAA</span>
 		</div>
 	
 		<div class="form-group">
