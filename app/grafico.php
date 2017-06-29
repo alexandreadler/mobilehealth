@@ -19,7 +19,7 @@ if($_GET['t'] == 0){
 } else if($_GET['t'] == 1){
 	
 	$plot->SetTitle("Pressao Sanguinea Sistolica");
-	$records = Bloodpressure::select(DB::raw('sistolic as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
+	$records = Bloodpressure::select(DB::raw('systolic as data, datetime'))->where("id_person",'=',$_GET['p'])->orderBy('datetime', 'desc')->take(15)->get();
 	# Y Tick marks are off, but Y Tick Increment also controls the Y grid lines:
 	$m = 20;
 	$plot->SetYTickIncrement(20);
