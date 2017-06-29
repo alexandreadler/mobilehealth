@@ -63,7 +63,6 @@
                         <img src={{URL::to('/grafico?t=4&p='.$pid)}} alt="Imc" height="600" width="100%" />
                         <br>
 
-                        <center>  <h1> IMC ATUAL: {{$records[0]["imc"]}} </h1> </center> 
 
                     @endif
                 
