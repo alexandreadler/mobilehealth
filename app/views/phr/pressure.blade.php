@@ -32,7 +32,7 @@
                                 <h3><strong>{{$r['datetime']}}</strong></h3>
                             </div>
                             <div class="ui-body ui-body-a">
-                                Pressão Sistólica: &nbsp; <strong>{{$r['sistolic']}} </strong>  <br>
+                                Pressão Sistólica: &nbsp; <strong>{{$r['systolic']}} </strong>  <br>
                                 Pressão Diastólica: <strong>{{$r['diastolic']}} </strong>
                             </div>
                         </div>

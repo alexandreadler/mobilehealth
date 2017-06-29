@@ -69,7 +69,7 @@ class PhrController extends \BaseController {
 
 		$g                          = new Bloodpressure;
 		$g->id                      = $id;
-		$g->sistolic                = str_replace(',','.',$input["sistolic"]);
+		$g->systolic                = str_replace(',','.',$input["sistolic"]);
 		$g->diastolic				= str_replace(',', '.', $input["diastolic"]);
 		//$g->irregularheartbeat      = $input["irregularheartbeat"];
 		$g->id_person               = $pid;
