@@ -266,6 +266,8 @@ class ProfileController extends \BaseController {
 
 
 
+        DB::connection("app")->select(DB::raw("update users set gender='". $p->gender."', tempodoenca='". $input["tempodoenca"]. "', afinidade='". $input["afinidade"] . "' where person_id=" . $pid));
+
 
 
         $p->save();
